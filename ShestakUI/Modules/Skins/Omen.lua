@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.omen ~= true or not IsAddOnLoaded("Omen") then return end
 
 ----------------------------------------------------------------------------------------
@@ -12,6 +12,8 @@ Omen.UpdateBarTextureSettings = function(self)
 	for i, v in ipairs(self.Bars) do
 		v.texture:SetTexture(C.media.texture)
 		v:CreateBackdrop("Transparent")
+		v.backdrop:SetPoint("TOPLEFT", -2, 2)
+		v.backdrop:SetPoint("BOTTOMRIGHT", 2, -2)
 	end
 end
 
@@ -65,11 +67,7 @@ end
 
 -- Option Overrides
 Omen.db.profile.NumBars = 7
-if C.skins.minimap_buttons == true then
-	Omen.db.profile.MinimapIcon.hide = false
-else
-	Omen.db.profile.MinimapIcon.hide = true
-end
+Omen.db.profile.MinimapIcon.hide = true
 Omen.db.profile.Autocollapse = true
 Omen.db.profile.Bar.Spacing = 7
 Omen.db.profile.Bar.Height = 12
@@ -83,8 +81,6 @@ Omen.db.profile.TitleBar.Font = "Hooge"
 Omen.db.profile.Background.Texture = "Smooth"
 Omen.db.profile.Bar.FontSize = 8
 Omen.db.profile.Bar.ShowHeadings = false
-Omen.db.profile.Shown = true
-Omen.db.profile.Locked = true
 
 -- Force updates
 Omen:UpdateBarTextureSettings()

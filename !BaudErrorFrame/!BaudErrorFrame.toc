@@ -1,0 +1,7 @@
+## Interface: 20400
+## Title: Baud Error Frame
+## Notes: Improved error reporting
+## Author: Baudzilla, wolftankk, Affli
+## Version: 1.8
+
+BaudErrorFrame.xml

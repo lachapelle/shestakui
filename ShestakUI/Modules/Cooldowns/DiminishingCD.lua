@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.show_arena ~= true or C.unitframe.plugins_diminishing ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Based on Tukui_DrTracker(by Ildyria)
+--	Based on Tukui_DrTracker (by Ildyria)
 ----------------------------------------------------------------------------------------
 local frameposition
 if C.unitframe.arena_on_right == true then
@@ -58,7 +58,7 @@ function DisplayDrActives(self, test)
 			aura.icon:SetPoint("BOTTOMRIGHT", -2, 2)
 			aura.icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-			aura.cooldown = CreateFrame("Cooldown", "$parentCD", aura, "CooldownFrameTemplate")
+			aura.cooldown = CreateFrame("Cooldown", "$parentCD", aura, "oUF_CooldownFrameTemplate")
 			aura.cooldown:SetAllPoints(aura.icon)
 			aura.cooldown:SetReverse(true)
 
@@ -89,7 +89,7 @@ function DisplayDrActives(self, test)
 		else
 			aura:SetBackdropBorderColor(1, 0, 0, 1)
 		end
-		CooldownFrame_Set(aura.cooldown, value.start, 18, 1)
+		CooldownFrame_SetTimer(aura.cooldown, value.start, 18, 1)
 		aura.start = value.start
 		aura.cat = cat
 		aura:SetScript("OnUpdate", UpdateDRTracker)

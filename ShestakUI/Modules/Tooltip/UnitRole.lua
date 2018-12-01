@@ -1,8 +1,8 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true or C.tooltip.unit_role ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Displays a players LFD/LFR role(gTooltipRoles by g0st)
+--	Displays a players LFD/LFR role (gTooltipRoles by g0st)
 ----------------------------------------------------------------------------------------
 local function GetLFDRole(unit)
 	local role = UnitGroupRolesAssigned(unit)
@@ -20,9 +20,8 @@ end
 
 GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 	local _, instanceType = IsInInstance()
-	if instanceType == "scenario" then return end
 	local _, unit = GameTooltip:GetUnit()
-	if unit and UnitIsPlayer(unit) and ((UnitInParty(unit) or UnitInRaid(unit)) and GetNumGroupMembers() > 0) then
+	if unit and UnitIsPlayer(unit) and ((UnitInParty(unit) and GetNumPartyMembers() > 0) or (UnitInRaid(unit) and GetNumRaidMembers() > 0)) then
 		GameTooltip:AddLine(ROLE..": "..GetLFDRole(unit))
 	end
 end)

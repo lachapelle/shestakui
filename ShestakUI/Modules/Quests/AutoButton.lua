@@ -1,8 +1,8 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.quest_auto_button ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	AutoButton for used items(by Elv22) (use macro /click AutoButton)
+--	AutoButton for used items (by Elv22) (use macro /click AutoButton)
 ----------------------------------------------------------------------------------------
 local Items = T.ABItems
 local EquipedItems = T.ABEquipedItems
@@ -72,7 +72,7 @@ AutoButton.c:SetPoint("BOTTOMRIGHT", AutoButton, "BOTTOMRIGHT", 1, -2)
 AutoButton.c:SetJustifyH("CENTER")
 
 -- Cooldown
-AutoButton.cd = CreateFrame("Cooldown", nil, AutoButton, "CooldownFrameTemplate")
+AutoButton.cd = CreateFrame("Cooldown", nil, AutoButton, "oUF_CooldownFrameTemplate")
 AutoButton.cd:SetPoint("TOPLEFT", AutoButton, "TOPLEFT", 2, -2)
 AutoButton.cd:SetPoint("BOTTOMRIGHT", AutoButton, "BOTTOMRIGHT", -2, 2)
 
@@ -104,7 +104,7 @@ Scanner:SetScript("OnEvent", function()
 
 					AutoButton:SetScript("OnUpdate", function(self, elapsed)
 						local cd_start, cd_finish, cd_enable = GetContainerItemCooldown(b, s)
-						CooldownFrame_Set(AutoButton.cd, cd_start, cd_finish, cd_enable)
+						CooldownFrame_SetTimer(AutoButton.cd, cd_start, cd_finish, cd_enable)
 					end)
 
 					AutoButton:SetScript("OnEnter", function(self)
@@ -134,7 +134,7 @@ Scanner:SetScript("OnEvent", function()
 
 				AutoButton:SetScript("OnUpdate", function(self, elapsed)
 					local cd_start, cd_finish, cd_enable = GetInventoryItemCooldown("player", w)
-					CooldownFrame_Set(AutoButton.cd, cd_start, cd_finish, cd_enable)
+					CooldownFrame_SetTimer(AutoButton.cd, cd_start, cd_finish, cd_enable)
 				end)
 
 				AutoButton:SetScript("OnEnter", function(self)

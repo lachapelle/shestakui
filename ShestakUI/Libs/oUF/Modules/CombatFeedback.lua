@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_combat_feedback ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_CombatFeedback(by Ammo)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local damage_format = "-%d"
@@ -63,7 +63,6 @@ end
 
 local function combat(self, event, unit, eventType, flags, amount, dtype)
 	if unit ~= self.unit then return end
-	if unit == "vehicle" then return end
 	local FeedbackText = self.CombatFeedbackText
 	local fColors = FeedbackText.colors
 	local font, fontHeight, fontFlags = C.font.combat_text_font, C.font.combat_text_font_size, C.font.combat_text_font_style

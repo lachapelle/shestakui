@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if T.client ~= "zhTW" then return end
 
 ----------------------------------------------------------------------------------------
@@ -56,17 +56,13 @@ L_MISC_BINDER_OPEN = "鼠標綁定"
 L_MISC_GROCERY_BUY = "購買"
 L_MISC_GROCERY_DESC = "雜貨商自動購買"
 L_MISC_SCROLL = "附魔卷軸"
-L_MISC_COLLAPSE = "The Collapse" -- Need review
+L_MISC_COLLAPSE = "The Collapse" -- Needs review
 
 -- Raid Utility
 L_RAID_UTIL_DISBAND = "解散團隊"
 
 -- Zone name
-L_ZONE_TOLBARAD = "托巴拉德"
-L_ZONE_TOLBARADPEN = "托巴拉德半島"
 L_ZONE_ARATHIBASIN = "阿拉希盆地"
-L_ZONE_GILNEAS = "吉爾尼斯之戰"
-L_ZONE_ANCIENTDALARAN = "達拉然陷坑"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Wowhead鏈接"
@@ -97,24 +93,35 @@ L_MINIMAP_CALENDAR = "日曆"
 L_MINIMAP_HEAL_LAYOUT = "左鍵 - HPS 佈局"
 L_MINIMAP_DPS_LAYOUT = "右鍵 - DPS 佈局"
 L_MINIMAP_BLIZZ_LAYOUT = "中鍵 - 默認 佈局"
-L_MINIMAP_ARTIFACT = "Right click to use" -- Needs review
+
+-- Addons list
+L_ALOAD_RL = "重新加載UI"
+L_ALOAD_DEP = "依賴關係: "
+L_ALOAD_OP_DEP = "可選依賴: "
+L_ALOAD_AUTHOR = "作者: "
+L_ALOAD_PROFILES = "設定檔"
+L_ALOAD_ENABLE_ALL = "全部啟用"
+L_ALOAD_DISABLE_ALL = "全部禁用"
+L_ALOAD_PROFILE_NAME = "配置文件名稱"
+L_ALOAD_SET_TO = "發送至.."
+L_ALOAD_ADD_TO = "添加至.."
+L_ALOAD_REMOVE_FROM = "移除自.."
+L_ALOAD_DELETE_PROFILE = "刪除設定檔.."
+L_ALOAD_CONFIRM_DELETE = "確定刪除該設定檔？請按住shift再次點擊確認刪除。"
 
 -- Chat
 L_CHAT_WHISPER = "From"
-L_CHAT_BN_WHISPER = "From"
 L_CHAT_AFK = "[AFK]"
 L_CHAT_DND = "[DND]"
 L_CHAT_GM = "[GM]"
 L_CHAT_GUILD = "G"
 L_CHAT_PARTY = "P"
-L_CHAT_PARTY_LEADER = "PL"
 L_CHAT_RAID = "R"
 L_CHAT_RAID_LEADER = "RL"
 L_CHAT_RAID_WARNING = "RW"
-L_CHAT_INSTANCE_CHAT = "I"
-L_CHAT_INSTANCE_CHAT_LEADER = "IL"
+L_CHAT_BATTLEGROUND = "BG"
+L_CHAT_BATTLEGROUND_LEADER = "BGL"
 L_CHAT_OFFICER = "O"
-L_CHAT_PET_BATTLE = "PB"
 L_CHAT_COME_ONLINE = "|cff298F00上線了|r."
 L_CHAT_GONE_OFFLINE = "|cffff0000下線了|r."
 
@@ -122,10 +129,28 @@ L_CHAT_GONE_OFFLINE = "|cffff0000下線了|r."
 L_ERRORFRAME_L = "點擊查看錯誤"
 
 -- Bags
-L_BAG_SHOW_BAGS = "顯示背包"
-L_BAG_RIGHT_CLICK_SEARCH = "點擊右鍵以搜尋物品"
+-- L_BAG_SHOW_BAGS = "顯示背包"
+-- L_BAG_RIGHT_CLICK_SEARCH = "點擊右鍵以搜尋物品"
+-- L_BAG_STACK_MENU = "堆疊"
+-- L_BAG_RIGHT_CLICK_CLOSE = "右鍵點擊打開菜單"
+L_BAG_BANK = "銀行"
+L_BAG_NO_SLOTS = "不能再購買更多的背包欄位!"
+L_BAG_COSTS = "花費: %.2f 金"
+L_BAG_BUY_SLOTS = "輸入 /bags purchase yes 以購買銀行背包欄位"
+L_BAG_OPEN_BANK = "您需要先造訪您的銀行"
+L_BAG_SORT = "將背包或銀行內的物品分類及排序"
+L_BAG_STACK = "將背包或銀行內的不完整的物品堆疊重新堆疊"
+L_BAG_BUY_BANKS_SLOT = "購買銀行背包欄位. (需要造訪銀行)"
+L_BAG_SORT_MENU = "分類及排序"
+L_BAG_SORT_SPECIAL = "分類及排序特殊物品"
 L_BAG_STACK_MENU = "堆疊"
-L_BAG_RIGHT_CLICK_CLOSE = "右鍵點擊打開菜單"
+L_BAG_STACK_SPECIAL = "堆疊特殊物品"
+L_BAG_SHOW_BAGS = "顯示背包"
+L_BAG_SORTING_BAGS = "分類及排序完成"
+L_BAG_NOTHING_SORT = "不需要分類"
+L_BAG_BAGS_BIDS = "使用背包: "
+L_BAG_STACK_END = "重新堆疊完成"
+L_BAG_RIGHT_CLICK_SEARCH = "點擊右鍵以搜尋物品"
 
 -- Grab mail
 L_MAIL_STOPPED = "無法拾取, 背囊已滿."
@@ -143,6 +168,7 @@ L_LOOT_TO_RAID = " 團隊"
 L_LOOT_TO_PARTY = " 隊伍"
 L_LOOT_TO_GUILD = " 公會"
 L_LOOT_TO_SAY = " 說"
+L_LOOT_CANNOT = "不能拾取"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "你處于暫離狀態"
@@ -151,9 +177,6 @@ L_PANELS_AFK_LCLICK = "左鍵點擊脫離暫離狀態"
 
 -- Cooldowns
 L_COOLDOWNS = "CD: "
-L_COOLDOWNS_COMBATRESS = "戰復"
-L_COOLDOWNS_COMBATRESS_REMAINDER = "戰復剩餘: "
-L_COOLDOWNS_NEXTTIME = "下次: "
 
 -- Autoinvite
 L_INVITE_ENABLE = "自動邀請功能已啟用: "
@@ -226,7 +249,7 @@ L_COMBATTEXT_TEST_ENABLED = "戰鬥信息測試模式已啟用."
 L_COMBATTEXT_TEST_USE_UNLOCK = "輸入 /xct unlock 來移動或調整戰鬥信息框架大小."
 L_COMBATTEXT_TEST_USE_LOCK = "輸入 /xct lock 來鎖定戰鬥信息框架."
 L_COMBATTEXT_TEST_USE_TEST = "輸入 /xct test 來啟用或禁用戰鬥信息測試模式."
-L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Need review
+L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Needs review
 L_COMBATTEXT_POPUP = "要保存戰鬥信息窗口的位置你需要重新載入插件."
 L_COMBATTEXT_UNSAVED = "戰鬥信息窗口位置尚未保存,不要忘記重新載入插件."
 L_COMBATTEXT_UNLOCKED = "戰鬥信息已解鎖."
@@ -308,8 +331,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - 開啟插件",
 	"/rd - 解散隊伍",
 	"/toraid - 轉換為團隊或隊伍",
-	"/teleport - 傳出隨機副本的命令",
-	"/spec - 切換天賦",
 	"/heal - 載入治療模式介面",
 	"/dps - 載入傷害輸出模式介面",
 	"/frame - 在聊天窗口輸出框架名稱",
@@ -332,99 +353,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - 打開介面設置面板",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "探索: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["東部王國"]							= {X =   42, A =    0, H =    0},
-	["卡林多"]							= {X =   43, A =    0, H =    0},
-	["外域"]							= {X =   44, A =    0, H =    0},
-	["北裂境"]							= {X =   45, A =    0, H =    0},
-	["潘達利亞"]							= {X = 6974, A =    0, H =    0},
-	["世界地圖"]							= {X =  nil, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["阿拉希高地"]						= {X =  761, A = 4896, H = 4896},
-	["荒蕪之地"]							= {X =  765, A = 4900, H = 4900},
-	["詛咒之地"]							= {X =  766, A = 4909, H = 4909},
-	["燃燒平原"]							= {X =  775, A = 4901, H = 4901},
-	["逆風小徑"]							= {X =  777, A =    0, H =    0},
-	["丹莫洛"]							= {X =  627, A =    0, H =    0},
-	["暮色森林"]							= {X =  778, A = 4903, H =    0},
-	["東瘟疫之地"]						= {X =  771, A = 4892, H = 4892},
-	["艾爾文森林"]						= {X =  776, A =    0, H =    0},
-	["永歌森林"]							= {X =  859, A =    0, H =    0},
-	["鬼魂之地"]							= {X =  858, A =    0, H = 4908},
-	["希爾斯布萊德丘陵"]					= {X =  772, A =    0, H = 4895},
-	["洛克莫丹"]							= {X =  779, A = 4899, H =    0},
-	["北荊棘谷"]							= {X =  781, A = 4906, H = 4906},
-	["赤脊山"]							= {X =  780, A = 4902, H =    0},
-	["灼熱峽谷"]							= {X =  774, A = 4910, H = 4910},
-	["銀松森林"]							= {X =  769, A =    0, H = 4894},
-	["悲傷沼澤"]							= {X =  782, A = 4904, H = 4904},
-	["荊棘谷海角"]						= {X = 4995, A = 4905, H = 4905},
-	["辛特蘭"]							= {X =  773, A = 4897, H = 4897},
-	["提里斯法林地"]						= {X =  768, A =    0, H =    0},
-	["西瘟疫之地"]						= {X =  770, A = 4893, H = 4893},
-	["西部荒野"]							= {X =  802, A = 4903, H =    0},
-	["濕地"]							= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["梣谷"]							= {X =  845, A = 4925, H = 4976},
-	["艾薩拉"]							= {X =  852, A =    0, H = 4927},
-	["藍謎島"]							= {X =  860, A =    0, H =    0},
-	["血謎島"]							= {X =  861, A = 4926, H = 4926},
-	["黑海岸"]							= {X =  844, A = 4928, H = 4928},
-	["淒涼之地"]							= {X =  848, A = 4930, H = 4930},
-	["杜洛塔"]							= {X =  728, A =    0, H =    0},
-	["塵泥沼澤"]							= {X =  850, A = 4929, H = 4978},
-	["費伍德森林"]						= {X =  853, A = 4931, H = 4931},
-	["菲拉斯"]							= {X =  849, A = 4932, H = 4979},
-	["月光林地"]							= {X =  855, A =    0, H =    0},
-	["莫高雷"]							= {X =  736, A =    0, H =    0},
-	["北貧瘠之地"]						= {X =  750, A =    0, H = 4933},
-	["希利蘇斯"]							= {X =  856, A = 4934, H = 4934},
-	["南貧瘠之地"]						= {X = 4996, A = 4937, H = 4981},
-	["石爪山脈"]							= {X =  847, A = 4936, H = 4980},
-	["塔納利斯"]							= {X =  851, A = 4935, H = 4935},
-	["泰達希爾"]							= {X =  842, A =    0, H =    0},
-	["千針石林"]							= {X =  846, A = 4938, H = 4938},
-	["安戈洛環形山"]						= {X =  854, A = 4939, H = 4939},
-	["冬泉谷"]							= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["劍刃山脈"]							= {X =  865, A = 1193, H = 1193},
-	["地獄火半島"]						= {X =  862, A = 1189, H = 1271},
-	["納葛蘭"]							= {X =  866, A = 1192, H = 1273},
-	["虛空風暴"]							= {X =  843, A = 1194, H = 1194},
-	["影月谷"]							= {X =  864, A = 1195, H = 1195},
-	["泰洛卡森林"]						= {X =  867, A = 1191, H = 1272},
-	["贊格沼澤"]							= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["北風凍原"]							= {X = 1264, A =   33, H = 1358},
-	["水晶之歌森林"]						= {X = 1457, A =    0, H =    0},
-	["龍骨荒野"]							= {X = 1265, A =   35, H = 1356},
-	["灰白之丘"]							= {X = 1266, A =   37, H = 1357},
-	["凜風峽灣"]							= {X = 1263, A =   34, H = 1356},
-	["寒冰皇冠"]							= {X = 1270, A =   40, H =   40},
-	["休拉薩盆地"]						= {X = 1268, A =   39, H =   39},
-	["風暴群山"]							= {X = 1269, A =   38, H =   38},
-	["祖爾德拉克"]						= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["地深之源"]							= {X = 4864, A = 4871, H = 4871},
-	["海加爾山"]							= {X = 4863, A = 4870, H = 4870},
-	["暮光高地"]							= {X = 4866, A = 4873, H = 5501},
-	["奧丹姆"]							= {X = 4865, A = 4872, H = 4872},
-	["瓦許伊爾"]							= {X = 4825, A = 4869, H = 4982},
-	["托巴拉德"]							= {X =    0, A = 4874, H = 4874},
-	["托巴拉德半島"]						= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["翠玉林"]							= {X = 6351, A = 6300, H = 6534},
-	["四風峽"]							= {X = 6969, A = 6301, H = 6301},
-	["崑萊峰"]							= {X = 6976, A = 6537, H = 6538},
-	["螳螂荒原"]							= {X = 6977, A = 6539, H = 6539},
-	["悚然荒野"]							= {X = 6978, A = 6540, H = 6540},
-	["恆春谷"]							= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["奎爾達納斯之島"]					= {X =  868, A =    0, H =    0},
-	["安其拉: 沒落的王朝"]				= {X =    0, A =    0, H =    0},
-	["冬握湖"]							= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "兌換通貨"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "金"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "銀"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "銅"
+
+L_COMPATIBILITY_APPLY = "套用"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "清理"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "增益與減益效果"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "複製"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "貼上"
+L_COMPATIBILITY_CONVERT_TO_RAID = "轉化為團隊"
+L_COMPATIBILITY_DAMAGER = "傷害輸出"
+L_COMPATIBILITY_DURABILITY = "耐久度"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "此功能將在%d級開放。"
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "伺服器："
+L_COMPATIBILITY_GENERAL_LABEL = "一般"
+L_COMPATIBILITY_HEALER = "治療者"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "團隊框架"
+L_COMPATIBILITY_SELL_PRICE = "售價"
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "物品等級"
+L_COMPATIBILITY_UNITFRAME_LABEL = "單位框架"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "單位名條"

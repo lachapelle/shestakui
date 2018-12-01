@@ -1,9 +1,10 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Alt+Click to buy a stack
 ----------------------------------------------------------------------------------------
 hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self, ...)
+	local self = this
 	if IsAltKeyDown() then
 		local itemLink = GetMerchantItemLink(self:GetID())
 		if not itemLink then return end
@@ -20,10 +21,13 @@ hooksecurefunc("MerchantItemButton_OnModifiedClick", function(self, ...)
 	end
 end)
 
+--[[
 local function IsMerchantButtonOver()
 	return GetMouseFocus():GetName() and GetMouseFocus():GetName():find("MerchantItem%d")
 end
+--]]
 
+--[[
 GameTooltip:HookScript("OnTooltipSetItem", function(self)
 	if MerchantFrame:IsShown() and IsMerchantButtonOver() then
 		for i = 2, GameTooltip:NumLines() do
@@ -33,3 +37,4 @@ GameTooltip:HookScript("OnTooltipSetItem", function(self)
 		end
 	end
 end)
+--]]

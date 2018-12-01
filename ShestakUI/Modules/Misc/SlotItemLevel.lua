@@ -1,8 +1,8 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.item_level ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Item level on slot buttons in Character/InspectFrame(iLevel by Sanex)
+--	Item level on slot buttons in Character/InspectFrame (iLevel by Sanex)
 ----------------------------------------------------------------------------------------
 local _G = getfenv(0)
 local equiped = {} -- Table to store equiped items
@@ -38,7 +38,7 @@ local function _getRealItemLevel(slotId, unit)
 end
 
 local function _updateItems(unit, frame)
-	for i = 1, 17 do -- Only check changed player items or items without ilvl text, skip the shirt (4) and always update Inspects
+	for i = 1, 18 do -- Only check changed player items or items without ilvl text, skip the shirt (4) and always update Inspects
 		local itemLink = GetInventoryItemLink(unit, i)
 		if i ~= 4 and ((frame == f and (equiped[i] ~= itemLink or frame[i]:GetText() == nil or itemLink == nil and frame[i]:GetText() ~= "")) or frame == g) then
 			if frame == f then
@@ -50,14 +50,6 @@ local function _updateItems(unit, frame)
 				local _, _, quality = GetItemInfo(itemLink)
 
 				if (quality == 6) and (i == 16 or i == 17) then
-					local relics = {select(4, strsplit(":", itemLink))}
-					for i = 1, 3 do
-						local relicID = relics[i] ~= "" and relics[i]
-						local relicLink = select(2, GetItemGem(itemLink, i))
-						if relicID and not relicLink then
-							delay = true
-						end
-					end
 					if delay then
 						C_Timer.After(0.1, function()
 							local realItemLevel = _getRealItemLevel(i, unit)
@@ -80,7 +72,7 @@ end
 
 local function _createStrings()
 	local function _stringFactory(parent)
-		local s = f:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
+		local s = f:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")
 		s:SetPoint("TOP", parent, "TOP", 0, -2)
 
 		return s
@@ -106,13 +98,15 @@ local function _createStrings()
 
 	f[16] = _stringFactory(_G.CharacterMainHandSlot)
 	f[17] = _stringFactory(_G.CharacterSecondaryHandSlot)
+	
+	f[18] = _stringFactory(_G.CharacterRangedSlot)
 
 	f:Hide()
 end
 
 local function _createGStrings()
 	local function _stringFactory(parent)
-		local s = g:CreateFontString(nil, "OVERLAY", "SystemFont_Outline_Small")
+		local s = g:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmallOutline")
 		s:SetPoint("TOP", parent, "TOP", 0, -2)
 
 		return s
@@ -138,6 +132,8 @@ local function _createGStrings()
 
 	g[16] = _stringFactory(_G.InspectMainHandSlot)
 	g[17] = _stringFactory(_G.InspectSecondaryHandSlot)
+	
+	g[18] = _stringFactory(_G.InspectRangedSlot)
 
 	g:Hide()
 end
@@ -172,7 +168,6 @@ local function OnEvent(self, event, ...) -- Event handler
 		_G.PaperDollFrame:HookScript("OnShow", function(self)
 			f:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 			f:RegisterEvent("ITEM_UPGRADE_MASTER_UPDATE")
-			f:RegisterEvent("ARTIFACT_UPDATE")
 			f:RegisterEvent("SOCKET_INFO_UPDATE")
 			f:RegisterEvent("COMBAT_RATING_UPDATE")
 			_updateItems("player", f)
@@ -182,13 +177,11 @@ local function OnEvent(self, event, ...) -- Event handler
 		_G.PaperDollFrame:HookScript("OnHide", function(self)
 			f:UnregisterEvent("PLAYER_EQUIPMENT_CHANGED")
 			f:UnregisterEvent("ITEM_UPGRADE_MASTER_UPDATE")
-			f:UnregisterEvent("ARTIFACT_UPDATE")
 			f:UnregisterEvent("SOCKET_INFO_UPDATE")
 			f:UnregisterEvent("COMBAT_RATING_UPDATE")
 			f:Hide()
 		end)
-	elseif event == "PLAYER_EQUIPMENT_CHANGED" or event == "ITEM_UPGRADE_MASTER_UPDATE"
-	or event == "ARTIFACT_UPDATE" or event == "SOCKET_INFO_UPDATE" or event == "COMBAT_RATING_UPDATE" then
+	elseif event == "PLAYER_EQUIPMENT_CHANGED" or event == "ITEM_UPGRADE_MASTER_UPDATE" or event == "SOCKET_INFO_UPDATE" or event == "COMBAT_RATING_UPDATE" then
 		if (...) == 16 then
 			equiped[16] = nil
 			equiped[17] = nil

@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -55,4 +55,4 @@ local function LoadSkin()
 	--PetStableDietTexture:SetTexCoord(0.08593750, 0.13476563, 0.73437500, 0.77929688)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

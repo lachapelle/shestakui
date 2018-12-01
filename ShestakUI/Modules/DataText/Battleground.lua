@@ -1,28 +1,21 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.stats.battleground ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	BGScore(by Elv22, edited by Tukz)
+--	BGScore (by Elv22, edited by Tukz)
 ----------------------------------------------------------------------------------------
 -- Map IDs
 local WSG = 443
-local TP = 626
 local AV = 401
-local SOTA = 512
-local IOC = 540
 local EOTS = 482
-local TBFG = 736
 local AB = 461
-local TOK = 856
-local SSM = 860
-local DG = 935
 
 local classcolor = ("|cff%.2x%.2x%.2x"):format(T.color.r * 255, T.color.g * 255, T.color.b * 255)
 
-local bgframe = CreateFrame("Frame", "InfoBattleGround", UIParent)
-bgframe:CreatePanel("Invisible", 300, C.font.stats_font_size, unpack(C.position.bg_score))
-bgframe:EnableMouse(true)
-bgframe:SetScript("OnEnter", function(self)
+local BGFrame = CreateFrame("Frame", "InfoBattleGround", UIParent)
+BGFrame:CreatePanel("Invisible", 300, C.font.stats_font_size, unpack(C.position.bg_score))
+BGFrame:EnableMouse(true)
+BGFrame:SetScript("OnEnter", function(self)
 	local numScores = GetNumBattlefieldScores()
 	for i = 1, numScores do
 		local name, _, honorableKills, deaths, _, _, _, _, _, damageDone, healingDone = GetBattlefieldScore(i)
@@ -40,10 +33,10 @@ bgframe:SetScript("OnEnter", function(self)
 			GameTooltip:AddDoubleLine(DAMAGE..":", damageDone, 1, 1, 1)
 			GameTooltip:AddDoubleLine(SHOW_COMBAT_HEALING..":", healingDone, 1, 1, 1)
 			-- Add extra statistics depending on what BG you are
-			if curmapid == IOC or curmapid == TBFG or curmapid == AB then
+			if curmapid == AB then
 				GameTooltip:AddDoubleLine(L_DATATEXT_BASESASSAULTED, GetBattlefieldStatData(i, 1), 1, 1, 1)
 				GameTooltip:AddDoubleLine(L_DATATEXT_BASESDEFENDED, GetBattlefieldStatData(i, 2), 1, 1, 1)
-			elseif curmapid == WSG or curmapid == TP then
+			elseif curmapid == WSG then
 				GameTooltip:AddDoubleLine(L_DATATEXT_FLAGSCAPTURED, GetBattlefieldStatData(i, 1), 1, 1, 1)
 				GameTooltip:AddDoubleLine(L_DATATEXT_FLAGSRETURNED, GetBattlefieldStatData(i, 2), 1, 1, 1)
 			elseif curmapid == EOTS then
@@ -53,25 +46,13 @@ bgframe:SetScript("OnEnter", function(self)
 				GameTooltip:AddDoubleLine(L_DATATEXT_GRAVEYARDSDEFENDED, GetBattlefieldStatData(i, 2), 1, 1, 1)
 				GameTooltip:AddDoubleLine(L_DATATEXT_TOWERSASSAULTED, GetBattlefieldStatData(i, 3), 1, 1, 1)
 				GameTooltip:AddDoubleLine(L_DATATEXT_TOWERSDEFENDED, GetBattlefieldStatData(i, 4), 1, 1, 1)
-			elseif curmapid == SOTA then
-				GameTooltip:AddDoubleLine(L_DATATEXT_DEMOLISHERSDESTROYED, GetBattlefieldStatData(i, 1), 1, 1, 1)
-				GameTooltip:AddDoubleLine(L_DATATEXT_GATESDESTROYED, GetBattlefieldStatData(i, 2), 1, 1, 1)
-			elseif curmapid == TOK then
-				GameTooltip:AddDoubleLine(L_DATATEXT_ORB_POSSESSIONS, GetBattlefieldStatData(i, 1), 1, 1, 1)
-				GameTooltip:AddDoubleLine(L_DATATEXT_VICTORY_POINTS, GetBattlefieldStatData(i, 2), 1, 1, 1)
-			elseif curmapid == SSM then
-				GameTooltip:AddDoubleLine(L_DATATEXT_CARTS_CONTROLLED, GetBattlefieldStatData(i, 1), 1, 1, 1)
-			elseif curmapid == DG then
-				GameTooltip:AddDoubleLine(L_DATATEXT_CARTS_CONTROLLED, GetBattlefieldStatData(i, 1), 1, 1, 1)
-				GameTooltip:AddDoubleLine(L_DATATEXT_BASESASSAULTED, GetBattlefieldStatData(i, 3), 1, 1, 1)
-				GameTooltip:AddDoubleLine(L_DATATEXT_BASESDEFENDED, GetBattlefieldStatData(i, 4), 1, 1, 1)
 			end
 			GameTooltip:Show()
 		end
 	end
 end)
-bgframe:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
-bgframe:SetScript("OnMouseUp", function(self, button)
+BGFrame:SetScript("OnLeave", function(self) GameTooltip:Hide() end)
+BGFrame:SetScript("OnMouseUp", function(self, button)
 	if QueueStatusMinimapButton:IsShown() then
 		if button == "RightButton" then
 			ToggleBattlefieldMinimap()
@@ -131,12 +112,12 @@ local function OnEvent(self, event)
 	if event == "PLAYER_ENTERING_WORLD" then
 		local _, instanceType = IsInInstance()
 		if instanceType == "pvp" then
-			bgframe:Show()
+			BGFrame:Show()
 		else
 			Text1:SetText("")
 			Text2:SetText("")
 			Text3:SetText("")
-			bgframe:Hide()
+			BGFrame:Hide()
 		end
 	end
 end

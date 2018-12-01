@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -133,7 +133,8 @@ local function LoadSkin()
 		icon:SetPoint("BOTTOMRIGHT", -2, 2)
 
 		if highlight and not highlight.skinned then
-			highlight:SetColorTexture(1, 1, 1, 0.3)
+			-- highlight:SetColorTexture(1, 1, 1, 0.3)
+			highlight:SetTexture(1, 1, 1, 0.3)
 			highlight.SetTexture = T.dummy
 			highlight:ClearAllPoints()
 			highlight:SetPoint("TOPLEFT", 2, -2)
@@ -270,4 +271,4 @@ local function LoadSkin()
 	end)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

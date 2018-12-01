@@ -58,11 +58,7 @@ L_MISC_COLLAPSE = "The Collapse"
 L_RAID_UTIL_DISBAND = "Disband Group"
 
 -- Zone name
-L_ZONE_TOLBARAD = "Tol Barad"
-L_ZONE_TOLBARADPEN = "Tol Barad Peninsula"
 L_ZONE_ARATHIBASIN = "Arathi Basin"
-L_ZONE_GILNEAS = "The Battle for Gilneas"
-L_ZONE_ANCIENTDALARAN = "Dalaran Crater"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Wowhead link"
@@ -93,24 +89,35 @@ L_MINIMAP_CALENDAR = "Calendar"
 L_MINIMAP_HEAL_LAYOUT = "Left-Click - Heal Layout"
 L_MINIMAP_DPS_LAYOUT = "Right-Click - DPS Layout"
 L_MINIMAP_BLIZZ_LAYOUT = "Middle-Click - Blizzard Layout"
-L_MINIMAP_ARTIFACT = "Right click to use"
+
+-- Addons list
+L_ALOAD_RL = "Reload UI"
+L_ALOAD_DEP = "Dependencies: "
+L_ALOAD_OP_DEP = "Optional Dependencies: "
+L_ALOAD_AUTHOR = "Author: "
+L_ALOAD_PROFILES = "Profiles"
+L_ALOAD_ENABLE_ALL = "Enable All"
+L_ALOAD_DISABLE_ALL = "Disable All"
+L_ALOAD_PROFILE_NAME = "Profile Name"
+L_ALOAD_SET_TO = "Set To.."
+L_ALOAD_ADD_TO = "Add To.."
+L_ALOAD_REMOVE_FROM = "Remove From.."
+L_ALOAD_DELETE_PROFILE = "Delete Profile.."
+L_ALOAD_CONFIRM_DELETE = "Are you sure you want to delete this profile? Hold down shift and click again if you are."
 
 -- Chat
 L_CHAT_WHISPER = "From"
-L_CHAT_BN_WHISPER = "From"
 L_CHAT_AFK = "[AFK]"
 L_CHAT_DND = "[DND]"
 L_CHAT_GM = "[GM]"
 L_CHAT_GUILD = "G"
 L_CHAT_PARTY = "P"
-L_CHAT_PARTY_LEADER = "PL"
 L_CHAT_RAID = "R"
 L_CHAT_RAID_LEADER = "RL"
 L_CHAT_RAID_WARNING = "RW"
-L_CHAT_INSTANCE_CHAT = "I"
-L_CHAT_INSTANCE_CHAT_LEADER = "IL"
+L_CHAT_BATTLEGROUND = "BG"
+L_CHAT_BATTLEGROUND_LEADER = "BGL"
 L_CHAT_OFFICER = "O"
-L_CHAT_PET_BATTLE = "PB"
 L_CHAT_COME_ONLINE = "has come |cff298F00online|r."
 L_CHAT_GONE_OFFLINE = "has gone |cffff0000offline|r."
 
@@ -118,10 +125,29 @@ L_CHAT_GONE_OFFLINE = "has gone |cffff0000offline|r."
 L_ERRORFRAME_L = "Click to view errors."
 
 -- Bags
-L_BAG_SHOW_BAGS = "Show Bags"
-L_BAG_RIGHT_CLICK_SEARCH = "Right-click to search"
+-- L_BAG_SHOW_BAGS = "Show Bags"
+-- L_BAG_RIGHT_CLICK_SEARCH = "Right-click to search"
+-- L_BAG_STACK_MENU = "Stack"
+-- L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu"
+-- Bags
+L_BAG_BANK = "Bank"
+L_BAG_NO_SLOTS = "Can't buy anymore slots!"
+L_BAG_COSTS = "Cost: %.2f gold"
+L_BAG_BUY_SLOTS = "Buy new slot with /bags purchase yes"
+L_BAG_OPEN_BANK = "You need to open your bank first."
+L_BAG_SORT = "Sort your bags or your bank, if open."
+L_BAG_STACK = "Fill up partial stacks in your bags or bank, if open."
+L_BAG_BUY_BANKS_SLOT = "Buy bank slot (need to have bank open)."
+L_BAG_SORT_MENU = "Sort"
+L_BAG_SORT_SPECIAL = "Sort Special"
 L_BAG_STACK_MENU = "Stack"
-L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu"
+L_BAG_STACK_SPECIAL = "Stack Special"
+L_BAG_SHOW_BAGS = "Show Bags"
+L_BAG_SORTING_BAGS = "Sorting finished."
+L_BAG_NOTHING_SORT = "Nothing to sort."
+L_BAG_BAGS_BIDS = "Using bags: "
+L_BAG_STACK_END = "Restacking finished."
+L_BAG_RIGHT_CLICK_SEARCH = "Right-click to search"
 
 -- Grab mail
 L_MAIL_STOPPED = "Stopped, inventory is full."
@@ -139,6 +165,7 @@ L_LOOT_TO_RAID = "  raid"
 L_LOOT_TO_PARTY = "  party"
 L_LOOT_TO_GUILD = "  guild"
 L_LOOT_TO_SAY = "  say"
+L_LOOT_CANNOT = "Cannot roll"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "You are AFK!"
@@ -147,9 +174,6 @@ L_PANELS_AFK_LCLICK = "Left-Click to go back."
 
 -- Cooldowns
 L_COOLDOWNS = "CD: "
-L_COOLDOWNS_COMBATRESS = "BattleRes"
-L_COOLDOWNS_COMBATRESS_REMAINDER = "Battle Resurrection: "
-L_COOLDOWNS_NEXTTIME = "Next time: "
 
 -- Autoinvite
 L_INVITE_ENABLE = "Autoinvite ON: "
@@ -304,8 +328,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - Enable Addon.",
 	"/rd - Disband party or raid.",
 	"/toraid - Convert to party or raid.",
-	"/teleport - Teleportation from random dungeon.",
-	"/spec, /ss - Switches between talent spec's.",
 	"/heal - Switches to 'Heal' layout.",
 	"/dps - Switches to 'DPS' layout.",
 	"/frame - Description is not ready.",
@@ -328,99 +350,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - Opens interface settings.",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "Explored: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["Eastern Kingdoms"]				= {X =   42, A =    0, H =    0},
-	["Kalimdor"]						= {X =   43, A =    0, H =    0},
-	["Outland"]							= {X =   44, A =    0, H =    0},
-	["Northrend"]						= {X =   45, A =    0, H =    0},
-	["Pandaria"]						= {X = 6974, A =    0, H =    0},
-	["World Map"]						= {X =  nil, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["Arathi Highlands"]				= {X =  761, A = 4896, H = 4896},
-	["Badlands"]						= {X =  765, A = 4900, H = 4900},
-	["Blasted Lands"]					= {X =  766, A = 4909, H = 4909},
-	["Burning Steppes"]					= {X =  775, A = 4901, H = 4901},
-	["Deadwind Pass"]					= {X =  777, A =    0, H =    0},
-	["Dun Morogh"]						= {X =  627, A =    0, H =    0},
-	["Duskwood"]						= {X =  778, A = 4903, H =    0},
-	["Eastern Plaguelands"]				= {X =  771, A = 4892, H = 4892},
-	["Elwynn Forest"]					= {X =  776, A =    0, H =    0},
-	["Eversong Woods"]					= {X =  859, A =    0, H =    0},
-	["Ghostlands"]						= {X =  858, A =    0, H = 4908},
-	["Hillsbrad Foothills"]				= {X =  772, A =    0, H = 4895},
-	["Loch Modan"]						= {X =  779, A = 4899, H =    0},
-	["Northern Stranglethorn"]			= {X =  781, A = 4906, H = 4906},
-	["Redridge Mountains"]				= {X =  780, A = 4902, H =    0},
-	["Searing Gorge"]					= {X =  774, A = 4910, H = 4910},
-	["Silverpine Forest"]				= {X =  769, A =    0, H = 4894},
-	["Swamp of Sorrows"]				= {X =  782, A = 4904, H = 4904},
-	["The Cape of Stranglethorn"]		= {X = 4995, A = 4905, H = 4905},
-	["The Hinterlands"]					= {X =  773, A = 4897, H = 4897},
-	["Tirisfal Glades"]					= {X =  768, A =    0, H =    0},
-	["Western Plaguelands"]				= {X =  770, A = 4893, H = 4893},
-	["Westfall"]						= {X =  802, A = 4903, H =    0},
-	["Wetlands"]						= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["Ashenvale"]						= {X =  845, A = 4925, H = 4976},
-	["Azshara"]							= {X =  852, A =    0, H = 4927},
-	["Azuremyst Isle"]					= {X =  860, A =    0, H =    0},
-	["Bloodmyst Isle"]					= {X =  861, A = 4926, H = 4926},
-	["Darkshore"]						= {X =  844, A = 4928, H = 4928},
-	["Desolace"]						= {X =  848, A = 4930, H = 4930},
-	["Durotar"]							= {X =  728, A =    0, H =    0},
-	["Dustwallow Marsh"]				= {X =  850, A = 4929, H = 4978},
-	["Felwood"]							= {X =  853, A = 4931, H = 4931},
-	["Feralas"]							= {X =  849, A = 4932, H = 4979},
-	["Moonglade"]						= {X =  855, A =    0, H =    0},
-	["Mulgore"]							= {X =  736, A =    0, H =    0},
-	["Northern Barrens"]				= {X =  750, A =    0, H = 4933},
-	["Silithus"]						= {X =  856, A = 4934, H = 4934},
-	["Southern Barrens"]				= {X = 4996, A = 4937, H = 4981},
-	["Stonetalon Mountains"]			= {X =  847, A = 4936, H = 4980},
-	["Tanaris"]							= {X =  851, A = 4935, H = 4935},
-	["Teldrassil"]						= {X =  842, A =    0, H =    0},
-	["Thousand Needles"]				= {X =  846, A = 4938, H = 4938},
-	["Un'Goro Crater"]					= {X =  854, A = 4939, H = 4939},
-	["Winterspring"]					= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["Blade's Edge Mountains"]			= {X =  865, A = 1193, H = 1193},
-	["Hellfire Peninsula"]				= {X =  862, A = 1189, H = 1271},
-	["Nagrand"]							= {X =  866, A = 1192, H = 1273},
-	["Netherstorm"]						= {X =  843, A = 1194, H = 1194},
-	["Shadowmoon Valley"]				= {X =  864, A = 1195, H = 1195},
-	["Terokkar Forest"]					= {X =  867, A = 1191, H = 1272},
-	["Zangarmarsh"]						= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["Borean Tundra"]					= {X = 1264, A =   33, H = 1358},
-	["Crystalsong Forest"]				= {X = 1457, A =    0, H =    0},
-	["Dragonblight"]					= {X = 1265, A =   35, H = 1356},
-	["Grizzly Hills"]					= {X = 1266, A =   37, H = 1357},
-	["Howling Fjord"]					= {X = 1263, A =   34, H = 1356},
-	["Icecrown"]						= {X = 1270, A =   40, H =   40},
-	["Sholazar Basin"]					= {X = 1268, A =   39, H =   39},
-	["The Storm Peaks"]					= {X = 1269, A =   38, H =   38},
-	["Zul'Drak"]						= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["Deepholm"]						= {X = 4864, A = 4871, H = 4871},
-	["Mount Hyjal"]						= {X = 4863, A = 4870, H = 4870},
-	["Twilight Highlands"]				= {X = 4866, A = 4873, H = 5501},
-	["Uldum"]							= {X = 4865, A = 4872, H = 4872},
-	["Vashj'ir"]						= {X = 4825, A = 4869, H = 4982},
-	["Tol Barad"]						= {X =    0, A = 4874, H = 4874},
-	["Tol Barad Peninsula"]				= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["The Jade Forest"]					= {X = 6351, A = 6300, H = 6534},
-	["Valley of the Four Winds"]		= {X = 6969, A = 6301, H = 6301},
-	["Kun-Lai Summit"]					= {X = 6976, A = 6537, H = 6538},
-	["Townlong Steppes"]				= {X = 6977, A = 6539, H = 6539},
-	["Dread Wastes"]					= {X = 6978, A = 6540, H = 6540},
-	["Vale of Eternal Blossoms"]		= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["Isle of Quel'Danas"]				= {X =  868, A =    0, H =    0},
-	["Ahn'Qiraj: The Fallen Kingdom"]	= {X =    0, A =    0, H =    0},
-	["Wintergrasp"]						= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "Currency"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "g"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "s"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "c"
+
+L_COMPATIBILITY_APPLY = "Apply"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "Cleanup"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "Buffs and Debuffs"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "Copy"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "Paste"
+L_COMPATIBILITY_CONVERT_TO_RAID = "Convert To Raid"
+L_COMPATIBILITY_DAMAGER = "Damage"
+L_COMPATIBILITY_DURABILITY = "Durability"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "This feature becomes available at level %d."
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "Realm: "
+L_COMPATIBILITY_GENERAL_LABEL = "General"
+L_COMPATIBILITY_HEALER = "Healer"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "Raid Frames"
+L_COMPATIBILITY_SELL_PRICE = "Sell Price"
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "Item Level"
+L_COMPATIBILITY_UNITFRAME_LABEL = "Unit Frames"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "Unit Nameplates"

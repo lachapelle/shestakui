@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.recount ~= true or not IsAddOnLoaded("Recount") then return end
 
 ----------------------------------------------------------------------------------------
@@ -10,6 +10,8 @@ local function SkinFrame(frame)
 	frame.bgMain = CreateFrame("Frame", nil, frame)
 	if frame ~= Recount.MainWindow then
 		frame.bgMain:SetTemplate("Transparent")
+		frame.Title:SetFont(C.font.stylization_font, C.font.stylization_font_size, C.font.stylization_font_style)
+		frame.Title:SetShadowColor(0, 0, 0, C.font.stylization_font_shadow and 1 or 0)
 		T.SkinCloseButton(frame.CloseButton)
 		frame.CloseButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -4, -11)
 	end
@@ -45,8 +47,8 @@ end
 Recount.UpdateBarTextures = function(self)
 	for k, v in pairs(Recount.MainWindow.Rows) do
 		v.StatusBar:SetStatusBarTexture(C.media.texture)
-		v.StatusBar:GetStatusBarTexture():SetHorizTile(false)
-		v.StatusBar:GetStatusBarTexture():SetVertTile(false)
+		-- v.StatusBar:GetStatusBarTexture():SetHorizTile(false)
+		-- v.StatusBar:GetStatusBarTexture():SetVertTile(false)
 
 		v.background = v.StatusBar:CreateTexture("$parentBackground", "BACKGROUND")
 		v.background:SetAllPoints(v.StatusBar)
@@ -103,6 +105,7 @@ end
 
 -- Skin existing frames
 if Recount.MainWindow then SkinFrame(Recount.MainWindow) end
+if Recount.ReportWindow then SkinFrame(Recount.ReportWindow) end
 if Recount.ConfigWindow then SkinFrame(Recount.ConfigWindow) end
 if Recount.GraphWindow then SkinFrame(Recount.GraphWindow) end
 if Recount.DetailWindow then SkinFrame(Recount.DetailWindow) end
@@ -133,6 +136,10 @@ SkinButton(Recount.MainWindow.FileButton, "F")
 SkinButton(Recount.MainWindow.ConfigButton, "C")
 SkinButton(Recount.MainWindow.ReportButton, "S")
 
+SkinButton(Recount.DetailWindow.RightButton, ">")
+SkinButton(Recount.DetailWindow.LeftButton, "<")
+SkinButton(Recount.DetailWindow.ReportButton, "S")
+
 -- Force some default profile options
 if not RecountDB then RecountDB = {} end
 if not RecountDB["profiles"] then RecountDB["profiles"] = {} end
@@ -153,4 +160,4 @@ RecountDB["profiles"][T.name.." - "..T.realm]["MainWindow"]["BarText"]["NumForma
 RecountDB["profiles"][T.name.." - "..T.realm]["MainWindowWidth"] = 221
 --RecountDB["profiles"][T.name.." - "..T.realm]["MainWindowHeight"] = 158
 RecountDB["profiles"][T.name.." - "..T.realm]["ClampToScreen"] = true
-RecountDB["profiles"][T.name.." - "..T.realm]["Font"] = "Calibri"
+RecountDB["profiles"][T.name.." - "..T.realm]["Font"] = "Hooge"

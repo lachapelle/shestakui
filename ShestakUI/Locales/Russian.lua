@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if T.client ~= "ruRU" then return end
 
 ----------------------------------------------------------------------------------------
@@ -62,11 +62,7 @@ L_MISC_COLLAPSE = "Обрушение"
 L_RAID_UTIL_DISBAND = "Распустить группу"
 
 -- Zone name
-L_ZONE_TOLBARAD = "Тол Барад"
-L_ZONE_TOLBARADPEN = "Полуостров Тол Барад"
 L_ZONE_ARATHIBASIN = "Низина Арати"
-L_ZONE_GILNEAS = "Битва за Гилнеас"
-L_ZONE_ANCIENTDALARAN = "Даларанский кратер"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Ссылка на Wowhead"
@@ -97,24 +93,35 @@ L_MINIMAP_CALENDAR = "Календарь"
 L_MINIMAP_HEAL_LAYOUT = "Левый клик - Лекарь"
 L_MINIMAP_DPS_LAYOUT = "Правый клик - Боец"
 L_MINIMAP_BLIZZ_LAYOUT = "Средний клик - Blizzard"
-L_MINIMAP_ARTIFACT = "ПКМ - использовать"
+
+-- Addons list
+L_ALOAD_RL = "Перезагрузить"
+L_ALOAD_DEP = "Зависимые ресурсы: "
+L_ALOAD_OP_DEP = "Доп. зависимости: "
+L_ALOAD_AUTHOR = "Автор: "
+L_ALOAD_PROFILES = "Профили"
+L_ALOAD_ENABLE_ALL = "Вкл. все"
+L_ALOAD_DISABLE_ALL = "Выкл. все"
+L_ALOAD_PROFILE_NAME = "Имя профиля"
+L_ALOAD_SET_TO = "Выбрать профиль.."
+L_ALOAD_ADD_TO = "Добавить в профиль.."
+L_ALOAD_REMOVE_FROM = "Очистить профиль.."
+L_ALOAD_DELETE_PROFILE = "Удалить профиль.."
+L_ALOAD_CONFIRM_DELETE = "Вы уверены, что хотите удалить этот профиль? Если да, удерживая shift, нажмите еще раз."
 
 -- Chat
 L_CHAT_WHISPER = "От"
-L_CHAT_BN_WHISPER = "От"
 L_CHAT_AFK = "[AFK]"
 L_CHAT_DND = "[DND]"
 L_CHAT_GM = "[GM]"
 L_CHAT_GUILD = "Г"
 L_CHAT_PARTY = "Гр"
-L_CHAT_PARTY_LEADER = "Лгр"
 L_CHAT_RAID = "Р"
 L_CHAT_RAID_LEADER = "ЛР"
 L_CHAT_RAID_WARNING = "ОР"
-L_CHAT_INSTANCE_CHAT = "П"
-L_CHAT_INSTANCE_CHAT_LEADER = "ЛП"
+L_CHAT_BATTLEGROUND = "ПБ"
+L_CHAT_BATTLEGROUND_LEADER = "ЛПБ"
 L_CHAT_OFFICER = "О"
-L_CHAT_PET_BATTLE = "БП"
 L_CHAT_COME_ONLINE = "|cff298F00входит|r в игровой мир."
 L_CHAT_GONE_OFFLINE = "|cffff0000выходит|r из игрового мира."
 
@@ -122,10 +129,28 @@ L_CHAT_GONE_OFFLINE = "|cffff0000выходит|r из игрового мира
 L_ERRORFRAME_L = "Щелкните, чтобы посмотреть ошибки."
 
 -- Bags
-L_BAG_SHOW_BAGS = "Показать сумки"
-L_BAG_RIGHT_CLICK_SEARCH = "ПКМ для поиска"
+-- L_BAG_SHOW_BAGS = "Показать сумки"
+-- L_BAG_RIGHT_CLICK_SEARCH = "ПКМ для поиска"
+-- L_BAG_STACK_MENU = "Сложить"
+-- L_BAG_RIGHT_CLICK_CLOSE = "ПКМ, чтобы открыть меню"
+L_BAG_BANK = "Банк"
+L_BAG_NO_SLOTS = "Невозможно купить еще ячеек!"
+L_BAG_COSTS = "Цена: %.2f золотых"
+L_BAG_BUY_SLOTS = "Купить новую ячейку командой /bags purchase yes"
+L_BAG_OPEN_BANK = "Сначала откройте банк."
+L_BAG_SORT = "Сортировать предметы в сумке или банке, если они открыты."
+L_BAG_STACK = "Заполнить неполные стопки в сумках или банке, если они открыты."
+L_BAG_BUY_BANKS_SLOT = "Купить банковскую ячейку (банк должен быть открыт)."
+L_BAG_SORT_MENU = "Сортировать"
+L_BAG_SORT_SPECIAL = "Сортировать в спецсумках"
 L_BAG_STACK_MENU = "Сложить"
-L_BAG_RIGHT_CLICK_CLOSE = "ПКМ, чтобы открыть меню"
+L_BAG_STACK_SPECIAL = "Сложить в спецсумках"
+L_BAG_SHOW_BAGS = "Показать сумки"
+L_BAG_SORTING_BAGS = "Сортировка завершена."
+L_BAG_NOTHING_SORT = "Нечего сортировать."
+L_BAG_BAGS_BIDS = "Использование сумок: "
+L_BAG_STACK_END = "Заполнение завершено."
+L_BAG_RIGHT_CLICK_SEARCH = "ПКМ для поиска"
 
 -- Grab mail
 L_MAIL_STOPPED = "Сбор почты приостановлен. Нет места в сумках."
@@ -143,6 +168,7 @@ L_LOOT_TO_RAID = "  рейду"
 L_LOOT_TO_PARTY = "  группе"
 L_LOOT_TO_GUILD = "  гильдии"
 L_LOOT_TO_SAY = "  сказав"
+L_LOOT_CANNOT = "Невозможно выбрать"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "Вы отсутствуете!"
@@ -151,9 +177,6 @@ L_PANELS_AFK_LCLICK = "Нажмите ЛКМ, чтобы вернуться."
 
 -- Cooldowns
 L_COOLDOWNS = "Перезарядка: "
-L_COOLDOWNS_COMBATRESS = "Возрождение"
-L_COOLDOWNS_COMBATRESS_REMAINDER = "Возрождений в бою: "
-L_COOLDOWNS_NEXTTIME = "Следующее: "
 
 -- Autoinvite
 L_INVITE_ENABLE = "Автоприглашение включено: "
@@ -308,8 +331,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - Включение эддона.",
 	"/rd - Расформировать группу/рейд.",
 	"/toraid - Конвертация в группу/рейд.",
-	"/teleport - Телепортация из подземелья.",
-	"/spec, /ss - Переключение специализации.",
 	"/heal - Переключает на 'Heal' раскладку.",
 	"/dps - Переключает на 'DPS' раскладку.",
 	"/frame - Информация об элементе под курсором.",
@@ -332,99 +353,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - Открыть настройки интерфейса.",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "Исследовано: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["Восточные королевства"]			= {X =   42, A =    0, H =    0},
-	["Калимдор"]						= {X =   43, A =    0, H =    0},
-	["Запределье"]						= {X =   44, A =    0, H =    0},
-	["Нордскол"]						= {X =   45, A =    0, H =    0},
-	["Пандария"]						= {X = 6974, A =    0, H =    0},
-	["Карта мира"]						= {X =  nil, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["Нагорье Арати"]					= {X =  761, A = 4896, H = 4896},
-	["Бесплодные земли"]				= {X =  765, A = 4900, H = 4900},
-	["Выжженные земли"]					= {X =  766, A = 4909, H = 4909},
-	["Пылающие степи"]					= {X =  775, A = 4901, H = 4901},
-	["Перевал Мертвого Ветра"]			= {X =  777, A =    0, H =    0},
-	["Дун Морог"]						= {X =  627, A =    0, H =    0},
-	["Сумеречный лес"]					= {X =  778, A = 4903, H =    0},
-	["Восточные Чумные земли"]			= {X =  771, A = 4892, H = 4892},
-	["Элвиннский лес"]					= {X =  776, A =    0, H =    0},
-	["Леса Вечной Песни"]				= {X =  859, A =    0, H =    0},
-	["Призрачные земли"]				= {X =  858, A =    0, H = 4908},
-	["Предгорья Хилсбрада"]				= {X =  772, A =    0, H = 4895},
-	["Лок Модан"]						= {X =  779, A = 4899, H =    0},
-	["Северная Тернистая долина"]		= {X =  781, A = 4906, H = 4906},
-	["Красногорье"]						= {X =  780, A = 4902, H =    0},
-	["Тлеющее ущелье"]					= {X =  774, A = 4910, H = 4910},
-	["Серебряный бор"]					= {X =  769, A =    0, H = 4894},
-	["Болото Печали"]					= {X =  782, A = 4904, H = 4904},
-	["Мыс Тернистой долины"]			= {X = 4995, A = 4905, H = 4905},
-	["Внутренние земли"]				= {X =  773, A = 4897, H = 4897},
-	["Тирисфальские леса"]				= {X =  768, A =    0, H =    0},
-	["Западные Чумные земли"]			= {X =  770, A = 4893, H = 4893},
-	["Западный Край"]					= {X =  802, A = 4903, H =    0},
-	["Болотина"]						= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["Ясеневый лес"]					= {X =  845, A = 4925, H = 4976},
-	["Азшара"]							= {X =  852, A =    0, H = 4927},
-	["Остров Лазурной Дымки"]			= {X =  860, A =    0, H =    0},
-	["Остров Кровавой Дымки"]			= {X =  861, A = 4926, H = 4926},
-	["Темные берега"]					= {X =  844, A = 4928, H = 4928},
-	["Пустоши"]							= {X =  848, A = 4930, H = 4930},
-	["Дуротар"]							= {X =  728, A =    0, H =    0},
-	["Пылевые топи"]					= {X =  850, A = 4929, H = 4978},
-	["Оскверненный лес"]				= {X =  853, A = 4931, H = 4931},
-	["Фералас"]							= {X =  849, A = 4932, H = 4979},
-	["Лунная поляна"]					= {X =  855, A =    0, H =    0},
-	["Мулгор"]							= {X =  736, A =    0, H =    0},
-	["Северные Степи"]					= {X =  750, A =    0, H = 4933},
-	["Силитус"]							= {X =  856, A = 4934, H = 4934},
-	["Южные Степи"]						= {X = 4996, A = 4937, H = 4981},
-	["Когтистые горы"]					= {X =  847, A = 4936, H = 4980},
-	["Танарис"]							= {X =  851, A = 4935, H = 4935},
-	["Тельдрассил"]						= {X =  842, A =    0, H =    0},
-	["Тысяча Игл"]						= {X =  846, A = 4938, H = 4938},
-	["Кратер Ун'Горо"]					= {X =  854, A = 4939, H = 4939},
-	["Зимние Ключи"]					= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["Острогорье"]						= {X =  865, A = 1193, H = 1193},
-	["Полуостров Адского Пламени"]		= {X =  862, A = 1189, H = 1271},
-	["Награнд"]							= {X =  866, A = 1192, H = 1273},
-	["Пустоверть"]						= {X =  843, A = 1194, H = 1194},
-	["Долина Призрачной Луны"]			= {X =  864, A = 1195, H = 1195},
-	["Лес Тероккар"]					= {X =  867, A = 1191, H = 1272},
-	["Зангартопь"]						= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["Борейская тундра"]				= {X = 1264, A =   33, H = 1358},
-	["Лес Хрустальной Песни"]			= {X = 1457, A =    0, H =    0},
-	["Драконий Погост"]					= {X = 1265, A =   35, H = 1356},
-	["Седые холмы"]						= {X = 1266, A =   37, H = 1357},
-	["Ревущий фьорд"]					= {X = 1263, A =   34, H = 1356},
-	["Ледяная Корона"]					= {X = 1270, A =   40, H =   40},
-	["Низина Шолазар"]					= {X = 1268, A =   39, H =   39},
-	["Грозовая Гряда"]					= {X = 1269, A =   38, H =   38},
-	["Зул'Драк"]						= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["Подземье"]						= {X = 4864, A = 4871, H = 4871},
-	["Хиджал"]							= {X = 4863, A = 4870, H = 4870},
-	["Сумеречное нагорье"]				= {X = 4866, A = 4873, H = 5501},
-	["Ульдум"]							= {X = 4865, A = 4872, H = 4872},
-	["Вайш'ир"]							= {X = 4825, A = 4869, H = 4982},
-	["Тол Барад"]						= {X =    0, A = 4874, H = 4874},
-	["Полуостров Тол Барад"]			= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["Нефритовый лес"]					= {X = 6351, A = 6300, H = 6534},
-	["Долина Четырех Ветров"]			= {X = 6969, A = 6301, H = 6301},
-	["Вершина Кунь-Лай"]				= {X = 6976, A = 6537, H = 6538},
-	["Танлунские степи"]				= {X = 6977, A = 6539, H = 6539},
-	["Жуткие пустоши"]					= {X = 6978, A = 6540, H = 6540},
-	["Вечноцветущий Дол"]				= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["Остров Кель'Данас"]				= {X =  868, A =    0, H =    0},
-	["Ан'Кираж: Павшее Королевство"]	= {X =    0, A =    0, H =    0},
-	["Озеро Ледяных Оков"]				= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "Валюта"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "з"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "с"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "м"
+
+L_COMPATIBILITY_APPLY = "Применить"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "Сортировка"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "Эффекты и ауры"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "Скопировать"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "Вставить"
+L_COMPATIBILITY_CONVERT_TO_RAID = "Создать рейд"
+L_COMPATIBILITY_DAMAGER = "Боец"
+L_COMPATIBILITY_DURABILITY = "Прочность"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "Доступно после достижения %d-го уровня."
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "Игровой мир: "
+L_COMPATIBILITY_GENERAL_LABEL = "Общие"
+L_COMPATIBILITY_HEALER = "Лекарь"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "Интерфейс рейда"
+L_COMPATIBILITY_SELL_PRICE = "Цена продажи"
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "Уровень предметов"
+L_COMPATIBILITY_UNITFRAME_LABEL = "Рамки портретов"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "Индикаторы здоровья"

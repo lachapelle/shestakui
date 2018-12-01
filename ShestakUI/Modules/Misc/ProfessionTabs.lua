@@ -1,8 +1,8 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.profession_tabs ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Professions tabs on tradeskill frame(ProfessionTabs by Beoko)
+--	Professions tabs on tradeskill frame (ProfessionTabs by Beoko)
 ----------------------------------------------------------------------------------------
 local IsCurrentSpell = IsCurrentSpell
 local format = string.format
@@ -25,7 +25,6 @@ local defaults = {
 	[333] = {true, true},	-- Enchanting
 	[202] = {true, false},	-- Engineering
 	[182] = {false, false},	-- Herbalism
-	[773] = {true, true},	-- Inscription
 	[755] = {true, true},	-- Jewelcrafting
 	[165] = {true, false},	-- Leatherworking
 	[186] = {true, false},	-- Mining
@@ -33,13 +32,11 @@ local defaults = {
 	[197] = {true, false},	-- Tailoring
 
 	-- Secondary Professions
-	[794] = {false, false},	-- Archaeology
 	[185] = {true, true},	-- Cooking
 	[129] = {true, false},	-- First Aid
 	[356] = {false, false},	-- Fishing
 }
 
-if T.class == "DEATHKNIGHT" then spells[#spells + 1] = 53428 end	-- Runeforging
 if T.class == "ROGUE" then spells[#spells + 1] = 1804 end			-- Pick Lock
 
 local function UpdateSelectedTabs(object)
@@ -76,7 +73,7 @@ local function UpdateTab(object, name, rank, texture, hat)
 
 		local F, C = unpack(Aurora)
 		tab:SetCheckedTexture(C.media.checked)
-		tab:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+		tab:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 		tab:GetHighlightTexture():SetAllPoints(tab:GetNormalTexture())
 		F.CreateBG(tab)
 	elseif C.skins.blizzard_frames == true then
@@ -145,26 +142,22 @@ local function HandleProfession(object, professionID, hat)
 				end
 			end
 		end
-
-		if hat and PlayerHasToy(134020) then
-			UpdateTab(object, GetSpellInfo(67556), nil, 236571, true)
-		end
 	end
 end
 
 local function HandleTabs(object)
+	if not object then return end
 	tabs[object] = tabs[object] or {}
 
 	if InCombatLockdown() then
 		handler:RegisterEvent("PLAYER_REGEN_ENABLED")
 	else
-		local firstProfession, secondProfession, archaeology, fishing, cooking, firstAid = GetProfessions()
+		local firstProfession, secondProfession, fishing, cooking, firstAid = GetProfessions()
 
 		ResetTabs(object)
 
 		HandleProfession(object, firstProfession)
 		HandleProfession(object, secondProfession)
-		HandleProfession(object, archaeology)
 		HandleProfession(object, fishing)
 		HandleProfession(object, cooking, true)
 		HandleProfession(object, firstAid)
@@ -183,7 +176,7 @@ end
 function handler:TRADE_SKILL_SHOW(event)
 	local owner = ATSWFrame or MRTSkillFrame or SkilletFrame or TradeSkillFrame
 
-	if IsAddOnLoaded("TradeSkillDW") and owner == TradeSkillFrame then
+	if (IsAddOnLoaded("TradeSkillDW") or IsAddOnLoaded("TradeSkillMaster")) and owner == TradeSkillFrame then
 		self:UnregisterEvent(event)
 	else
 		HandleTabs(owner)

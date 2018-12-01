@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Based on LitePanels(by Katae)
@@ -109,7 +109,7 @@ local function Resize(panel, width, height)
 			if strmatch(width, "%%") then panel:SetWidth(_width * strmatch(width,"(%d+)%%") * 0.01 + (strmatch(width, "%%%s([%+%-]%d+)") or 0)) end
 			if strmatch(height, "%%") then panel:SetHeight(_height * strmatch(height,"(%d+)%%") * 0.01 + (strmatch(height, "%%.*([%+%-]%d+)") or 0)) end
 		end
-		parent:HookScript("OnSizeChanged", hook)
+		parent:SetScript("OnSizeChanged", hook)
 	end
 end
 
@@ -246,10 +246,10 @@ function lpanels:MakePanel(f)
 						self.startTimer, self.timer, self.button = true, time(), button
 					end
 				end
-				panel:HookScript("OnMouseUp", hook)
+				panel:SetScript("OnMouseUp", hook)
 			else
 				if action == "OnUpdate" then panel.elapsed = 0 end
-				panel:HookScript(gsub(gsub(action, "OnClick", "OnMouseUp"), "Resize", "SizeChanged"), func)
+				panel:SetScript(gsub(gsub(action, "OnClick", "OnMouseUp"), "Resize", "SizeChanged"), func)
 			end
 		end
 	end

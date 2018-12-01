@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.minimap.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -15,7 +15,7 @@ switch:SetSize(19, 19)
 switch:SetAlpha(0)
 
 switch.t = switch:CreateTexture(nil, "OVERLAY")
-switch.t:SetTexture("Interface\\LFGFrame\\LFGROLE")
+-- switch.t:SetTexture("Interface\\LFGFrame\\LFGROLE")
 switch.t:SetPoint("TOPLEFT", switch, 2, -2)
 switch.t:SetPoint("BOTTOMRIGHT", switch, -2, 2)
 
@@ -37,7 +37,7 @@ end)
 switch:SetScript("OnEnter", function()
 	switch:FadeIn()
 	GameTooltip:SetOwner(switch, "ANCHOR_LEFT")
-	GameTooltip:AddLine(RAID_FRAMES_LABEL)
+	GameTooltip:AddLine(L_COMPATIBILITY_RAID_FRAMES_LABEL)
 	GameTooltip:AddLine(" ")
 	GameTooltip:AddLine(L_MINIMAP_HEAL_LAYOUT)
 	GameTooltip:AddLine(L_MINIMAP_DPS_LAYOUT)
@@ -53,14 +53,18 @@ end)
 switch:RegisterEvent("PLAYER_LOGIN")
 switch:SetScript("OnEvent", function(self)
 	if SavedOptions and SavedOptions.RaidLayout == "DPS" then
-		switch.t:SetTexCoord(0.25, 0.5, 0, 1)
+		switch.t:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+		-- switch.t:SetTexCoord(0.25, 0.5, 0, 1)
+		switch.t:SetTexCoord(0, 0.25, 0, 0.25)
 	elseif SavedOptions and SavedOptions.RaidLayout == "HEAL" then
-		switch.t:SetTexCoord(0.75, 1, 0, 1)
+		switch.t:SetTexture("Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes")
+		-- switch.t:SetTexCoord(0.75, 1, 0, 1)
+		switch.t:SetTexCoord(0.49609375, 0.7421875, 0.25, 0.5)
 	elseif SavedOptions and SavedOptions.RaidLayout == "NONE" then
 		switch.t:SetTexture("Interface\\ChatFrame\\UI-ChatIcon-Blizz")
 		switch.t:SetTexCoord(0.2, 0.8, -0.1, 1.1)
 	elseif SavedOptions and SavedOptions.RaidLayout == "UNKNOWN" or SavedOptions == nil then
-		switch.t:SetTexture("Interface\\InventoryItems\\WoWUnknownItem01")
+		switch.t:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark")
 		switch.t:SetTexCoord(0.2, 0.8, 0.2, 0.8)
 	end
 end)
@@ -73,10 +77,14 @@ SlashCmdList.FARMMODE = function()
 	if show == false then
 		MinimapAnchor:SetSize(C.minimap.size * 1.65, C.minimap.size * 1.65)
 		Minimap:SetSize(MinimapAnchor:GetWidth(), MinimapAnchor:GetWidth())
+		_G.MinimapZoomIn:Click()
+		_G.MinimapZoomOut:Click()
 		show = true
 	else
 		MinimapAnchor:SetSize(C.minimap.size, C.minimap.size)
 		Minimap:SetSize(MinimapAnchor:GetWidth(), MinimapAnchor:GetWidth())
+		_G.MinimapZoomIn:Click()
+		_G.MinimapZoomOut:Click()
 		show = false
 	end
 end
@@ -110,65 +118,4 @@ end)
 
 farm:SetScript("OnLeave", function()
 	farm:FadeOut()
-end)
-
-----------------------------------------------------------------------------------------
---	Artifact mouseover button
-----------------------------------------------------------------------------------------
-if T.level < 99 then return end
-
-local artifact = CreateFrame("Button", "ArtifactButton", UIParent, "BankItemButtonGenericTemplate")
-artifact:StripTextures()
-artifact:SetTemplate("ClassColor")
-if SwitchArch then
-	artifact:SetPoint("TOP", SwitchArch, "BOTTOM", 0, -1)
-else
-	artifact:SetPoint("TOP", farm, "BOTTOM", 0, -1)
-end
-artifact:SetSize(19, 19)
-artifact:SetAlpha(0)
-
-artifact:RegisterForClicks("RightButtonUp")
-artifact.UpdateTooltip = nil
-
-artifact.t = artifact:CreateTexture(nil, "OVERLAY")
-artifact.t:SetTexture("Interface\\Icons\\Achievement_doublejeopardy")
-artifact.t:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-artifact.t:SetPoint("TOPLEFT", artifact, 2, -2)
-artifact.t:SetPoint("BOTTOMRIGHT", artifact, -2, 2)
-
-artifact:SetScript("PreClick", function(self)
-	for bag = 0, 4 do
-		for slot = 1, GetContainerNumSlots(bag) do
-			if IsArtifactPowerItem(GetContainerItemID(bag, slot)) then
-				self:GetParent():SetID(bag)
-				self:SetID(slot)
-				return
-			end
-		end
-	end
-end)
-
-artifact:SetScript("OnEnter", function()
-	local count = 0
-	for bag = 0, 4 do
-		for slot = 1, GetContainerNumSlots(bag) do
-			if IsArtifactPowerItem(GetContainerItemID(bag, slot)) then
-				count = count + 1
-			end
-		end
-	end
-
-	artifact:FadeIn()
-	GameTooltip:SetOwner(artifact, "ANCHOR_LEFT")
-	GameTooltip:AddLine(ARTIFACT_POWER)
-	GameTooltip:AddLine(" ")
-	GameTooltip:AddLine(L_TOOLTIP_ITEM_COUNT.." "..count)
-	GameTooltip:AddLine(L_MINIMAP_ARTIFACT)
-	GameTooltip:Show()
-end)
-
-artifact:SetScript("OnLeave", function()
-	artifact:FadeOut()
-	GameTooltip:Hide()
 end)

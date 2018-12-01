@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if T.client ~= "frFR" then return end
 
 ----------------------------------------------------------------------------------------
@@ -56,17 +56,13 @@ L_MISC_BINDER_OPEN = "Assignations des boutons de la souris"
 L_MISC_GROCERY_BUY = "Achat"
 L_MISC_GROCERY_DESC = "Achat automatique de sacs d'épicerie"
 L_MISC_SCROLL = "Parchemin"
-L_MISC_COLLAPSE = "The Collapse" -- Need review
+L_MISC_COLLAPSE = "The Collapse" -- Needs review
 
 -- Raid Utility
 L_RAID_UTIL_DISBAND = "Dissoudre le raid"
 
 -- Zone name
-L_ZONE_TOLBARAD = "Tol Barad"
-L_ZONE_TOLBARADPEN = "Péninsule de Tol Barad"
 L_ZONE_ARATHIBASIN = "Bassin d'Arathi"
-L_ZONE_GILNEAS = "La bataille de Gilnéas"
-L_ZONE_ANCIENTDALARAN = "Cratère de Dalaran"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Lien Wowhead"
@@ -97,24 +93,35 @@ L_MINIMAP_CALENDAR = "Calendrier"
 L_MINIMAP_HEAL_LAYOUT = "Clic-Gauche - Interface Heal"
 L_MINIMAP_DPS_LAYOUT = "Clic-Droit - Interface DPS"
 L_MINIMAP_BLIZZ_LAYOUT = "Clic-Centre - Interface Blizzard"
-L_MINIMAP_ARTIFACT = "Right click to use" -- Needs review
+
+-- Addons list
+L_ALOAD_RL = "Recharger l'interface"
+L_ALOAD_DEP = "Dépendances: "
+L_ALOAD_OP_DEP = "Dépendances Optionnelles: "
+L_ALOAD_AUTHOR = "Author: " -- Needs review
+L_ALOAD_PROFILES = "Profils"
+L_ALOAD_ENABLE_ALL = "Tout activer"
+L_ALOAD_DISABLE_ALL = "Tout désactiver"
+L_ALOAD_PROFILE_NAME = "Nom du profil"
+L_ALOAD_SET_TO = "Définir à.."
+L_ALOAD_ADD_TO = "Ajouter à.."
+L_ALOAD_REMOVE_FROM = "Supprimer de.."
+L_ALOAD_DELETE_PROFILE = "Supprimer Profil.."
+L_ALOAD_CONFIRM_DELETE = "Voulez-vous vraiment supprimer ce profil ? Si oui, cliquez à nouveau en maintenant la touche Maj."
 
 -- Chat
 L_CHAT_WHISPER = "De"
-L_CHAT_BN_WHISPER = "De"
 L_CHAT_AFK = "[AFK]"
 L_CHAT_DND = "[DND]"
 L_CHAT_GM = "[GM]"
 L_CHAT_GUILD = "G"
 L_CHAT_PARTY = "P"
-L_CHAT_PARTY_LEADER = "PL"
 L_CHAT_RAID = "R"
 L_CHAT_RAID_LEADER = "RL"
 L_CHAT_RAID_WARNING = "AR"
-L_CHAT_INSTANCE_CHAT = "I"
-L_CHAT_INSTANCE_CHAT_LEADER = "IL"
+L_CHAT_BATTLEGROUND = "CB"
+L_CHAT_BATTLEGROUND_LEADER = "CDB"
 L_CHAT_OFFICER = "O"
-L_CHAT_PET_BATTLE = "BP"
 L_CHAT_COME_ONLINE = "vient de se |cff298F00connecter|r."
 L_CHAT_GONE_OFFLINE = "vient de se |cffff0000déconnecter|r."
 
@@ -122,10 +129,28 @@ L_CHAT_GONE_OFFLINE = "vient de se |cffff0000déconnecter|r."
 L_ERRORFRAME_L = "Clic gauche pour afficher les erreurs."
 
 -- Bags
-L_BAG_SHOW_BAGS = "Montrer les sacs"
-L_BAG_RIGHT_CLICK_SEARCH = "Clic droit pour rechercher"
+-- L_BAG_SHOW_BAGS = "Montrer les sacs"
+-- L_BAG_RIGHT_CLICK_SEARCH = "Clic droit pour rechercher"
+-- L_BAG_STACK_MENU = "Empiler"
+-- L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu" -- Needs review
+L_BAG_BANK = "Banque"
+L_BAG_NO_SLOTS = "Vous ne pouvez pas acheter plus d'emplacement !"
+L_BAG_COSTS = "Prix: %.2f or"
+L_BAG_BUY_SLOTS = "Acheter un nouvel emplacement avec /bags"
+L_BAG_OPEN_BANK = "Vous devez d'abord ouvrir votre banque."
+L_BAG_SORT = "Trier vos sacs ou votre banque, si elle est ouverte."
+L_BAG_STACK = "Empile vos objets dans votre sac ou en banque, si elle est ouverte."
+L_BAG_BUY_BANKS_SLOT = "Acheter une place à la banque (nécessite d'avoir votre banque ouverte)."
+L_BAG_SORT_MENU = "Trier"
+L_BAG_SORT_SPECIAL = "Tri personnalisé"
 L_BAG_STACK_MENU = "Empiler"
-L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu" -- Need review
+L_BAG_STACK_SPECIAL = "Empilage personnalisé"
+L_BAG_SHOW_BAGS = "Montrer les sacs"
+L_BAG_SORTING_BAGS = "Tri terminé."
+L_BAG_NOTHING_SORT = "Rien à trier."
+L_BAG_BAGS_BIDS = "Emplacements utilisés: "
+L_BAG_STACK_END = "Empilage terminé."
+L_BAG_RIGHT_CLICK_SEARCH = "Clic droit pour rechercher"
 
 -- Grab mail
 L_MAIL_STOPPED = "Inventaire plein."
@@ -143,6 +168,7 @@ L_LOOT_TO_RAID = "  raid"
 L_LOOT_TO_PARTY = "  groupe"
 L_LOOT_TO_GUILD = "  corps"
 L_LOOT_TO_SAY = "  dire"
+L_LOOT_CANNOT = "Impossible de lancer les dés"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "Tu es AFK !"
@@ -151,9 +177,6 @@ L_PANELS_AFK_LCLICK = "Clic gauche pour revenir."
 
 -- Cooldowns
 L_COOLDOWNS = "Temps de recharge : "
-L_COOLDOWNS_COMBATRESS = "Résurrection en combat"
-L_COOLDOWNS_COMBATRESS_REMAINDER = "Résurrection en combat: "
-L_COOLDOWNS_NEXTTIME = "Suivant: "
 
 -- Autoinvite
 L_INVITE_ENABLE = "Invitation automatique activée : "
@@ -226,7 +249,7 @@ L_COMBATTEXT_TEST_ENABLED = "Mode test de la fenêtre des textes de combat activ
 L_COMBATTEXT_TEST_USE_UNLOCK = "Tapez /xct unlock pour bouger et redimensionner la fenêtre des textes de combat."
 L_COMBATTEXT_TEST_USE_LOCK = "Tapez /xct lock pour verrouiller la fenêtre des textes de combat."
 L_COMBATTEXT_TEST_USE_TEST = "Tapez /xct test pour activer le mode test de la fenêtre des textes de combat."
-L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Need review
+L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Needs review
 L_COMBATTEXT_POPUP = "Pour sauvegardez vos modifications vous devez recharger l'interface."
 L_COMBATTEXT_UNSAVED = "Position de la fenêtre des textes de combat non saugardez, n'oubliez pas de recharger l'interface."
 L_COMBATTEXT_UNLOCKED = "Fenêtre des textes de combat déverrouillée."
@@ -308,8 +331,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - Active nom_addon.",
 	"/rd - Dissout le groupe ou raid.",
 	"/toraid - Active le mode raid.",
-	"/teleport - Téléportation dans le donjon aléatoire en cours.",
-	"/spec, /ss - Bascule d'une spécialisation talent à l'autre.",
 	"/heal - Bascule vers l'interface 'Heal'.",
 	"/dps - Bascule sur l'interface 'DPS'.",
 	"/frame - Description is not ready.",
@@ -332,99 +353,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - Ouvre les paramètres de l'interface.",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "Exploré: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["Royaumes de l'est"]				= {X =   42, A =    0, H =    0},
-	["Kalimdor"]						= {X =   43, A =    0, H =    0},
-	["Outreterre"]						= {X =   44, A =    0, H =    0},
-	["Norfendre"]						= {X =   45, A =    0, H =    0},
-	["Pandarie"]						= {X = 6974, A =    0, H =    0},
-	["Carte du monde"]					= {X =  nil, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["Hautes-terres Arathies"]			= {X =  761, A = 4896, H = 4896},
-	["Terres Ingrates"]					= {X =  765, A = 4900, H = 4900},
-	["Terres Foudroyées"]				= {X =  766, A = 4909, H = 4909},
-	["Steppes Ardentes"]				= {X =  775, A = 4901, H = 4901},
-	["Défilé de Deuillevent"]			= {X =  777, A =    0, H =    0},
-	["Dun Morogh"]						= {X =  627, A =    0, H =    0},
-	["Bois de la Pénombre"]				= {X =  778, A = 4903, H =    0},
-	["Maleterres de l’Est"]				= {X =  771, A = 4892, H = 4892},
-	["Forêt d’Elwynn"]					= {X =  776, A =    0, H =    0},
-	["Bois des Chants éternels"]		= {X =  859, A =    0, H =    0},
-	["Les terres Fantômes"]				= {X =  858, A =    0, H = 4908},
-	["Contreforts de Hautebrande"]		= {X =  772, A =    0, H = 4895},
-	["Loch Modan"]						= {X =  779, A = 4899, H =    0},
-	["Strangleronce septentrionale"]	= {X =  781, A = 4906, H = 4906},
-	["Les Carmines"]					= {X =  780, A = 4902, H =    0},
-	["Gorge des Vents brûlants"]		= {X =  774, A = 4910, H = 4910},
-	["Forêt des Pins Argentés"]			= {X =  769, A =    0, H = 4894},
-	["Marais des Chagrins"]				= {X =  782, A = 4904, H = 4904},
-	["Cap Strangleronce"]				= {X = 4995, A = 4905, H = 4905},
-	["Les Hinterlands"]					= {X =  773, A = 4897, H = 4897},
-	["Clairières de Tirisfal"]			= {X =  768, A =    0, H =    0},
-	["Maleterres de l’Ouest"]			= {X =  770, A = 4893, H = 4893},
-	["Marche de l’Ouest"]				= {X =  802, A = 4903, H =    0},
-	["Les Paluns"]						= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["Orneval"]							= {X =  845, A = 4925, H = 4976},
-	["Azshara"]							= {X =  852, A =    0, H = 4927},
-	["Île de Brume-Azur"]				= {X =  860, A =    0, H =    0},
-	["Île de Brume-Sang"]				= {X =  861, A = 4926, H = 4926},
-	["Sombrivage"]						= {X =  844, A = 4928, H = 4928},
-	["Désolace"]						= {X =  848, A = 4930, H = 4930},
-	["Durotar"]							= {X =  728, A =    0, H =    0},
-	["Marécage d’Âprefange"]			= {X =  850, A = 4929, H = 4978},
-	["Gangrebois"]						= {X =  853, A = 4931, H = 4931},
-	["Féralas"]							= {X =  849, A = 4932, H = 4979},
-	["Reflet-de-Lune"]					= {X =  855, A =    0, H =    0},
-	["Mulgore"]							= {X =  736, A =    0, H =    0},
-	["Tarides du Nord"]					= {X =  750, A =    0, H = 4933},
-	["Silithus"]						= {X =  856, A = 4934, H = 4934},
-	["Tarides du Sud"]					= {X = 4996, A = 4937, H = 4981},
-	["Les Serres-Rocheuses"]			= {X =  847, A = 4936, H = 4980},
-	["Tanaris"]							= {X =  851, A = 4935, H = 4935},
-	["Teldrassil"]						= {X =  842, A =    0, H =    0},
-	["Mille pointes"]					= {X =  846, A = 4938, H = 4938},
-	["Cratère d’Un’Goro"]				= {X =  854, A = 4939, H = 4939},
-	["Berceau-de-l’Hiver"]				= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["Les Tranchantes"]					= {X =  865, A = 1193, H = 1193},
-	["Péninsule des Flammes infernales"]= {X =  862, A = 1189, H = 1271},
-	["Nagrand"]							= {X =  866, A = 1192, H = 1273},
-	["Raz-de-Néant"]					= {X =  843, A = 1194, H = 1194},
-	["Vallée d'Ombrelune"]				= {X =  864, A = 1195, H = 1195},
-	["Forêt de Terokkar"]				= {X =  867, A = 1191, H = 1272},
-	["Marécage de Zangar"]				= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["Toundra Boréenne"]				= {X = 1264, A =   33, H = 1358},
-	["Forêt du Chant de cristal"]		= {X = 1457, A =    0, H =    0},
-	["Désolation des dragons"]			= {X = 1265, A =   35, H = 1356},
-	["Les Grisonnes"]					= {X = 1266, A =   37, H = 1357},
-	["Fjord Hurlant"]					= {X = 1263, A =   34, H = 1356},
-	["La Couronne de glace"]			= {X = 1270, A =   40, H =   40},
-	["Bassin de Sholazar"]				= {X = 1268, A =   39, H =   39},
-	["Les pics Foudroyés"]				= {X = 1269, A =   38, H =   38},
-	["Zul’Drak"]						= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["Le Tréfonds"]						= {X = 4864, A = 4871, H = 4871},
-	["Mont Hyjal"]						= {X = 4863, A = 4870, H = 4870},
-	["Hautes-terres du Crépuscule"]		= {X = 4866, A = 4873, H = 5501},
-	["Uldum"]							= {X = 4865, A = 4872, H = 4872},
-	["Vashj’ir"]						= {X = 4825, A = 4869, H = 4982},
-	["Tol Barad"]						= {X =    0, A = 4874, H = 4874},
-	["Péninsule de Tol Barad"]			= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["La forêt de Jade"]				= {X = 6351, A = 6300, H = 6534},
-	["Vallée des Quatre vents"]			= {X = 6969, A = 6301, H = 6301},
-	["Sommet de Kun-Lai"]				= {X = 6976, A = 6537, H = 6538},
-	["Steppes de Tanglong"]				= {X = 6977, A = 6539, H = 6539},
-	["Terres de l’Angoisse"]			= {X = 6978, A = 6540, H = 6540},
-	["Val de l’Éternel printemps"]		= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["Île de Quel'Danas"]				= {X =  868, A =    0, H =    0},
-	["Ahn'Qiraj : le royaume Déchu"]	= {X =    0, A =    0, H =    0},
-	["Joug-d'hiver"]					= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "Monnaies"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "o"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "a"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "c"
+
+L_COMPATIBILITY_APPLY = "Appliquer"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "Tri"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "Améliorations et affaiblissements"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "Copier"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "Coller"
+L_COMPATIBILITY_CONVERT_TO_RAID = "Mode Raid"
+L_COMPATIBILITY_DAMAGER = "Dégâts"
+L_COMPATIBILITY_DURABILITY = "Durabilité"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "Cette fonction est disponible au niveau %d."
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "Royaume : "
+L_COMPATIBILITY_GENERAL_LABEL = "Général"
+L_COMPATIBILITY_HEALER = "Soigneur"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "Fenêtres de raid"
+L_COMPATIBILITY_SELL_PRICE = "Prix de vente "
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "Niveau d'objet"
+L_COMPATIBILITY_UNITFRAME_LABEL = "Portraits d'unités"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "Barre d'info des unités"

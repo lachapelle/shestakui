@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_fader ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_Fader(by Slakah)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local strmatch, gmatch = string.match, string.gmatch
@@ -23,11 +23,11 @@ local events = setmetatable({
 	UnitTaxi = "UNIT_FLAGS",
 	PlayerMaxHealth = "UNIT_HEALTH",
 	UnitMaxHealth = "UNIT_HEALTH",
-	PlayerMaxMana = "UNIT_POWER",
-	UnitMaxMana = "UNIT_POWER",
+	PlayerMaxMana = "UNIT_MANA",
+	UnitMaxMana = "UNIT_MANA",
 	Stealth = "UPDATE_STEALTH",
 	PlayerNotMaxHealth = "UNIT_HEALTH",
-	PlayerNotMaxMana = "UNIT_POWER",
+	PlayerNotMaxMana = "UNIT_MANA",
 	Arena = "ZONE_CHANGED_NEW_AREA",
 	Instance = "PLAYER_ENTERING_WORLD",
 }, {__index = function(events, k)
@@ -47,17 +47,17 @@ local conditions = setmetatable({
 	UnitTaxi = function(obj, unit) return unit and UnitOnTaxi(unit) end,
 	UnitMaxHealth = function(obj, unit) return unit and not UnitIsDeadOrGhost(unit) and UnitHealth(unit) == UnitHealthMax(unit) end,
 	PlayerMaxHealth = function() return unit and not UnitIsDeadOrGhost("player") and UnitHealth("player") == UnitHealthMax("player") end,
-	UnitMaxMana = function(obj, unit) return unit and not UnitIsDeadOrGhost(unit) and UnitPower(unit) == UnitPowerMax(unit) end,
-	PlayerMaxMana = function() return unit and not UnitIsDeadOrGhost("player") and UnitPower("player") == UnitPowerMax("player") end,
+	UnitMaxMana = function(obj, unit) return unit and not UnitIsDeadOrGhost(unit) and UnitMana(unit) == UnitManaMax(unit) end,
+	PlayerMaxMana = function() return unit and not UnitIsDeadOrGhost("player") and UnitMana("player") == UnitManaMax("player") end,
 	Stealth = IsStealthed,
 	Flying = IsFlying,
 	Resting = IsResting,
 	Combat = InCombatLockdown,
 	PlayerNotMaxHealth = function(obj, unit) return unit and UnitHealth("player") ~= UnitHealthMax("player") end,
 	PlayerNotMaxMana = function(obj, unit)
-		local powerType, powerTypeString = UnitPowerType("player")
-		if powerTypeString ~= "RAGE" and powerTypeString ~= "RUNIC_POWER" then
-			return unit and UnitPower("player") ~= UnitPowerMax("player")
+		local powerType = UnitPowerType("player")
+		if powerType ~= 1 then
+			return unit and UnitMana("player") ~= UnitManaMax("player")
 		end
 	end,
 	Arena = function(obj, unit) return unit and GetZonePVPInfo() == "arena" end,

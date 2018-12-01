@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_enemy_spec ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_Talents(by Fernir)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local function Update(object, event, unit)

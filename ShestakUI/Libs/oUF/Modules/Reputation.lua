@@ -1,16 +1,17 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_reputation_bar ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_Reputation(by p3lim)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local function GetReputation()
 	local pendingReward
 	local name, standingID, min, max, cur, factionID = GetWatchedFactionInfo()
 
+	--[[
 	local friendID, _, _, _, _, _, standingText, _, nextThreshold = GetFriendshipReputation(factionID)
 	if(friendID) then
 		if(not nextThreshold) then
@@ -28,6 +29,7 @@ local function GetReputation()
 			standingText = PARAGON
 		end
 	end
+	--]]
 
 	max = max - min
 	cur = cur - min
@@ -66,7 +68,7 @@ for tag, func in next, {
 end
 
 oUF.Tags.SharedEvents.UPDATE_FACTION = true
-oUF.colors.reaction[MAX_REPUTATION_REACTION + 1] = {0, 0.5, 0.9} -- paragon color
+-- oUF.colors.reaction[MAX_REPUTATION_REACTION + 1] = {0, 0.5, 0.9} -- paragon color
 
 local function UpdateTooltip(element)
 	local cur, max, name, factionID, standingID, standingText, pendingReward = GetReputation()
@@ -112,7 +114,7 @@ local function Update(self, event, unit)
 
 		if(element.Reward) then
 			-- no idea what this function actually does, but Blizzard uses it as well
-			C_Reputation.RequestFactionParagonPreloadRewardData(factionID)
+			-- C_Reputation.RequestFactionParagonPreloadRewardData(factionID)
 			element.Reward:SetShown(pendingReward)
 		end
 	end
@@ -185,9 +187,11 @@ local function Enable(self, unit)
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
 		end
 
+		--[[
 		if(element.Reward and element.Reward:IsObjectType('Texture') and not element.Reward:GetTexture()) then
 			element.Reward:SetAtlas('ParagonReputation_Bag')
 		end
+		--]]
 
 		if(element:IsMouseEnabled()) then
 			element.UpdateTooltip = element.UpdateTooltip or UpdateTooltip

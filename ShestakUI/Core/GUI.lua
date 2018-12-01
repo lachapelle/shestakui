@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if not IsAddOnLoaded("ShestakUI_Config") then return end
 
 ----------------------------------------------------------------------------------------

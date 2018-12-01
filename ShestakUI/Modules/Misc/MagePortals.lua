@@ -1,8 +1,8 @@
-local T, C, L, _ = unpack(select(2, ...))
-if T.class ~= "MAGE" or T.level < 17 then return end
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
+if T.class ~= "MAGE" or T.level < 20 then return end
 
 ----------------------------------------------------------------------------------------
---	Mage portals menu(by Foof and Tohveli)
+--	Mage portals menu (by Foof and Tohveli)
 ----------------------------------------------------------------------------------------
 local spells = (UnitFactionGroup("player") == "Horde") and {
 	[1] = {3567,11417},			-- Orgrimmar
@@ -11,13 +11,6 @@ local spells = (UnitFactionGroup("player") == "Horde") and {
 	[4] = {32272,32267},		-- Silvermoon
 	[5] = {49358,49361},		-- Stonard
 	[6] = {35715,35717},		-- Shattrath
-	[7] = {53140,53142},		-- Dalaran
-	[8] = {88344,88346},		-- Tol Barad
-	[9] = {120145,120146},		-- Ancient Dalaran
-	[10] = {132627,132626},		-- Vale of Eternal Blossoms
-	[11] = {176242,176244},		-- Warspear
-	[12] = {193759, 193759}, 	-- Hall of the Guardian (OrderHall)
-	[13] = {224869, 224871}, 	-- Dalaran, Broken Isles
 } or { -- Alliance
 	[1] = {3561,10059},			-- Stormwind
 	[2] = {3562,11416},			-- Ironforge
@@ -25,13 +18,6 @@ local spells = (UnitFactionGroup("player") == "Horde") and {
 	[4] = {32271,32266},		-- Exodar
 	[5] = {49359,49360},		-- Theramore
 	[6] = {33690,33691},		-- Shattrath
-	[7] = {53140,53142},		-- Dalaran
-	[8] = {88342,88345},		-- Tol Barad
-	[9] = {120145,120146},		-- Ancient Dalaran
-	[10] = {132621,132620},		-- Vale of Eternal Blossoms
-	[11] = {176248,176246},		-- Stormshield
-	[12] = {193759, 193759}, 	-- Hall of the Guardian (OrderHall)
-	[13] = {224869, 224871}, 	-- Dalaran, Broken Isles
 }
 
 local frame = CreateFrame("Frame", "TeleportMenu", UIParent)
@@ -43,7 +29,7 @@ frame:SetScript("OnEvent", function(self)
 	end
 end)
 frame:Hide()
-tinsert(UISpecialFrames, "TeleportMenu")
+table.insert(UISpecialFrames, "TeleportMenu")
 
 for i, spell in pairs(spells) do
 	local teleport = GetSpellInfo(spell[1])

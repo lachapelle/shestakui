@@ -1,11 +1,11 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Tell Target
 ----------------------------------------------------------------------------------------
 for i = 1, NUM_CHAT_WINDOWS do
-	local editbox = _G["ChatFrame"..i.."EditBox"]
+	local editbox = _G["ChatFrameEditBox"]
 	editbox:HookScript("OnTextChanged", function(self)
 		local text = self:GetText()
 		if text:len() < 7 then

@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_MovableFrames(by Haste)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local _DB

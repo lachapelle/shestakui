@@ -1,10 +1,11 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.actionbar.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Style ActionBars buttons(by Tukz)
 ----------------------------------------------------------------------------------------
 local function StyleNormalButton(self)
+	local self = this -- TBC Compatibility
 	local name = self:GetName()
 	local button = self
 	local icon = _G[name.."Icon"]
@@ -98,7 +99,7 @@ local function StyleSmallButton(normal, button, icon, name, pet)
 		end
 	end)
 
-	flash:SetColorTexture(0.8, 0.8, 0.8, 0.5)
+	flash:SetTexture(0.8, 0.8, 0.8, 0.5)
 	flash:SetPoint("TOPLEFT", button, 2, -2)
 	flash:SetPoint("BOTTOMRIGHT", button, -2, 2)
 
@@ -133,7 +134,7 @@ local function StyleSmallButton(normal, button, icon, name, pet)
 			autocast:ClearAllPoints()
 			autocast:SetPoint("CENTER", button, 0, 0)
 
-			local shine = _G[name.."Shine"]
+			local shine = _G[name.."AutoCast"]
 			shine:SetSize(C.actionbar.button_size, C.actionbar.button_size)
 
 			local cooldown = _G[name.."Cooldown"]
@@ -151,8 +152,8 @@ local function StyleSmallButton(normal, button, icon, name, pet)
 end
 
 function T.StyleShift()
-	for i = 1, NUM_STANCE_SLOTS do
-		local name = "StanceButton"..i
+	for i = 1, NUM_SHAPESHIFT_SLOTS do
+		local name = "ShapeshiftButton"..i
 		local button = _G[name]
 		local icon = _G[name.."Icon"]
 		local normal = _G[name.."NormalTexture"]
@@ -171,80 +172,36 @@ function T.StylePet()
 end
 
 local function UpdateHotkey(self, actionButtonType)
+	local self = this -- TBC Compatibility
 	local hotkey = _G[self:GetName().."HotKey"]
 	local text = hotkey:GetText()
 
-	text = string.gsub(text, "(s%-)", "S")
-	text = string.gsub(text, "(a%-)", "A")
-	text = string.gsub(text, "(а%-)", "A") -- fix ruRU
-	text = string.gsub(text, "(c%-)", "C")
-	text = string.gsub(text, "(Mouse Button )", "M")
-	text = string.gsub(text, "(Кнопка мыши )", "M")
-	text = string.gsub(text, KEY_BUTTON3, "M3")
-	text = string.gsub(text, KEY_PAGEUP, "PU")
-	text = string.gsub(text, KEY_PAGEDOWN, "PD")
-	text = string.gsub(text, KEY_SPACE, "SpB")
-	text = string.gsub(text, KEY_INSERT, "Ins")
-	text = string.gsub(text, KEY_HOME, "Hm")
-	text = string.gsub(text, KEY_DELETE, "Del")
-	text = string.gsub(text, KEY_NUMPADDECIMAL, "Nu.")
-	text = string.gsub(text, KEY_NUMPADDIVIDE, "Nu/")
-	text = string.gsub(text, KEY_NUMPADMINUS, "Nu-")
-	text = string.gsub(text, KEY_NUMPADMULTIPLY, "Nu*")
-	text = string.gsub(text, KEY_NUMPADPLUS, "Nu+")
-	text = string.gsub(text, KEY_NUMLOCK, "NuL")
-	text = string.gsub(text, KEY_MOUSEWHEELDOWN, "MWD")
-	text = string.gsub(text, KEY_MOUSEWHEELUP, "MWU")
+	text = gsub(text, "(s%-)", "S")
+	text = gsub(text, "(a%-)", "A")
+	text = gsub(text, "(а%-)", "A") -- fix ruRU
+	text = gsub(text, "(c%-)", "C")
+	text = gsub(text, "(Mouse Button )", "M")
+	text = gsub(text, "(Кнопка мыши )", "M")
+	text = gsub(text, KEY_BUTTON3, "M3")
+	text = gsub(text, KEY_PAGEUP, "PU")
+	text = gsub(text, KEY_PAGEDOWN, "PD")
+	text = gsub(text, KEY_SPACE, "SpB")
+	text = gsub(text, KEY_INSERT, "Ins")
+	text = gsub(text, KEY_HOME, "Hm")
+	text = gsub(text, KEY_DELETE, "Del")
+	text = gsub(text, KEY_NUMPADDECIMAL, "Nu.")
+	text = gsub(text, KEY_NUMPADDIVIDE, "Nu/")
+	text = gsub(text, KEY_NUMPADMINUS, "Nu-")
+	text = gsub(text, KEY_NUMPADMULTIPLY, "Nu*")
+	text = gsub(text, KEY_NUMPADPLUS, "Nu+")
+	text = gsub(text, KEY_NUMLOCK, "NuL")
+	text = gsub(text, KEY_MOUSEWHEELDOWN, "MWD")
+	text = gsub(text, KEY_MOUSEWHEELUP, "MWU")
 
 	if hotkey:GetText() == _G["RANGE_INDICATOR"] then
 		hotkey:SetText("")
 	else
 		hotkey:SetText(text)
-	end
-end
-
-local buttons = 0
-local function SetupFlyoutButton()
-	for i = 1, buttons do
-		if _G["SpellFlyoutButton"..i] then
-			StyleNormalButton(_G["SpellFlyoutButton"..i])
-			_G["SpellFlyoutButton"..i]:StyleButton()
-
-			if _G["SpellFlyoutButton"..i]:GetChecked() then
-				_G["SpellFlyoutButton"..i]:SetChecked(false)
-			end
-
-			if C.actionbar.rightbars_mouseover == true then
-				SpellFlyout:HookScript("OnEnter", function(self) RightBarMouseOver(1) end)
-				SpellFlyout:HookScript("OnLeave", function(self) RightBarMouseOver(0) end)
-				_G["SpellFlyoutButton"..i]:HookScript("OnEnter", function(self) RightBarMouseOver(1) end)
-				_G["SpellFlyoutButton"..i]:HookScript("OnLeave", function(self) RightBarMouseOver(0) end)
-			end
-		end
-	end
-end
-SpellFlyout:HookScript("OnShow", SetupFlyoutButton)
-
-local function StyleFlyoutButton(self)
-	if self.FlyoutBorder then
-		self.FlyoutBorder:SetAlpha(0)
-	end
-	if self.FlyoutBorderShadow then
-		self.FlyoutBorderShadow:SetAlpha(0)
-	end
-
-	SpellFlyoutHorizontalBackground:SetAlpha(0)
-	SpellFlyoutVerticalBackground:SetAlpha(0)
-	SpellFlyoutBackgroundEnd:SetAlpha(0)
-
-	for i = 1, GetNumFlyouts() do
-		local x = GetFlyoutID(i)
-		local _, _, numSlots, isKnown = GetFlyoutInfo(x)
-		if isKnown then
-			if numSlots > buttons then
-			buttons = numSlots
-			end
-		end
 	end
 end
 
@@ -258,6 +215,7 @@ end
 do
 	for i = 1, 12 do
 		_G["ActionButton"..i]:StyleButton()
+		_G["BonusActionButton"..i]:StyleButton()
 		_G["MultiBarBottomLeftButton"..i]:StyleButton()
 		_G["MultiBarBottomRightButton"..i]:StyleButton()
 		_G["MultiBarLeftButton"..i]:StyleButton()
@@ -265,13 +223,12 @@ do
 	end
 
 	for i = 1, 10 do
-		_G["StanceButton"..i]:StyleButton()
+		_G["ShapeshiftButton"..i]:StyleButton()
 		_G["PetActionButton"..i]:StyleButton()
 	end
 end
 
 hooksecurefunc("ActionButton_Update", StyleNormalButton)
-hooksecurefunc("ActionButton_UpdateFlyout", StyleFlyoutButton)
 if C.actionbar.hotkey == true then
 	hooksecurefunc("ActionButton_OnEvent", function(self, event, ...) if event == "PLAYER_ENTERING_WORLD" then ActionButton_UpdateHotkeys(self, self.buttonType) end end)
 	hooksecurefunc("ActionButton_UpdateHotkeys", UpdateHotkey)

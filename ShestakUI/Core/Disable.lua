@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Prevent users config errors
@@ -41,7 +41,7 @@ end
 ----------------------------------------------------------------------------------------
 --	Auto-overwrite script config is X addon is found
 ----------------------------------------------------------------------------------------
-if IsAddOnLoaded("Stuf") or IsAddOnLoaded("PitBull4") or IsAddOnLoaded("ShadowedUnitFrames") then
+if IsAddOnLoaded("Stuf") or IsAddOnLoaded("PitBull4") or IsAddOnLoaded("ShadowedUnitFrames") or IsAddOnLoaded("ag_UnitFrames") then
 	C.unitframe.enable = false
 end
 
@@ -50,26 +50,26 @@ if IsAddOnLoaded("Grid") or IsAddOnLoaded("Grid2") or IsAddOnLoaded("HealBot") o
 	C.raidframe.show_raid = false
 end
 
-if IsAddOnLoaded("TidyPlates") or IsAddOnLoaded("nPlates") or IsAddOnLoaded("Kui_Nameplates") or IsAddOnLoaded("rNamePlates") or IsAddOnLoaded("EKplates") or IsAddOnLoaded("bdNameplates") then
+if IsAddOnLoaded("TidyPlates") or IsAddOnLoaded("nPlates") or IsAddOnLoaded("Kui_Nameplates") or IsAddOnLoaded("rNamePlates") or IsAddOnLoaded("EKplates") or IsAddOnLoaded("bdNameplates") or IsAddOnLoaded("Aloft") then
 	C.nameplate.enable = false
 end
 
-if IsAddOnLoaded("Dominos") or IsAddOnLoaded("Bartender4") or IsAddOnLoaded("RazerNaga") then
+if IsAddOnLoaded("Bongos") or IsAddOnLoaded("Dominos") or IsAddOnLoaded("Bartender3") or IsAddOnLoaded("Bartender4") or IsAddOnLoaded("RazerNaga") or IsAddOnLoaded("Macaroon") then
 	C.actionbar.enable = false
 	C.actionbar.toggle_mode = false
 end
 
-if IsAddOnLoaded("Mapster") then
+if IsAddOnLoaded("Mapster") or IsAddOnLoaded("Cartographer") then
 	C.map.explore_map = false
 	C.map.fog_of_war = false
 	C.map.map_boss_count = false
 end
 
-if IsAddOnLoaded("Prat-3.0") or IsAddOnLoaded("Chatter") or IsAddOnLoaded("BasicChatMods") then
+if IsAddOnLoaded("Prat-3.0") or IsAddOnLoaded("Chatter") or IsAddOnLoaded("BasicChatMods") or IsAddOnLoaded("Prat") then
 	C.chat.enable = false
 end
 
-if IsAddOnLoaded("Quartz") or IsAddOnLoaded("AzCastBar") then
+if IsAddOnLoaded("Quartz") or IsAddOnLoaded("AzCastBar") or IsAddOnLoaded("eCastingBar") then
 	C.unitframe.unit_castbar = false
 	C.unitframe.plugins_swing = false
 	C.unitframe.plugins_gcd = false
@@ -79,15 +79,15 @@ if IsAddOnLoaded("Afflicted3") or IsAddOnLoaded("InterruptBar") then
 	C.enemycooldown.enable = false
 end
 
-if IsAddOnLoaded("TipTac") or IsAddOnLoaded("FreebTip") or IsAddOnLoaded("bTooltip") or IsAddOnLoaded("PhanxTooltip") or IsAddOnLoaded("Icetip") then
+if IsAddOnLoaded("TipTac") or IsAddOnLoaded("FreebTip") or IsAddOnLoaded("bTooltip") or IsAddOnLoaded("PhanxTooltip") or IsAddOnLoaded("Icetip") or IsAddOnLoaded("TinyTip") then
 	C.tooltip.enable = false
 end
 
-if IsAddOnLoaded("Gladius") or IsAddOnLoaded("GladiusEx") then
+if IsAddOnLoaded("Gladius") or IsAddOnLoaded("GladiusEx") or IsAddOnLoaded("Gladdy") then
 	C.unitframe.show_arena = false
 end
 
-if IsAddOnLoaded("Omen") or IsAddOnLoaded("rThreat") then
+if IsAddOnLoaded("Omen") or IsAddOnLoaded("rThreat") or IsAddOnLoaded("DiamondThreatMeter") then
 	C.threat.enable = false
 end
 
@@ -99,7 +99,7 @@ if IsAddOnLoaded("TipTacTalents") then
 	C.tooltip.talents = false
 end
 
-if IsAddOnLoaded("AdiBags") or IsAddOnLoaded("ArkInventory") or IsAddOnLoaded("cargBags_Nivaya") or IsAddOnLoaded("cargBags") or IsAddOnLoaded("Bagnon") or IsAddOnLoaded("Combuctor") or IsAddOnLoaded("TBag") or IsAddOnLoaded("BaudBag") then
+if IsAddOnLoaded("AdiBags") or IsAddOnLoaded("ArkInventory") or IsAddOnLoaded("cargBags_Nivaya") or IsAddOnLoaded("cargBags") or IsAddOnLoaded("Bagnon") or IsAddOnLoaded("Combuctor") or IsAddOnLoaded("TBag") or IsAddOnLoaded("BaudBag") or IsAddOnLoaded("OneBag") or IsAddOnLoaded("Stuffing") then
 	C.bag.enable = false
 end
 
@@ -126,10 +126,6 @@ end
 
 if IsAddOnLoaded("PhoenixStyle") then
 	C.announcements.toys = false
-end
-
-if IsAddOnLoaded("Overachiever") then
-	C.tooltip.achievements = false
 end
 
 if IsAddOnLoaded("ChatSounds") then

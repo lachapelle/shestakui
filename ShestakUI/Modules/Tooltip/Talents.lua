@@ -1,14 +1,14 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true or C.tooltip.talents ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Target Talents(TipTacTalents by Aezay)
+--	Target Talents (TipTacTalents by Aezay)
 ----------------------------------------------------------------------------------------
 -- Constants
-local TALENTS_PREFIX = SPECIALIZATION..":|cffffffff "
+local TALENTS_PREFIX = TALENTS..":|cffffffff "
 local CACHE_SIZE = 25
 local INSPECT_DELAY = 0.2
-local INSPECT_FREQ = 2
+local INSPECT_FREQ = 0.4
 
 -- Variables
 local ttt = CreateFrame("Frame", "TipTacTalents")
@@ -26,24 +26,35 @@ ttt:Hide()
 ----------------------------------------------------------------------------------------
 --	Gather Talents
 ----------------------------------------------------------------------------------------
-local function GatherTalents(mouseover)
-	if mouseover == 1 then
-		local id = GetInspectSpecialization("mouseover")
-		local currentSpecName = id and select(2, GetSpecializationInfoByID(id)) or L_TOOLTIP_LOADING
-		current.tree = currentSpecName
-	else
-		local currentSpec = GetSpecialization()
-		local currentSpecName = currentSpec and select(2, GetSpecializationInfo(currentSpec)) or L_TOOLTIP_NO_TALENT
-		current.tree = currentSpecName
+local function GatherTalents(isInspect)
+	-- Inspect functions will always use the active spec when not inspecting
+	local group = GetActiveTalentGroup(isInspect)
+	-- Get points per tree, and set "primaryTree" to the tree with most points
+	local primaryTree = 1
+	for i = 1, 3 do
+		_, _, current[i] = GetTalentTabInfo(i, isInspect, nil, group)
+		if current[i] > current[primaryTree] then
+			primaryTree = i
+		end
 	end
+	current.tree = GetTalentTabInfo(primaryTree, isInspect, nil, group)
 
-	-- Set the tips line output, for inspect, only update if the tip is still showing a unit
-	if mouseover == 0 then
-		GameTooltip:AddLine(TALENTS_PREFIX..current.tree)
+	if (current[primaryTree] == 0) then
+		current.format = L_TOOLTIP_NO_TALENT
+	else
+		current.format = current.tree.." ("..current[1].."/"..current[2].."/"..current[3]..")"
+	end
+	
+	-- Set the tips line output, for inspect, only update if the tip is still showing a unit!
+	if not isInspect then
+		GameTooltip:AddLine(TALENTS_PREFIX..current.format)
 	elseif GameTooltip:GetUnit() then
 		for i = 2, GameTooltip:NumLines() do
 			if (_G["GameTooltipTextLeft"..i]:GetText() or ""):match("^"..TALENTS_PREFIX) then
-				_G["GameTooltipTextLeft"..i]:SetFormattedText("%s%s", TALENTS_PREFIX, current.tree)
+				_G["GameTooltipTextLeft"..i]:SetFormattedText("%s%s", TALENTS_PREFIX, current.format)
+				if not GameTooltip.fadeOut then
+					GameTooltip:Show()
+				end
 				break
 			end
 		end
@@ -52,28 +63,26 @@ local function GatherTalents(mouseover)
 	local cacheSize = CACHE_SIZE
 	for i = #cache, 1, -1 do
 		if current.name == cache[i].name then
-			tremove(cache, i)
-			break
+			table.remove(cache, i)
+			break;
 		end
 	end
 	if #cache > cacheSize then
-		tremove(cache, 1)
+		table.remove(cache, 1)
 	end
 	-- Cache the new entry
 	if cacheSize > 0 then
 		cache[#cache + 1] = CopyTable(current)
 	end
-
-	GameTooltip:Show()
 end
 
 ----------------------------------------------------------------------------------------
 --	Event Handling
 ----------------------------------------------------------------------------------------
 -- OnEvent
-ttt:SetScript("OnEvent", function(self, event, guid)
+ttt:SetScript("OnEvent", function(self, event)
 	self:UnregisterEvent(event)
-	if guid == current.guid then
+	if GameTooltip:GetUnit() == current.name then
 		GatherTalents(1)
 	end
 end)
@@ -84,9 +93,9 @@ ttt:SetScript("OnUpdate", function(self, elapsed)
 	if self.nextUpdate <= 0 then
 		self:Hide()
 		-- Make sure the mouseover unit is still our unit
-		if UnitGUID("mouseover") == current.guid then
+		if UnitName("mouseover") == current.name then
 			lastInspectRequest = GetTime()
-			self:RegisterEvent("INSPECT_READY")
+			self:RegisterEvent("INSPECT_TALENT_READY")
 			-- Az: Fix the blizzard inspect copypasta code (Blizzard_InspectUI\InspectPaperDollFrame.lua @ line 23)
 			if InspectFrame then
 				InspectFrame.unit = "player"
@@ -119,24 +128,25 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 		wipe(current)
 		current.unit = unit
 		current.name = UnitName(unit)
-		current.guid = UnitGUID(unit)
 		-- No need for inspection on the player
 		if UnitIsUnit(unit, "player") then
-			GatherTalents(0)
+			GatherTalents()
 			return
 		end
 		-- Show Cached Talents, If Available
-		local isInspectOpen = (InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown())
 		local cacheLoaded = false
 		for _, entry in ipairs(cache) do
-			if current.name == entry.name and not isInspectOpen then
-				self:AddLine(TALENTS_PREFIX..entry.tree)
+			if current.name == entry.name then
+				self:AddLine(TALENTS_PREFIX..entry.format)
 				current.tree = entry.tree
+				current.format = entry.format
+				current[1], current[2], current[3] = entry[1], entry[2], entry[3]
 				cacheLoaded = true
 				break
 			end
 		end
 		-- Queue an inspect request
+		local isInspectOpen = (InspectFrame and InspectFrame:IsShown()) or (Examiner and Examiner:IsShown())
 		if CanInspect(unit) and not isInspectOpen then
 			local lastInspectTime = GetTime() - lastInspectRequest
 			ttt.nextUpdate = (lastInspectTime > INSPECT_FREQ) and INSPECT_DELAY or (INSPECT_FREQ - lastInspectTime + INSPECT_DELAY)
@@ -144,8 +154,6 @@ GameTooltip:HookScript("OnTooltipSetUnit", function(self, ...)
 			if not cacheLoaded then
 				self:AddLine(TALENTS_PREFIX..L_TOOLTIP_LOADING)
 			end
-		elseif isInspectOpen then
-			self:AddLine(TALENTS_PREFIX..L_TOOLTIP_INSPECT_OPEN)
 		end
 	end
 end)

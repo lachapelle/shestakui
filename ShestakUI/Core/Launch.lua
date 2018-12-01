@@ -1,42 +1,40 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	First Time Launch and On Login file
 ----------------------------------------------------------------------------------------
 local function InstallUI()
 	-- Don't need to set CVar multiple time
-	SetCVar("screenshotQuality", 8)
-	SetCVar("cameraDistanceMaxZoomFactor", 2.6)
-	SetCVar("showTutorials", 0)
+	SetCVar("screenshotQuality", 10)
+	SetCVar("cameraDistanceMax", 50)
+	SetCVar("cameraDistanceMaxFactor", 3.4)
+	SetCVar("showNewbieTips", 0)
 	SetCVar("gameTip", "0")
 	SetCVar("UberTooltips", 1)
-	SetCVar("chatMouseScroll", 1)
+	SetCVar("showLootSpam", 1)
 	SetCVar("removeChatDelay", 1)
-	SetCVar("WholeChatWindowClickable", 0)
-	SetCVar("WhisperMode", "inline")
-	SetCVar("colorblindMode", 0)
 	SetCVar("lootUnderMouse", 0)
-	SetCVar("autoLootDefault", 1)
+	SetCVar("autoLootCorpse", 1)
 	SetCVar("RotateMinimap", 0)
-	SetCVar("autoQuestProgress", 1)
+	SetCVar("autoQuestWatch", 0)
 	SetCVar("scriptErrors", 1)
 	SetCVar("taintLog", 0)
 	SetCVar("buffDurations", 1)
-	SetCVar("autoOpenLootHistory", 0)
-	SetCVar("lossOfControl", 0)
-	SetCVar("nameplateShowSelf", 0)
+
+	TutorialFrame_HideAllAlerts()
+	ClearTutorials()
 
 	-- Setting chat frames
-	if C.chat.enable == true and not (IsAddOnLoaded("Prat-3.0") or IsAddOnLoaded("Chatter")) then
+	if C.chat.enable == true and not (IsAddOnLoaded("Prat-3.0") or IsAddOnLoaded("Chatter") or IsAddOnLoaded("BasicChatMods") or IsAddOnLoaded("Prat")) then
+		FCF_ResetChatWindows()
+		FCF_SetLocked(ChatFrame1, 1)
+		FCF_DockFrame(ChatFrame2)
+		FCF_SetLocked(ChatFrame2, 1)
+
 		for i = 1, NUM_CHAT_WINDOWS do
 			local frame = _G[format("ChatFrame%s", i)]
-			local chatFrameId = frame:GetID()
-			local chatName = FCF_GetChatWindowInfo(chatFrameId)
 
 			frame:SetSize(C.chat.width, C.chat.height)
-
-			-- Default width and height of chats
-			SetChatWindowSavedDimensions(chatFrameId, T.Scale(C.chat.width), T.Scale(C.chat.height))
 
 			-- Move general chat to bottom left
 			if i == 1 then
@@ -44,11 +42,8 @@ local function InstallUI()
 				frame:SetPoint(unpack(C.position.chat))
 			end
 
-			-- Save new default position and dimension
-			FCF_SavePositionAndDimensions(frame)
-
 			-- Set default font size
-			FCF_SetChatWindowFontSize(nil, frame, 11)
+			FCF_SetChatWindowFontSize(frame, 11)
 
 			-- Rename general and combat log tabs
 			if i == 1 then FCF_SetWindowName(frame, GENERAL) end
@@ -57,28 +52,6 @@ local function InstallUI()
 			-- Lock them if unlocked
 			if not frame.isLocked then FCF_SetLocked(frame, 1) end
 		end
-
-		-- Enable classcolor automatically on login and on each character without doing /configure each time
-		ToggleChatColorNamesByClassGroup(true, "SAY")
-		ToggleChatColorNamesByClassGroup(true, "EMOTE")
-		ToggleChatColorNamesByClassGroup(true, "YELL")
-		ToggleChatColorNamesByClassGroup(true, "GUILD")
-		ToggleChatColorNamesByClassGroup(true, "OFFICER")
-		ToggleChatColorNamesByClassGroup(true, "GUILD_ACHIEVEMENT")
-		ToggleChatColorNamesByClassGroup(true, "ACHIEVEMENT")
-		ToggleChatColorNamesByClassGroup(true, "WHISPER")
-		ToggleChatColorNamesByClassGroup(true, "PARTY")
-		ToggleChatColorNamesByClassGroup(true, "PARTY_LEADER")
-		ToggleChatColorNamesByClassGroup(true, "RAID")
-		ToggleChatColorNamesByClassGroup(true, "RAID_LEADER")
-		ToggleChatColorNamesByClassGroup(true, "RAID_WARNING")
-		ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT")
-		ToggleChatColorNamesByClassGroup(true, "INSTANCE_CHAT_LEADER")
-		ToggleChatColorNamesByClassGroup(true, "CHANNEL1")
-		ToggleChatColorNamesByClassGroup(true, "CHANNEL2")
-		ToggleChatColorNamesByClassGroup(true, "CHANNEL3")
-		ToggleChatColorNamesByClassGroup(true, "CHANNEL4")
-		ToggleChatColorNamesByClassGroup(true, "CHANNEL5")
 	end
 
 	-- Reset saved variables on char
@@ -88,7 +61,6 @@ local function InstallUI()
 	SavedOptionsPerChar.Install = true
 	SavedOptionsPerChar.FogOfWar = false
 	SavedOptionsPerChar.AutoInvite = false
-	SavedOptionsPerChar.Archaeology = false
 	SavedOptionsPerChar.BarsLocked = false
 	SavedOptionsPerChar.SplitBars = true
 	SavedOptionsPerChar.RightBars = C.actionbar.rightbars
@@ -161,8 +133,8 @@ StaticPopupDialogs.RESET_STATS = {
 
 StaticPopupDialogs.SWITCH_RAID = {
 	text = L_POPUP_SWITCH_RAID,
-	button1 = DAMAGER,
-	button2 = HEALER,
+	button1 = L_COMPATIBILITY_DAMAGER,
+	button2 = L_COMPATIBILITY_HEALER,
 	button3 = "Blizzard",
 	OnAccept = function() SavedOptions.RaidLayout = "DPS" ReloadUI() end,
 	OnCancel = function() SavedOptions.RaidLayout = "HEAL" ReloadUI() end,
@@ -195,7 +167,6 @@ OnLogon:SetScript("OnEvent", function(self, event)
 	if SavedOptions.RaidLayout == nil then SavedOptions.RaidLayout = "UNKNOWN" end
 	if SavedOptionsPerChar.FogOfWar == nil then SavedOptionsPerChar.FogOfWar = false end
 	if SavedOptionsPerChar.AutoInvite == nil then SavedOptionsPerChar.AutoInvite = false end
-	if SavedOptionsPerChar.Archaeology == nil then SavedOptionsPerChar.Archaeology = false end
 	if SavedOptionsPerChar.BarsLocked == nil then SavedOptionsPerChar.BarsLocked = false end
 	if SavedOptionsPerChar.SplitBars == nil then SavedOptionsPerChar.SplitBars = true end
 	if SavedOptionsPerChar.RightBars == nil then SavedOptionsPerChar.RightBars = C.actionbar.rightbars end
@@ -213,7 +184,7 @@ OnLogon:SetScript("OnEvent", function(self, event)
 		SetCVar("uiScale", C.general.uiscale)
 
 		-- Hack for 4K and WQHD Resolution
-		local customScale = min(2, max(0.32, 768 / string.match(T.resolution, "%d+x(%d+)")))
+		local customScale = min(2, max(0.32, 768 / strmatch(T.resolution, "%d+x(%d+)")))
 		if C.general.auto_scale == true and customScale < 0.64 then
 			UIParent:SetScale(customScale)
 		elseif customScale < 0.64 then

@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -14,4 +14,4 @@ local function LoadSkin()
 	TaxiFrame.CloseButton:SetPoint("TOPRIGHT", -4, -1)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

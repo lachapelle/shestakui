@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true or C.skins.ace3 ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -12,6 +12,7 @@ local oldRegisterAsWidget = AceGUI.RegisterAsWidget
 AceGUI.RegisterAsWidget = function(self, widget)
 	local TYPE = widget.type
 	if TYPE == "CheckBox" then
+		widget.checkbg:Kill()
 		widget.highlight:Kill()
 
 		if not widget.skinnedCheckBG then
@@ -35,7 +36,7 @@ AceGUI.RegisterAsWidget = function(self, widget)
 		button:ClearAllPoints()
 		button:SetPoint("RIGHT", frame, "RIGHT", -20, 0)
 
-		T.SkinNextPrevButton(button)
+		T.SkinNextPrevButton(button, true)
 
 		if not frame.backdrop then
 			frame:CreateBackdrop("Overlay")
@@ -46,7 +47,7 @@ AceGUI.RegisterAsWidget = function(self, widget)
 		text:SetParent(frame.backdrop)
 		button:HookScript("OnClick", function(this)
 			local self = this.obj
-			self.pullout.frame:SetTemplate("Transparent")
+			self.pullout.frame:SetTemplate("Transparent", true)
 		end)
 	elseif TYPE == "LSM30_Font" or TYPE == "LSM30_Sound" or TYPE == "LSM30_Border" or TYPE == "LSM30_Background" or TYPE == "LSM30_Statusbar" then
 		local frame = widget.frame
@@ -54,7 +55,7 @@ AceGUI.RegisterAsWidget = function(self, widget)
 		local text = frame.text
 		frame:StripTextures()
 
-		T.SkinNextPrevButton(button)
+		T.SkinNextPrevButton(button, true)
 		frame.text:ClearAllPoints()
 		frame.text:SetPoint("RIGHT", button, "LEFT", -2, 0)
 
@@ -87,15 +88,15 @@ AceGUI.RegisterAsWidget = function(self, widget)
 		button:HookScript("OnClick", function(this, button)
 			local self = this.obj
 			if self.dropdown then
-				self.dropdown:SetTemplate("Transparent")
+				self.dropdown:SetTemplate("Transparent", true)
 			end
 		end)
 	elseif TYPE == "EditBox" then
 		local frame = widget.editbox
 		local button = widget.button
-		frame.Left:Kill()
-		frame.Middle:Kill()
-		frame.Right:Kill()
+		_G[frame:GetName().."Left"]:Kill()
+		_G[frame:GetName().."Middle"]:Kill()
+		_G[frame:GetName().."Right"]:Kill()
 		frame:SetHeight(17)
 		frame:CreateBackdrop("Overlay")
 		frame.backdrop:SetPoint("TOPLEFT", -2, 0)
@@ -106,7 +107,7 @@ AceGUI.RegisterAsWidget = function(self, widget)
 	elseif TYPE == "Button" then
 		local frame = widget.frame
 		frame:StripTextures(true)
-		frame:CreateBackdrop("Overlay")
+		frame:CreateBackdrop("Overlay", true)
 		frame.backdrop:SetPoint("TOPLEFT", 2, -2)
 		frame.backdrop:SetPoint("BOTTOMRIGHT", -2, 1)
 		widget.text:SetParent(frame.backdrop)
@@ -153,9 +154,19 @@ AceGUI.RegisterAsContainer = function(self, widget)
 	if TYPE == "ScrollFrame" then
 		local frame = widget.scrollbar
 		T.SkinScrollBar(frame)
-	elseif TYPE == "InlineGroup" or TYPE == "TreeGroup" or TYPE == "TabGroup" or TYPE == "DropdownGroup" then
+	elseif TYPE == "InlineGroup" or TYPE == "TreeGroup" or TYPE == "TabGroup" or TYPE == "SimpleGroup" or TYPE == "Frame" or TYPE == "DropdownGroup" then
 		local frame = widget.content:GetParent()
-
+		if TYPE == "Frame" then
+			frame:StripTextures()
+			for i = 1, frame:GetNumChildren() do
+				local child = select(i, frame:GetChildren())
+				if child:GetObjectType() == "Button" and child:GetText() then
+					child:SkinButton()
+				else
+					child:StripTextures()
+				end
+			end
+		end
 		frame:SetTemplate("Overlay")
 
 		if widget.treeframe then

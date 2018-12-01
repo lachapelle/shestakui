@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true or C.tooltip.arena_experience ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Arena function(ArenaExp by Fernir)
+--	Arena function (ArenaExp by Fernir)
 ----------------------------------------------------------------------------------------
 local active = false
 local tooltip = _G["GameTooltip"]

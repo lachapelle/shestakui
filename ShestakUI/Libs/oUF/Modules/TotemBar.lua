@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe_class_bar.totem ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_TotemBar(by Soeters)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local total = 0

@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if T.client ~= "zhCN" then return end
 
 ----------------------------------------------------------------------------------------
@@ -56,17 +56,13 @@ L_MISC_BINDER_OPEN = "鼠标绑定"
 L_MISC_GROCERY_BUY = "购买"
 L_MISC_GROCERY_DESC = "杂货商自动购买"
 L_MISC_SCROLL = "附魔卷轴"
-L_MISC_COLLAPSE = "The Collapse" -- Need review
+L_MISC_COLLAPSE = "The Collapse" -- Needs review
 
 -- Raid Utility
 L_RAID_UTIL_DISBAND = "解散团队"
 
 -- Zone name
-L_ZONE_TOLBARAD = "托尔巴拉德"
-L_ZONE_TOLBARADPEN = "托尔巴拉德半岛"
 L_ZONE_ARATHIBASIN = "阿拉希盆地"
-L_ZONE_GILNEAS = "吉尔尼斯之战"
-L_ZONE_ANCIENTDALARAN = "达拉然巨坑"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Wowhead链接"
@@ -97,24 +93,35 @@ L_MINIMAP_CALENDAR = "日历"
 L_MINIMAP_HEAL_LAYOUT = "左鍵 - 治疗 布局"
 L_MINIMAP_DPS_LAYOUT = "右键 - 攻击 布局"
 L_MINIMAP_BLIZZ_LAYOUT = "中键 - 默认布局"
-L_MINIMAP_ARTIFACT = "Right click to use" -- Needs review
+
+-- Addons list
+L_ALOAD_RL = "重新加载UI"
+L_ALOAD_DEP = "依赖关系: "
+L_ALOAD_OP_DEP = "可选依赖: "
+L_ALOAD_AUTHOR = "作者: "
+L_ALOAD_PROFILES = "配置文件"
+L_ALOAD_ENABLE_ALL = "全部启用"
+L_ALOAD_DISABLE_ALL = "全部禁用"
+L_ALOAD_PROFILE_NAME = "配置文件名称"
+L_ALOAD_SET_TO = "发送至.."
+L_ALOAD_ADD_TO = "添加至.."
+L_ALOAD_REMOVE_FROM = "移除自.."
+L_ALOAD_DELETE_PROFILE = "删除配置文件"
+L_ALOAD_CONFIRM_DELETE = "确定删除该配置文件？请按住shift再次点击确认删除。"
 
 -- Chat
 L_CHAT_WHISPER = "From"
-L_CHAT_BN_WHISPER = "From"
 L_CHAT_AFK = "[AFK]"
 L_CHAT_DND = "[DND]"
 L_CHAT_GM = "[GM]"
 L_CHAT_GUILD = "G"
 L_CHAT_PARTY = "P"
-L_CHAT_PARTY_LEADER = "PL"
 L_CHAT_RAID = "R"
 L_CHAT_RAID_LEADER = "RL"
 L_CHAT_RAID_WARNING = "RE"
-L_CHAT_INSTANCE_CHAT = "I"
-L_CHAT_INSTANCE_CHAT_LEADER = "IL"
+L_CHAT_BATTLEGROUND = "BG"
+L_CHAT_BATTLEGROUND_LEADER = "BGL"
 L_CHAT_OFFICER = "O"
-L_CHAT_PET_BATTLE = "PB"
 L_CHAT_COME_ONLINE = "|cff298F00上线|r."
 L_CHAT_GONE_OFFLINE = "|cffff0000下线|r."
 
@@ -122,10 +129,28 @@ L_CHAT_GONE_OFFLINE = "|cffff0000下线|r."
 L_ERRORFRAME_L = "点击查看错误"
 
 -- Bags
-L_BAG_SHOW_BAGS = "显示背包"
-L_BAG_RIGHT_CLICK_SEARCH = "右键点击搜寻物品"
+-- L_BAG_SHOW_BAGS = "显示背包"
+-- L_BAG_RIGHT_CLICK_SEARCH = "右键点击搜寻物品"
+-- L_BAG_STACK_MENU = "堆叠"
+-- L_BAG_RIGHT_CLICK_CLOSE = "右键点击打开菜单"
+L_BAG_BANK = "银行"
+L_BAG_NO_SLOTS = "不能再购买更多的背包栏位!"
+L_BAG_COSTS = "花费: %.2f 金"
+L_BAG_BUY_SLOTS = "输入 /bags purchase yes 以购买银行背包栏位"
+L_BAG_OPEN_BANK = "您需要先造访您的银行"
+L_BAG_SORT = "将背包或银行内的物品分类及排序"
+L_BAG_STACK = "将背包或银行内的不完整的物品堆叠重新堆叠"
+L_BAG_BUY_BANKS_SLOT = "购买银行背包栏位. (需要造访银行)"
+L_BAG_SORT_MENU = "分类及排序"
+L_BAG_SORT_SPECIAL = "分类及排序特殊物品"
 L_BAG_STACK_MENU = "堆叠"
-L_BAG_RIGHT_CLICK_CLOSE = "右键点击打开菜单"
+L_BAG_STACK_SPECIAL = "堆叠特殊物品"
+L_BAG_SHOW_BAGS = "显示背包"
+L_BAG_SORTING_BAGS = "分类及排序完成"
+L_BAG_NOTHING_SORT = "不需要分类"
+L_BAG_BAGS_BIDS = "使用背包: "
+L_BAG_STACK_END = "重新堆叠完成"
+L_BAG_RIGHT_CLICK_SEARCH = "点击右键以搜寻物品"
 
 -- Grab mail
 L_MAIL_STOPPED = "无法拾取,背包已满."
@@ -143,6 +168,7 @@ L_LOOT_TO_RAID = "  团队"
 L_LOOT_TO_PARTY = "  队伍"
 L_LOOT_TO_GUILD = "  公会"
 L_LOOT_TO_SAY = "  说"
+L_LOOT_CANNOT = "不能拾取"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "你处于暂离状态!"
@@ -151,9 +177,6 @@ L_PANELS_AFK_LCLICK = "左键点击返回."
 
 -- Cooldowns
 L_COOLDOWNS = "CD: "
-L_COOLDOWNS_COMBATRESS = "战复"
-L_COOLDOWNS_COMBATRESS_REMAINDER = "战复剩余: "
-L_COOLDOWNS_NEXTTIME = "下次: "
 
 -- Autoinvite
 L_INVITE_ENABLE = "自动邀请功能启用: "
@@ -308,8 +331,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - 启用指定插件",
 	"/rd - 解散队伍.",
 	"/toraid - 转换队伍/团队",
-	"/teleport - 传送随机副本",
-	"/spec - 切换天赋",
 	"/heal - 载入HPS布局",
 	"/dps - 载入DPS布局",
 	"/frame - 在聊天窗口输出鼠标指向的框体的名字",
@@ -332,99 +353,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - 开启shestakui设置界面",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "探索: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["东部王国"]							= {X =   42, A =    0, H =    0},
-	["卡利姆多"]							= {X =   43, A =    0, H =    0},
-	["外域"]							= {X =   44, A =    0, H =    0},
-	["诺森德"]							= {X =   45, A =    0, H =    0},
-	["世界地图"]							= {X =  nil, A =    0, H =    0},
-	["潘达利亚"]							= {X = 6974, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["阿拉希高地"]						= {X =  761, A = 4896, H = 4896},
-	["荒芜之地"]							= {X =  765, A = 4900, H = 4900},
-	["诅咒之地"]							= {X =  766, A = 4909, H = 4909},
-	["燃烧平原"]							= {X =  775, A = 4901, H = 4901},
-	["逆风小径"]							= {X =  777, A =    0, H =    0},
-	["丹莫罗"]							= {X =  627, A =    0, H =    0},
-	["暮色森林"]							= {X =  778, A = 4903, H =    0},
-	["东瘟疫之地"]						= {X =  771, A = 4892, H = 4892},
-	["艾尔文森林"]						= {X =  776, A =    0, H =    0},
-	["永歌森林"]							= {X =  859, A =    0, H =    0},
-	["幽魂之地"]							= {X =  858, A =    0, H = 4908},
-	["希尔斯布莱德丘陵"]					= {X =  772, A =    0, H = 4895},
-	["洛克莫丹"]							= {X =  779, A = 4899, H =    0},
-	["北荆棘谷"]							= {X =  781, A = 4906, H = 4906},
-	["赤脊山"]							= {X =  780, A = 4902, H =    0},
-	["灼热峡谷"]							= {X =  774, A = 4910, H = 4910},
-	["银松森林"]							= {X =  769, A =    0, H = 4894},
-	["悲伤沼泽"]							= {X =  782, A = 4904, H = 4904},
-	["荆棘谷海角"]						= {X = 4995, A = 4905, H = 4905},
-	["辛特兰"]							= {X =  773, A = 4897, H = 4897},
-	["提瑞斯法林地"]						= {X =  768, A =    0, H =    0},
-	["西瘟疫之地"]						= {X =  770, A = 4893, H = 4893},
-	["西部荒野"]							= {X =  802, A = 4903, H =    0},
-	["湿地"]							= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["灰谷"]							= {X =  845, A = 4925, H = 4976},
-	["艾萨拉"]							= {X =  852, A =    0, H = 4927},
-	["秘蓝岛"]							= {X =  860, A =    0, H =    0},
-	["秘血岛"]							= {X =  861, A = 4926, H = 4926},
-	["黑海岸"]							= {X =  844, A = 4928, H = 4928},
-	["凄凉之地"]							= {X =  848, A = 4930, H = 4930},
-	["杜隆塔尔"]							= {X =  728, A =    0, H =    0},
-	["尘泥沼泽"]							= {X =  850, A = 4929, H = 4978},
-	["费伍德森林"]						= {X =  853, A = 4931, H = 4931},
-	["菲拉斯"]							= {X =  849, A = 4932, H = 4979},
-	["月光林地"]							= {X =  855, A =    0, H =    0},
-	["莫高雷"]							= {X =  736, A =    0, H =    0},
-	["北贫瘠之地"]						= {X =  750, A =    0, H = 4933},
-	["希利苏斯"]							= {X =  856, A = 4934, H = 4934},
-	["南贫瘠之地"]						= {X = 4996, A = 4937, H = 4981},
-	["石爪山脉"]							= {X =  847, A = 4936, H = 4980},
-	["塔纳利斯"]							= {X =  851, A = 4935, H = 4935},
-	["泰达希尔"]							= {X =  842, A =    0, H =    0},
-	["千针石林"]							= {X =  846, A = 4938, H = 4938},
-	["安戈洛环形山"]						= {X =  854, A = 4939, H = 4939},
-	["冬泉谷"]							= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["刀锋山"]							= {X =  865, A = 1193, H = 1193},
-	["地狱火半岛"]						= {X =  862, A = 1189, H = 1271},
-	["纳格兰"]							= {X =  866, A = 1192, H = 1273},
-	["虚空风暴"]							= {X =  843, A = 1194, H = 1194},
-	["影月谷"]							= {X =  864, A = 1195, H = 1195},
-	["泰罗卡森林"]						= {X =  867, A = 1191, H = 1272},
-	["赞加沼泽"]							= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["北风苔原"]							= {X = 1264, A =   33, H = 1358},
-	["晶歌森林"]							= {X = 1457, A =    0, H =    0},
-	["龙骨荒野"]							= {X = 1265, A =   35, H = 1356},
-	["灰熊丘陵"]							= {X = 1266, A =   37, H = 1357},
-	["嚎风峡湾"]							= {X = 1263, A =   34, H = 1356},
-	["冰冠冰川"]					 		= {X = 1270, A =   40, H =   40},
-	["索拉查盆地"]						= {X = 1268, A =   39, H =   39},
-	["风暴峭壁"]							= {X = 1269, A =   38, H =   38},
-	["祖达克"]							= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["深岩之洲"]							= {X = 4864, A = 4871, H = 4871},
-	["海加尔"]							= {X = 4863, A = 4870, H = 4870},
-	["暮光高地"]							= {X = 4866, A = 4873, H = 5501},
-	["奥丹姆"]							= {X = 4865, A = 4872, H = 4872},
-	["瓦丝琪尔"]							= {X = 4825, A = 4869, H = 4982},
-	["托尔巴拉德"]						= {X =    0, A = 4874, H = 4874},
-	["托尔巴拉德半岛"]					= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["翡翠林"]							= {X = 6351, A = 6300, H = 6534},
-	["四风谷"]							= {X = 6969, A = 6301, H = 6301},
-	["昆莱山"]							= {X = 6976, A = 6537, H = 6538},
-	["螳螂高原"]							= {X = 6977, A = 6539, H = 6539},
-	["恐惧废土"]							= {X = 6978, A = 6540, H = 6540},
-	["锦绣谷"]							= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["奎尔丹纳斯岛"]						= {X =  868, A =    0, H =    0},
-	["安其拉：堕落王国"]					= {X =    0, A =    0, H =    0},
-	["冬拥湖"]							= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "货币"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "金"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "银"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "铜"
+
+L_COMPATIBILITY_APPLY = "应用"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "清理"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "增益效果和负面效果"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "复制"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "粘贴"
+L_COMPATIBILITY_CONVERT_TO_RAID = "转化为团队"
+L_COMPATIBILITY_DAMAGER = "伤害输出"
+L_COMPATIBILITY_DURABILITY = "耐久度"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "该功能将在%d级开启。"
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "服务器："
+L_COMPATIBILITY_GENERAL_LABEL = "综合"
+L_COMPATIBILITY_HEALER = "治疗者"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "团队框体"
+L_COMPATIBILITY_SELL_PRICE = "卖价"
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "物品等级"
+L_COMPATIBILITY_UNITFRAME_LABEL = "单位框体"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "单位姓名板"

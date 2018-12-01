@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -155,4 +155,4 @@ local function LoadSkin()
 	SendMailMailButton:SetPoint("RIGHT", SendMailCancelButton, "LEFT", -2, 0)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

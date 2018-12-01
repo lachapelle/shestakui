@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Reposition Capture Bar
@@ -17,14 +17,14 @@ local function CaptureUpdate()
 				bar:SetPoint("TOPLEFT", _G["WorldStateCaptureBar"..i-1], "BOTTOMLEFT", 0, -7)
 			end
 			if not bar.skinned then
-				local left = bar.LeftBar
-				local right = bar.RightBar
-				local middle = bar.MiddleBar
+				local left = _G[barname.."LeftBar"]
+				local right = _G[barname.."RightBar"]
+				local middle = _G[barname.."MiddleBar"]
 				select(4, bar:GetRegions()):Hide()
-				bar.LeftLine:SetAlpha(0)
-				bar.RightLine:SetAlpha(0)
-				bar.LeftIconHighlight:SetAlpha(0)
-				bar.RightIconHighlight:SetAlpha(0)
+				_G[barname.."LeftLine"]:SetAlpha(0)
+				_G[barname.."RightLine"]:SetAlpha(0)
+				_G[barname.."LeftIconHighlight"]:SetAlpha(0)
+				_G[barname.."RightIconHighlight"]:SetAlpha(0)
 
 				left:SetTexture(C.media.texture)
 				right:SetTexture(C.media.texture)
@@ -56,8 +56,10 @@ local function StateUpdate()
 		if f then
 			f:ClearAllPoints()
 			f:SetFrameStrata("BACKGROUND")
-			if i == 1 then
-				f:SetPoint(unpack(C.position.attempt))
+			if i == 1 and C.toppanel.enable ~= true then
+				f:SetPoint(unpack(C.position.bgscore))
+			elseif i == 1 then
+				f:SetPoint(unpack(C.position.bgscore_toppanel))
 			else
 				f:SetPoint("TOPLEFT", _G["AlwaysUpFrame"..i-1], "BOTTOMLEFT", 0, 0)
 			end

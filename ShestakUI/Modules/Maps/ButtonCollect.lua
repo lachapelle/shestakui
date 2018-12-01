@@ -1,14 +1,12 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.minimap.enable ~= true or C.skins.minimap_buttons ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Collect minimap buttons in one line
 ----------------------------------------------------------------------------------------
 local BlackList = {
-	["QueueStatusMinimapButton"] = true,
 	["MiniMapTracking"] = true,
 	["MiniMapMailFrame"] = true,
-	["HelpOpenTicketButton"] = true,
 	["GameTimeFrame"] = true,
 }
 
@@ -31,7 +29,7 @@ local function PositionAndStyle()
 		buttons[i].ClearAllPoints = T.dummy
 		buttons[i].SetPoint = T.dummy
 		buttons[i]:SetAlpha(0)
-		buttons[i]:HookScript("OnEnter", function()
+		buttons[i]:S("OnEnter", function()
 			buttons[i]:FadeIn()
 		end)
 		buttons[i]:HookScript("OnLeave", function()
@@ -47,7 +45,7 @@ collect:SetScript("OnEvent", function(self)
 		if not BlackList[child:GetName()] then
 			if child:GetObjectType() == "Button" and child:GetNumRegions() >= 3 and child:IsShown() then
 				child:SetParent(button)
-				tinsert(buttons, child)
+				table.insert(buttons, child)
 			end
 		end
 	end

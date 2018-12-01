@@ -1,7 +1,7 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
---	Shift+Click to cancel/bid/buyout items in auction(OneClickBuyOut by Egingell)
+--	Shift+Click to cancel/bid/buyout items in auction (OneClickBuyOut by Egingell)
 ----------------------------------------------------------------------------------------
 local LoadOCBO = CreateFrame("Frame")
 LoadOCBO:RegisterEvent("ADDON_LOADED")

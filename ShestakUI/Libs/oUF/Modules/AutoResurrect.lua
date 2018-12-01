@@ -1,22 +1,16 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.raidframe.plugins_auto_resurrection ~= true or C.misc.click_cast == true or T.class == "ROGUE" or T.class == "WARRIOR" or T.class == "HUNTER" or T.class == "MAGE" then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on FreebAutoRez(by Freebaser)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local classList = {
-	["DEATHKNIGHT"] = {
-		combat = GetSpellInfo(61999),	-- Raise Ally
-	},
 	["DRUID"] = {
 		combat = GetSpellInfo(20484),	-- Rebirth
 		ooc = GetSpellInfo(50769),		-- Revive
-	},
-	["MONK"] = {
-		ooc = GetSpellInfo(115178),		-- Resuscitate
 	},
 	["PALADIN"] = {
 		ooc = GetSpellInfo(7328),		-- Redemption

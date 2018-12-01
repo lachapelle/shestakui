@@ -1,9 +1,16 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.bigwigs ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	BigWigs skin(by Affli)
 ----------------------------------------------------------------------------------------
+local classcolor = true			-- Classcolored bars
+local skinrange = true			-- Skin distance window
+local disablescaling = true		-- Disables bar scaling (including emphasized bars)
+
+local barcolor = classcolor and RAID_CLASS_COLORS[T.class]
+local buttonsize = 21
+
 -- Init some tables to store backgrounds
 local freebg = {}
 
@@ -36,10 +43,12 @@ local function freestyle(bar)
 	-- Replace dummies with original method functions
 	bar.candyBarBar.SetPoint = bar.candyBarBar.OldSetPoint
 	bar.candyBarIconFrame.SetWidth = bar.candyBarIconFrame.OldSetWidth
-	bar.SetScale = bar.OldSetScale
+	if disablescaling then 
+		bar.SetScale = bar.OldSetScale
+	end
 
-	-- Reset Positions
-	-- Icon
+	--Reset Positions
+	--Icon
 	bar.candyBarIconFrame:ClearAllPoints()
 	bar.candyBarIconFrame:SetPoint("TOPLEFT")
 	bar.candyBarIconFrame:SetPoint("BOTTOMLEFT")
@@ -66,9 +75,11 @@ end
 local applystyle = function(bar)
 	-- General bar settings
 	bar:SetHeight(15)
-	bar:SetScale(1)
-	bar.OldSetScale = bar.SetScale
-	bar.SetScale = T.dummy
+	if disablescaling then
+		bar:SetScale(1)
+		bar.OldSetScale = bar.SetScale
+		bar.SetScale = T.dummy
+	end
 
 	-- Create or reparent and use bar background
 	local bg = nil
@@ -121,19 +132,19 @@ local applystyle = function(bar)
 	bar.candyBarBar.OldSetPoint = bar.candyBarBar.SetPoint
 	bar.candyBarBar.SetPoint = T.dummy
 	bar.candyBarBar:SetStatusBarTexture(C.media.texture)
-	if not bar.data["bigwigs:emphasized"] == true then
-		bar.candyBarBar:SetStatusBarColor(T.color.r, T.color.g, T.color.b, 1)
-	end
+	if barcolor and not bar.data["bigwigs:emphasized"] == true then bar.candyBarBar:SetStatusBarColor(barcolor.r, barcolor.g, barcolor.b, 1) end
 	bar.candyBarBackground:SetTexture(C.media.texture)
 
 	-- Setup icon positions and other things
 	bar.candyBarIconFrame:ClearAllPoints()
-	bar.candyBarIconFrame:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", -28, 0)
-	bar.candyBarIconFrame:SetSize(21, 21)
+	bar.candyBarIconFrame:SetPoint("BOTTOMLEFT", bar, "BOTTOMLEFT", -buttonsize - buttonsize/3, 0)
+	bar.candyBarIconFrame:SetSize(buttonsize, buttonsize)
 	bar.candyBarIconFrame.OldSetWidth = bar.candyBarIconFrame.SetWidth
 	bar.candyBarIconFrame.SetWidth = T.dummy
 	bar.candyBarIconFrame:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 end
+
+local f = CreateFrame("Frame")
 
 local function registerStyle()
 	if not BigWigs then return end
@@ -149,74 +160,59 @@ local function registerStyle()
 			GetStyleName = function() return "ShestakUI" end,
 		})
 	end
-	bars.defaultDB.barStyle = "ShestakUI"
-	if BigWigsLoader and bars.defaultDB.barStyle == "ShestakUI" then
-		BigWigsLoader.RegisterMessage("BigWigs_Plugins", "BigWigs_FrameCreated", function()
+	if prox and skinrange and BigWigs.pluginCore.modules.Bars.db.profile.barStyle == "ShestakUI" then
+		hooksecurefunc(BigWigs.pluginCore.modules.Proximity, "RestyleWindow", function()
 			BigWigsProximityAnchor:SetTemplate("Transparent")
 		end)
 	end
 end
 
-local f = CreateFrame("Frame")
 f:RegisterEvent("ADDON_LOADED")
 f:SetScript("OnEvent", function(self, event, addon)
 	if event == "ADDON_LOADED" then
 		if addon == "BigWigs_Plugins" then
-			if not BigWigs3DB.namespaces.BigWigs_Plugins_Bars or BigWigs3DB.namespaces.BigWigs_Plugins_Bars.profiles.Default.InstalledBars ~= C.actionbar.bottombars then
+			if BigWigs3DB.namespaces.BigWigs_Plugins_Bars.profiles.Default.InstalledBars ~= C.actionbar.bottombars then
 				StaticPopup_Show("BW_TEST")
 			end
+			BigWigs.pluginCore.modules.Bars.db.profile.barStyle = "ShestakUI"
 			registerStyle()
 			f:UnregisterEvent("ADDON_LOADED")
 		end
 	end
 end)
 
+local pr = function(msg)
+	print(tostring(msg))
+end
+
 StaticPopupDialogs.BW_TEST = {
 	text = L_POPUP_SETTINGS_BW,
 	button1 = ACCEPT,
 	button2 = CANCEL,
 	OnAccept = function()
-		local bars = BigWigs and BigWigs:GetPlugin("Bars")
-		if bars then
-			bars.db.profile.barStyle = "ShestakUI"
-			bars.db.profile.font = C.font.stylization_font
-			bars.db.profile.BigWigsAnchor_width = 185
-			bars.db.profile.BigWigsAnchor_x = 38
-			bars.db.profile.BigWigsEmphasizeAnchor_width = 185
-			bars.db.profile.BigWigsEmphasizeAnchor_x = 420
-			bars.db.profile.BigWigsEmphasizeAnchor_y = 248
-			bars.db.profile.emphasizeGrowup = true
-			bars.db.profile.InstalledBars = C.actionbar.bottombars
-			if C.actionbar.bottombars == 1 then
-				bars.db.profile.BigWigsAnchor_y = 116
-			elseif C.actionbar.bottombars == 2 then
-				bars.db.profile.BigWigsAnchor_y = 138
-			elseif C.actionbar.bottombars == 3 then
-				bars.db.profile.BigWigsAnchor_y = 159
-			end
-		end
-		local mess = BigWigs and BigWigs:GetPlugin("Messages")
-		if mess then
-			mess.db.profile.font = "Calibri"
-			mess.db.profile.fontSize = 20
-			mess.db.profile.BWMessageAnchor_x = 415
-			mess.db.profile.BWMessageAnchor_y = 320
-			mess.db.profile.BWEmphasizeMessageAnchor_x = 415
-			mess.db.profile.BWEmphasizeMessageAnchor_y = 335
-			mess.db.profile.BWEmphasizeCountdownMessageAnchor_x = 465
-			mess.db.profile.BWEmphasizeCountdownMessageAnchor_y = 370
-		end
-		local prox = BigWigs and BigWigs:GetPlugin("Proximity")
-		if prox then
-			prox.db.profile.font = "Calibri"
-			prox.db.profile.objects.ability = false
-		end
+		BigWigs.pluginCore.modules.Bars.db.profile.barStyle = "ShestakUI"
+		BigWigs.pluginCore.modules.Bars.db.profile.font = C.font.stylization_font
+		BigWigs.pluginCore.modules.Messages.db.profile.font = C.media.normal_font
+		BigWigs.pluginCore.modules.Messages.db.profile.outline = "OUTLINE"
+		BigWigs.pluginCore.modules.Proximity.db.profile.font = C.media.normal_font
+		BigWigs.pluginCore.modules.Bars.db.profile.BigWigsAnchor_width = 185
+		BigWigs.pluginCore.modules.Bars.db.profile.BigWigsAnchor_x = 49
+		BigWigs.pluginCore.modules.Bars.db.profile.BigWigsEmphasizeAnchor_width = 185
+		BigWigs.pluginCore.modules.Bars.db.profile.BigWigsEmphasizeAnchor_x = 541
+		BigWigs.pluginCore.modules.Bars.db.profile.BigWigsEmphasizeAnchor_y = 493
+		BigWigs.pluginCore.modules.Messages.db.profile.fontSize = 30
 		BigWigs3IconDB.hide = true
-		BigWigs:GetPlugin("Super Emphasize").db.profile.font = "Calibri"
-		BigWigs:GetPlugin("Alt Power").db.profile.font = "Calibri"
+		if C.actionbar.bottombars == 1 then
+			BigWigs.pluginCore.modules.Bars.db.profile.BigWigsAnchor_y = 150
+		elseif C.actionbar.bottombars == 2 then
+			BigWigs.pluginCore.modules.Bars.db.profile.BigWigsAnchor_y = 177
+		elseif C.actionbar.bottombars == 3 then
+			BigWigs.pluginCore.modules.Bars.db.profile.BigWigsAnchor_y = 203
+		end
+		BigWigs.pluginCore.modules.Bars.db.profile.InstalledBars = C.actionbar.bottombars
 		if InCombatLockdown() then
-			print("|cffffff00"..ERR_NOT_IN_COMBAT.."|r")
-			print("|cffffff00Reload your UI to apply skin.|r")
+			pr("|cffffff00"..ERR_NOT_IN_COMBAT.."|r")
+			pr("|cffffff00Reload your UI to apply skin.|r")
 		else
 			ReloadUI()
 		end
@@ -224,7 +220,7 @@ StaticPopupDialogs.BW_TEST = {
 	timeout = 0,
 	whileDead = 1,
 	hideOnEscape = true,
-	preferredIndex = 5,
+	preferredIndex = 3,
 }
 
 SlashCmdList.BWTEST = function(msg)
@@ -234,7 +230,7 @@ SlashCmdList.BWTEST = function(msg)
 		StaticPopup_Show("BW_TEST")
 	elseif msg == "test" then
 		SlashCmdList["BigWigs"]()
-		BigWigs:GetPlugin("Proximity").Test(BigWigs:GetPlugin("Proximity"))
+		BigWigs.pluginCore.modules.Proximity.Test(BigWigs.pluginCore.modules.Proximity)
 		HideUIPanel(InterfaceOptionsFrame)
 		BigWigs:Test()
 		BigWigs:Test()
@@ -242,8 +238,8 @@ SlashCmdList.BWTEST = function(msg)
 		BigWigs:Test()
 		BigWigs:Test()
 	else
-		print("|cffffff00Type /bwtest apply to apply BigWigs settings.|r")
-		print("|cffffff00Type /bwtest test to launch BigWigs testmode.|r")
+		pr("|cffffff00Type /bwtest apply to apply BigWigs settings.|r")
+		pr("|cffffff00Type /bwtest test to launch BigWigs testmode.|r")
 	end
 end
 SLASH_BWTEST1 = "/bwtest"

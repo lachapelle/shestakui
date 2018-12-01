@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.bubbles ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -34,7 +34,6 @@ f:SetScript("OnUpdate", function(self, elapsed)
 		if newNumKids ~= numKids then
 			for i = numKids + 1, newNumKids do
 				local frame = select(i, WorldFrame:GetChildren())
-				if frame:IsForbidden() then return end -- 7.2 Fix for friendly nameplate in raid
 				local b = frame:GetBackdrop()
 				if b and b.bgFile == [[Interface\Tooltips\ChatBubble-Background]] then
 					styleBubble(frame)

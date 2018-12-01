@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.dominos ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -76,7 +76,8 @@ frame:SetScript("OnEvent", function(self, event, addon)
 		button:SetNormalTexture("")
 
 		if flash then
-			flash:SetColorTexture(0.8, 0.8, 0.8, 0.5)
+											   
+			flash:SetTexture(0.8, 0.8, 0.8, 0.5)
 			flash:SetPoint("TOPLEFT", button, 2, -2)
 			flash:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		end

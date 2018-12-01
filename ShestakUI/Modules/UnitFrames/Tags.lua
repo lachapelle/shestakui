@@ -1,12 +1,13 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Tags
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
+--[[
 oUF.Tags.Methods["Threat"] = function(unit)
 	local _, status, percent = UnitDetailedThreatSituation("player", "target")
 	if percent and percent > 0 then
@@ -14,6 +15,7 @@ oUF.Tags.Methods["Threat"] = function(unit)
 	end
 end
 oUF.Tags.Events["Threat"] = "UNIT_THREAT_LIST_UPDATE"
+--]]
 
 oUF.Tags.Methods["DiffColor"] = function(unit)
 	local r, g, b
@@ -98,17 +100,24 @@ oUF.Tags.Methods["LFD"] = function(unit)
 		return "|cffFF3030[D]|r"
 	end
 end
-oUF.Tags.Events["LFD"] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
+oUF.Tags.Events["LFD"] = "PLAYER_ROLES_ASSIGNED PARTY_MEMBERS_CHANGED"
 
-oUF.Tags.Methods["AltPower"] = function(unit)
-	local min = UnitPower(unit, ALTERNATE_POWER_INDEX)
-	local max = UnitPowerMax(unit, ALTERNATE_POWER_INDEX)
-	if max > 0 and not UnitIsDeadOrGhost(unit) then
-		return ("%s%%"):format(math.floor(min / max * 100 + 0.5))
+--[[
+if T.class == "DRUID" then
+	for i = 1, 3 do
+		oUF.Tags["WM"..i] = function(unit)
+			_, _, _, dur = GetTotemInfo(i)
+			if dur > 0 then
+				return "|cffFF2222_|r"
+			end
+		end
+		oUF.TagEvents["WM"..i] = "PLAYER_TOTEM_UPDATE"
+		oUF.UnitlessTagEvents.PLAYER_TOTEM_UPDATE = true
 	end
 end
-oUF.Tags.Events["AltPower"] = "UNIT_POWER"
+--]]
 
+--[[
 oUF.Tags.Methods["IncHeal"] = function(unit)
 	local incheal = UnitGetIncomingHeals(unit) or 0
 	local player = UnitGetIncomingHeals(unit, "player") or 0
@@ -118,47 +127,4 @@ oUF.Tags.Methods["IncHeal"] = function(unit)
 	end
 end
 oUF.Tags.Events["IncHeal"] = "UNIT_HEAL_PREDICTION"
-
-oUF.Tags.Methods["NameplateLevel"] = function(unit)
-	local level = UnitLevel(unit)
-	local c = UnitClassification(unit)
-	if UnitIsWildBattlePet(unit) or UnitIsBattlePetCompanion(unit) then
-		level = UnitBattlePetLevel(unit)
-	end
-
-	if level == T.level and c == "normal" then return end
-	if level > 0 then
-		return level
-	else
-		return "??"
-	end
-end
-oUF.Tags.Events["NameplateLevel"] = "UNIT_LEVEL PLAYER_LEVEL_UP"
-
-oUF.Tags.Methods["NameplateNameColor"] = function(unit)
-	local reaction = UnitReaction(unit, "player")
-	if not UnitIsUnit("player", unit) and UnitIsPlayer(unit) and (reaction and reaction >= 5) then
-		local c = T.oUF_colors.power["MANA"]
-		return string.format("|cff%02x%02x%02x", c[1] * 255, c[2] * 255, c[3] * 255)
-	elseif UnitIsPlayer(unit) then
-		return _TAGS["raidcolor"](unit)
-	elseif reaction then
-		local c = T.oUF_colors.reaction[reaction]
-		return string.format("|cff%02x%02x%02x", c[1] * 255, c[2] * 255, c[3] * 255)
-	else
-		r, g, b = 0.33, 0.59, 0.33
-		return string.format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
-	end
-end
-oUF.Tags.Events["NameplateNameColor"] = "UNIT_POWER UNIT_FLAGS"
-
-oUF.Tags.Methods["NameplateHealth"] = function(unit)
-	local hp = UnitHealth(unit)
-	local maxhp = UnitHealthMax(unit)
-	if maxhp == 0 then
-		return 0
-	else
-		return ("%s - %d%%"):format(T.ShortValue(hp), hp / maxhp * 100 + 0.5)
-	end
-end
-oUF.Tags.Events["NameplateHealth"] = "UNIT_HEALTH_FREQUENT UNIT_MAXHEALTH NAME_PLATE_UNIT_ADDED"
+--]]

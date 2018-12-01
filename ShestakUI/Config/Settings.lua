@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	ShestakUI main configuration file
@@ -12,7 +12,7 @@ C["media"] = {
 	["normal_font"] = [[Interface\AddOns\ShestakUI\Media\Fonts\Normal.ttf]],		-- Normal font
 	["blank_font"] = [[Interface\AddOns\ShestakUI\Media\Fonts\Blank.ttf]],			-- Blank font
 	["pixel_font"] = [[Interface\AddOns\ShestakUI\Media\Fonts\Pixel.ttf]],			-- Pixel font
-	["pixel_font_style"] = "OUTLINEMONOCHROME",										-- Pixel font style("OUTLINEMONOCHROME" or "OUTLINE")
+	["pixel_font_style"] = "OUTLINEMONOCHROME",										-- Pixel font style ("OUTLINEMONOCHROME" or "OUTLINE")
 	["pixel_font_size"] = 8,														-- Pixel font size for those places where it is not specified
 	["blank"] = [[Interface\AddOns\ShestakUI\Media\Textures\White.tga]],			-- Texture for borders
 	["texture"] = [[Interface\AddOns\ShestakUI\Media\Textures\Texture.tga]],		-- Texture for status bars
@@ -30,9 +30,9 @@ C["media"] = {
 ----------------------------------------------------------------------------------------
 C["general"] = {
 	["auto_scale"] = true,						-- Autoscale
+	["normal_font"] = false,						-- Change globally used pixel font to normal font
 	["uiscale"] = 0.96,							-- Your value(between 0.64 and 1) if "auto_scale" is disable
 	["welcome_message"] = true,					-- Enable welcome message in chat
-	["custom_lagtolerance"] = false,			-- Custom lag tolerance to your latency
 }
 
 ----------------------------------------------------------------------------------------
@@ -41,28 +41,22 @@ C["general"] = {
 C["misc"] = {
 	["shift_marking"] = true,					-- Marks target when you push Shift
 	["invite_keyword"] = "invite",				-- Short keyword for invite(for enable - in game type /ainv)
-	["afk_spin_camera"] = false,				-- Spin camera while afk
-	["vehicle_mouseover"] = false,				-- Vehicle frame on mouseover
+	-- ["afk_spin_camera"] = false,				-- Spin camera while afk
 	["quest_auto_button"] = false,				-- Quest/item auto button (from the list)
 	["raid_tools"] = true,						-- Raid tools
 	["profession_tabs"] = true,					-- Professions tabs on TradeSkill frames
-	["hide_bg_spam"] = false,					-- Remove Boss Emote spam during BG("Arathi Basin" and "The Battle for Gilneas")
+	["hide_bg_spam"] = false,					-- Remove Boss Emote spam during BG ("Arathi Basin")
 	["item_level"] = true,						-- Item level on character slot buttons
-	["already_known"] = true,					-- Colorizes recipes/mounts/pets/toys that is already known
-	["disenchanting"] = false,					-- Milling, Prospecting and Disenchanting by Alt + click
+	["already_known"] = true,					-- Colorizes recipes that are already known
+	["disenchanting"] = false,					-- Prospecting and Disenchanting by Alt + click
 	["sum_buyouts"] = false,					-- Sum up all current auctions
-	["click_cast"] = false,						-- Simple click2cast spell binder
-	["click_cast_filter"] = false,				-- Ignore Player and Target frames for click2cast
+	-- ["click_cast"] = false,						-- Simple click2cast spell binder
+	-- ["click_cast_filter"] = false,				-- Ignore Player and Target frames for click2cast
 	["move_blizzard"] = false,					-- Move some Blizzard frames
 	["color_picker"] = false,					-- Improved ColorPicker
-	["enchantment_scroll"] = false,				-- Enchantment scroll on TradeSkill frame
-	["archaeology"] = false,					-- Archaeology artifacts and cooldown
-	["chars_currency"] = false,					-- Tracks your currency tokens across multiple characters
-	["armory_link"] = false,					-- Add Armory link in UnitPopupMenus (It breaks set focus)
+	-- ["chars_currency"] = false,					-- Tracks your currency tokens across multiple characters
 	["merchant_itemlevel"] = false,				-- Show item level for weapons and armor in merchant
 	["minimize_mouseover"] = false,				-- Mouseover for quest minimize button
-	["hide_banner"] = true,						-- Hide Boss Banner Loot Frame
-	["hide_talking_head"] = false,				-- Hide Talking Head Frame
 }
 
 ----------------------------------------------------------------------------------------
@@ -81,8 +75,7 @@ C["announcements"] = {
 	["flask_food_raid"] = false,				-- Announce to raid channel
 	["feasts"] = false,							-- Announce Feasts/Souls/Repair Bots cast
 	["portals"] = false,						-- Announce Portals/Ritual of Summoning cast
-	["bad_gear"] = false,						-- Check bad gear in instance
-	["safari_hat"] = true,						-- Check Safari Hat
+	-- ["bad_gear"] = false,						-- Check bad gear in instance
 }
 
 ----------------------------------------------------------------------------------------
@@ -90,19 +83,15 @@ C["announcements"] = {
 ----------------------------------------------------------------------------------------
 C["automation"] = {
 	["release"] = true,							-- Auto release the spirit in battlegrounds
-	["screenshot"] = false,						-- Take screenshot when player get achievement
-	["solve_artifact"] = true,					-- Auto popup for solve artifact
 	["accept_invite"] = false,					-- Auto accept invite
 	["decline_duel"] = true,					-- Auto decline duel (/disduel to temporarily disable)
 	["accept_quest"] = false,					-- Auto accept quests (disabled if hold Shift)
 	["auto_collapse"] = false,					-- Auto collapse ObjectiveTrackerFrame in instance
 	["auto_collapse_reload"] = false,			-- Auto collapse ObjectiveTrackerFrame after reload
-	["skip_cinematic"] = false,					-- Auto skip cinematics/movies (disabled if hold Ctrl)
-	["auto_role"] = false,						-- Auto set your role
 	["cancel_bad_buffs"] = false,				-- Auto cancel various buffs
 	["tab_binder"] = false,						-- Auto change Tab key to only target enemy players
 	["logging_combat"] = false,					-- Auto enables combat log text file in raid instances
-	["currency_cap"] = false,					-- Auto popup for currency cap
+	-- ["currency_cap"] = false,					-- Auto popup for currency cap
 	["buff_on_scroll"] = false,					-- Cast buff on mouse scroll (from the list)
 	["open_items"] = false,						-- Auto opening of items in bag
 }
@@ -113,38 +102,27 @@ C["automation"] = {
 C["skins"] = {
 	["blizzard_frames"] = false,				-- Blizzard frames skin
 	["minimap_buttons"] = false,				-- Skin addons icons on minimap
-	["clcprot"] = false,						-- CLCProt skin
-	["clcret"] = false,							-- CLCRet skin
-	["combustion_helper"] = false,				-- CombustionHelper skin
 	["bigwigs"] = false,						-- BigWigs skin
 	["dbm"] = false,							-- DBM skin
 	["dbm_movable"] = false,					-- Allow to move DBM bars
-	["dxe"] = false,							-- DXE skin
+	-- ["dxe"] = false,							-- DXE skin
 	["omen"] = false,							-- Omen skin
 	["recount"] = false,						-- Recount skin
-	["blood_shield_tracker"] = false,			-- BloodShieldTracker skin
-	["dominos"] = false,						-- Dominos skin
-	["flyout_button"] = false,					-- FlyoutButtonCustom skin
-	["nug_running"] = false,					-- NugRunning skin
-	["ovale"] = false,							-- OvaleSpellPriority skin
-	["clique"] = false,							-- Clique skin
+	-- ["dominos"] = false,						-- Dominos skin
+	-- ["nug_running"] = false,					-- NugRunning skin
+	-- ["ovale"] = false,							-- OvaleSpellPriority skin
+	-- ["clique"] = false,							-- Clique skin
 	["ace3"] = false,							-- Ace3 options elements skin
-	["capping"] = false,						-- Capping skin
-	["cool_line"] = false,						-- CoolLine skin
-	["atlasloot"] = false,						-- AtlasLoot skin
-	["tiny_dps"] = false,						-- TinyDPS skin
-	["face_shooter"] = false,					-- FaceShooter skin
-	["mage_nuggets"] = false,					-- MageNuggets skin
-	["npcscan"] = false,						-- NPCScan skin
-	["vanaskos"] = false,						-- VanasKoS skin
-	["weak_auras"] = false,						-- WeakAuras skin
-	["skada"] = false,							-- Skada skin
-	["my_role_play"] = false,					-- MyRolePlay skin
-	["arh"] = false,							-- Archaeology Helper skin
+	-- ["capping"] = false,						-- Capping skin
+	-- ["cool_line"] = false,						-- CoolLine skin
+	-- ["atlasloot"] = false,						-- AtlasLoot skin
+	-- ["tiny_dps"] = false,						-- TinyDPS skin
+	-- ["npcscan"] = false,						-- NPCScan skin
+	-- ["vanaskos"] = false,						-- VanasKoS skin
+	-- ["weak_auras"] = false,						-- WeakAuras skin
+	-- ["skada"] = false,							-- Skada skin
 	["postal"] = false,							-- Postal skin
-	["opie"] = false,							-- OPie skin
-	["rematch"] = false,						-- Rematch skin
-	["ls_toasts"] = false,						-- Is: Toasts skin
+	-- ["opie"] = false,							-- OPie skin
 }
 
 ----------------------------------------------------------------------------------------
@@ -165,12 +143,11 @@ C["combattext"] = {
 	["crit_postfix"] = "*",						-- Symbol that will be added after crit
 	["icons"] = true,							-- Show outgoing damage icons
 	["icon_size"] = 16,							-- Icon size of spells in outgoing damage frame, also has effect on dmg font size
-	["treshold"] = 1,							-- Minimum damage to show in damage frame
-	["heal_treshold"] = 1,						-- Minimum healing to show in incoming/outgoing healing messages
+	["threshold"] = 1,							-- Minimum damage to show in damage frame
+	["heal_threshold"] = 1,						-- Minimum healing to show in incoming/outgoing healing messages
 	["scrollable"] = false,						-- Allows you to scroll frame lines with mousewheel
 	["max_lines"] = 15,							-- Max lines to keep in scrollable mode(more lines = more memory)
 	["time_visible"] = 3,						-- Time(seconds) a single message will be visible
-	["dk_runes"] = true,						-- Show deathknight rune recharge
 	["killingblow"] = false,					-- Tells you about your killingblows
 	["merge_aoe_spam"] = true,					-- Merges multiple aoe damage spam into single message
 	["merge_melee"] = true,						-- Merges multiple auto attack damage spam
@@ -191,7 +168,7 @@ C["reminder"] = {
 	-- Raid buffs
 	["raid_buffs_enable"] = true,				-- Show missing raid buffs
 	["raid_buffs_always"] = false,				-- Show frame always
-	["raid_buffs_size"] = 19.2,					-- Icon size
+	["raid_buffs_size"] = 20,					-- Icon size
 	["raid_buffs_alpha"] = 0,					-- Transparent icons when the buff is present
 }
 
@@ -254,24 +231,22 @@ C["tooltip"] = {
 	["shift_modifer"] = false,					-- Show tooltip when Shift is pushed
 	["cursor"] = false,							-- Tooltip above cursor
 	["item_icon"] = false,						-- Item icon in tooltip
-	["health_value"] = false,					-- Numeral health value
+	["health_value"] = false,					-- Numerical health value
 	["hidebuttons"] = false,					-- Hide tooltip for actions bars
 	["hide_combat"] = false,					-- Hide tooltip in combat
 	-- Plugins
-	["talents"] = false,						-- Show tooltip talents
-	["achievements"] = true,					-- Comparing achievements in tooltip
+	-- ["talents"] = false,						-- Show tooltip talents
 	["target"] = true,							-- Target player in tooltip
 	["title"] = false,							-- Player title in tooltip
 	["realm"] = true,							-- Player realm name in tooltip
 	["rank"] = true,							-- Player guild-rank in tooltip
-	["arena_experience"] = false,				-- Player PvP experience in arena
-	["spell_id"] = false,						-- Id number spells (/si to print buff info in chat)
+	-- ["arena_experience"] = false,				-- Player PvP experience in arena
+	["spell_id"] = false,						-- ID number spells (/si to print buff info in chat)
 	["average_lvl"] = false,					-- Average items level
 	["raid_icon"] = false,						-- Raid icon
 	["who_targetting"] = false,					-- Show who is targetting the unit(in raid or party)
 	["item_count"] = false,						-- Item count in tooltip
-	["unit_role"] = false,						-- Unit role in tooltip
-	["instance_lock"] = false,					-- Your instance lock status in tooltip
+	-- ["unit_role"] = false,						-- Unit role in tooltip
 }
 
 ----------------------------------------------------------------------------------------
@@ -281,13 +256,16 @@ C["chat"] = {
 	["enable"] = true,							-- Enable chat
 	["background"] = false,						-- Enable background for chat
 	["background_alpha"] = 0.7,					-- Background alpha
-	["filter"] = true,							-- Removing some systems spam("Player1" won duel "Player2")
-	["spam"] = false,							-- Removing some players spam(gold/portals/etc)
+	["filter"] = true,							-- Remove some system spam ("Player1" won duel "Player2")
+	["spam"] = false,							-- Remove some player spam (gold/portals/etc)
 	["width"] = 350,							-- Chat width
 	["height"] = 112,							-- Chat height
 	["chat_bar"] = false,						-- Lite Button Bar for switch chat channel
 	["chat_bar_mouseover"] = false,				-- Lite Button Bar on mouseover
-	["time_color"] = {1, 1, 0},					-- Timestamp coloring(http://www.december.com/html/spec/colorcodescompact.html)
+	-- ["time"] = true,							-- Enable chat timestamps
+	-- ["time_24"] = true,							-- 24 hour timestamp format
+	-- ["time_seconds"] = true,					-- Display seconds in timestamp
+	-- ["time_color"] = {1, 1, 0},					-- Timestamp coloring(http://www.december.com/html/spec/colorcodescompact.html)
 	["whisp_sound"] = true,						-- Sound when whisper
 	["bubbles"] = true,							-- Skin Blizzard chat bubbles
 	["combatlog"] = true,						-- Show CombatLog tab
@@ -313,9 +291,8 @@ C["bag"] = {
 ----------------------------------------------------------------------------------------
 C["minimap"] = {
 	["enable"] = true,							-- Enable minimap
-	["tracking_icon"] = false,					-- Tracking icon
-	["garrison_icon"] = false,					-- Garrison icon
-	["size"] = 130,								-- Minimap size
+	["tracking_icon"] = true,					-- Tracking icon
+	["size"] = 158,								-- Minimap size
 	["hide_combat"] = false,					-- Hide minimap in combat
 	["toggle_menu"] = true,						-- Show toggle menu
 }
@@ -325,9 +302,7 @@ C["minimap"] = {
 ----------------------------------------------------------------------------------------
 C["map"] = {
 	["bg_map_stylization"] = true,				-- BG map stylization
-	["map_boss_count"] = false,					-- Show boss count in World Map
-	["explore_map"] = false,					-- Tracking Explorer and Lore Master achievements in World Map
-	["fog_of_war"] = false,						-- Remove fog of war on World Map
+	["fog_of_war"] = true,						-- Remove fog of war on World Map
 }
 
 ----------------------------------------------------------------------------------------
@@ -349,25 +324,23 @@ C["nameplate"] = {
 	["enable"] = true, 							-- Enable nameplate
 	["height"] = 9,								-- Nameplate height
 	["width"] = 120,							-- Nameplate width
-	["distance"] = 40,							-- Show nameplates for units within this range
 	["ad_height"] = 0,							-- Additional height for selected nameplate
 	["ad_width"] = 0,							-- Additional width for selected nameplate
 	["combat"] = false,							-- Automatically show nameplate in combat
-	["health_value"] = false,					-- Numeral health value
+	["health_value"] = false,					-- Numerical health value
 	["show_castbar_name"] = false,				-- Show castbar name
-	["enhance_threat"] = true,					-- If tank good aggro = green, bad = red
-	["class_icons"] = false,					-- Icons by class in PvP
+	-- ["enhance_threat"] = true,					-- If tank good aggro = green, bad = red
+	-- ["class_icons"] = false,					-- Icons by class in PvP
 	["name_abbrev"] = false,					-- Display abbreviated names
-	["clamp"] = false,							-- Clamp nameplates to the top of the screen when outside of view
-	["good_color"] = {0.2, 0.8, 0.2},			-- Good threat color
-	["near_color"] = {1, 1, 0},					-- Near threat color
-	["bad_color"] = {1, 0, 0},					-- Bad threat color
-	["offtank_color"] = {0, 0.5, 1},			-- Offtank threat color
-	["track_auras"] = false,					-- Show debuffs (from the list)
-	["track_buffs"] = false,					-- Show buffs above player nameplate (from the list)
-	["auras_size"] = 25,						-- Debuffs size
-	["healer_icon"] = false,					-- Show icon above enemy healers nameplate in battlegrounds
-	["totem_icons"] = false,					-- Show icon above enemy totems nameplate
+	-- ["good_color"] = {0.2, 0.8, 0.2},			-- Good threat color
+	-- ["near_color"] = {1, 1, 0},					-- Near threat color
+	-- ["bad_color"] = {1, 0, 0},					-- Bad threat color
+	-- ["offtank_color"] = {0, 0.5, 1},			-- Offtank threat color
+	-- ["track_auras"] = false,					-- Show debuffs (from the list)
+	-- ["track_buffs"] = false,					-- Show buffs above player nameplate (from the list)
+	-- ["auras_size"] = 25,						-- Debuffs size
+	-- ["healer_icon"] = false,					-- Show icon above enemy healers nameplate in battlegrounds
+	-- ["totem_icons"] = false,					-- Show icon above enemy totems nameplate
 }
 
 ----------------------------------------------------------------------------------------
@@ -384,20 +357,19 @@ C["actionbar"] = {
 	["split_bars"] = false,						-- Split the fifth bar on two bars on 6 buttons
 	["classcolor_border"] = false,				-- Enable classcolor border
 	["toggle_mode"] = true,						-- Enable toggle mode
-	["hide_highlight"] = false,					-- Hide proc highlight
 	-- Bottom bars
 	["bottombars"] = 2,							-- Number of action bars on the bottom (1, 2 or 3)
 	-- Right bars
 	["rightbars"] = 3,							-- Number of action bars on right (0, 1, 2 or 3)
 	["rightbars_mouseover"] = true,				-- Right bars on mouseover
 	-- Pet bar
-	["petbar_mouseover"] = false,				-- Pet bar on mouseover(only for horizontal pet bar)
 	["petbar_hide"] = false,					-- Hide pet bar
 	["petbar_horizontal"] = false,				-- Enable horizontal pet bar
+	["petbar_mouseover"] = false,				-- Pet bar on mouseover(only for horizontal pet bar)
 	-- Stance bar
-	["stancebar_mouseover"] = true,				-- Stance bar on mouseover
 	["stancebar_hide"] = false,					-- Hide stance bar
 	["stancebar_horizontal"] = true,			-- Enable horizontal stance bar
+	["stancebar_mouseover"] = true,				-- Stance bar on mouseover
 	-- MicroMenu
 	["micromenu"] = false,						-- Enable micro menu
 	["micromenu_mouseover"] = false,			-- Micro menu on mouseover
@@ -416,10 +388,9 @@ C["aura"] = {
 	["fot_debuffs"] = false,					-- DeBuffs on focustarget frame
 	["pet_debuffs"] = false,					-- DeBuffs on pet frame
 	["tot_debuffs"] = false,					-- DeBuffs on targettarget frame
-	["boss_buffs"] = true,						-- Buffs on boss frame
+	-- ["boss_buffs"] = true,						-- Buffs on boss frame
 	["player_aura_only"] = false,				-- Only your debuff on target frame
 	["debuff_color_type"] = true,				-- Color debuff by type
-	["cast_by"] = false,						-- Show who cast a buff/debuff in its tooltip
 	["classcolor_border"] = false,				-- Enable classcolor border for player buffs
 }
 
@@ -459,14 +430,14 @@ C["unitframe"] = {
 	["show_pet"] = true,						-- Show pet frame
 	["show_focus"] = true,						-- Show focus frame
 	["show_target_target"] = true,				-- Show target target frame
-	["show_boss"] = true,						-- Show boss frames
-	["boss_on_right"] = true,					-- Boss frames on the right
-	["show_arena"] = true,						-- Show arena frames
-	["arena_on_right"] = true,					-- Arena frames on the right
-	["boss_debuffs"] = 0,						-- Number of debuffs on the boss frames
-	["boss_buffs"] = 3,							-- Number of buffs on the boss frames
+	-- ["show_boss"] = true,						-- Show boss frames
+	-- ["boss_on_right"] = true,					-- Boss frames on the right
+	-- ["show_arena"] = true,						-- Show arena frames
+	-- ["arena_on_right"] = true,					-- Arena frames on the right
+	-- ["boss_debuffs"] = 0,						-- Number of debuffs on the boss frames
+	-- ["boss_buffs"] = 3,							-- Number of buffs on the boss frames
 	-- Icons
-	["icons_pvp"] = false,						-- Mouseover PvP text(not icons) on player and target frames
+	["icons_pvp"] = false,						-- Mouseover PvP text (not icons) on player and target frames
 	["icons_combat"] = true,					-- Combat icon
 	["icons_resting"] = true,					-- Resting icon for low lvl chars
 	-- Portraits
@@ -476,15 +447,14 @@ C["unitframe"] = {
 	["portrait_width"] = 67,					-- Portrait width
 	-- Plugins
 	["plugins_gcd"] = false,					-- Global cooldown spark on player frame
-	["plugins_swing"] = false,					-- Swing bar
+	["plugins_swing"] = true,					-- Swing bar
 	["plugins_reputation_bar"] = false,			-- Reputation bar
 	["plugins_experience_bar"] = false,			-- Experience bar
-	["plugins_artifact_bar"] = false,			-- Artifact Power bar
 	["plugins_smooth_bar"] = false,				-- Smooth bar
-	["plugins_enemy_spec"] = false,				-- Enemy specialization
+	-- ["plugins_enemy_spec"] = false,				-- Enemy specialization
 	["plugins_combat_feedback"] = false,		-- Combat text on player/target frame
 	["plugins_fader"] = false,					-- Fade unit frames
-	["plugins_diminishing"] = false,			-- Diminishing Returns icons on arena frames
+	-- ["plugins_diminishing"] = false,			-- Diminishing Returns icons on arena frames
 }
 
 ----------------------------------------------------------------------------------------
@@ -493,15 +463,8 @@ C["unitframe"] = {
 C["unitframe_class_bar"] = {
 	["combo"] = true,							-- Rogue/Druid Combo bar
 	["combo_always"] = false,					-- Always show Combo bar for Druid
-	["combo_old"] = false,						-- Show combo point on the target
-	["arcane"] = true,							-- Arcane Charge bar
-	["chi"] = true,								-- Chi bar
-	["stagger"] = true,							-- Stagger bar (for Monk Tanks)
-	["holy"] = true,							-- Holy Power bar
-	["shard"] = true,							-- Shard/Burning bar
-	["rune"] = true,							-- Rune bar
+	["combo_old"] = true,						-- Show combo point on the target (shows on player when disabled)
 	["totem"] = true,							-- Totem bar
-	["range"] = false,							-- Range bar (only for Priest)
 }
 
 ----------------------------------------------------------------------------------------
@@ -553,23 +516,20 @@ C["toppanel"] = {
 --	Stats options
 ----------------------------------------------------------------------------------------
 C["stats"] = {
-	["battleground"] = false,					-- BG Score
+	-- ["battleground"] = false,					-- BG Score
 	["clock"] = true,							-- Clock
 	["latency"] = true,							-- Latency
 	["memory"] = true,							-- Memory
 	["fps"] = true,								-- FPS
-	["friend"] = true,							-- Friends
-	["guild"] = true,							-- Guild
+	-- ["friend"] = true,							-- Friends
+	-- ["guild"] = true,							-- Guild
 	["durability"] = true,						-- Durability
 	["experience"] = true,						-- Experience
 	["coords"] = true,							-- Coords
 	["location"] = true,						-- Location
-	["currency_archaeology"] = false,			-- Show Archaeology Fragments under currency tab
-	["currency_cooking"] = true,				-- Show Cooking Awards under currency tab
-	["currency_professions"] = true,			-- Show Profession Tokens under currency tab
-	["currency_raid"] = true,					-- Show Seals under currency tab
-	["currency_pvp"] = true,					-- Show PvP Currency under currency tab
-	["currency_misc"] = true,					-- Show Miscellaneous Currency under currency tab
+	-- ["currency_raid"] = true,					-- Show Seals under currency tab
+	-- ["currency_pvp"] = true,					-- Show PvP Currency under currency tab
+	-- ["currency_misc"] = true,					-- Show Miscellaneous Currency under currency tab
 }
 
 ----------------------------------------------------------------------------------------

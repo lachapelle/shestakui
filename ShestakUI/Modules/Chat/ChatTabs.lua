@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -7,7 +7,7 @@ if C.chat.enable ~= true then return end
 if C.chat.tabs_mouseover == true then
 	CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 0
 	CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 0
-	CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 1
+	CHAT_FRAME_TAB_ALERTING_NOMOUSE_ALPHA = 0
 	CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1
 	CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 1
 	CHAT_FRAME_TAB_ALERTING_MOUSEOVER_ALPHA = 1
@@ -92,14 +92,18 @@ local faneifyTab = function(frame, sel)
 	else
 		updateFS(frame, nil, 1, 1, 1)
 	end
+	frame:GetHighlightTexture():SetTexture(nil)
+
+	if(frame.isDocked) then
+		frame:Show()
+		frame.Hide = T.dummy
+	else
+		frame.SetAlpha = nil
+		frame.Hide = nil
+	end
 end
 
-hooksecurefunc("FCF_StartAlertFlash", function(frame)
-	local tab = _G["ChatFrame"..frame:GetID().."Tab"]
-	updateFS(tab, true, 1, 0, 0)
-end)
-
-hooksecurefunc("FCFTab_UpdateColors", faneifyTab)
+hooksecurefunc("FCF_OpenNewWindow", faneifyTab)
 
 for i = 1, NUM_CHAT_WINDOWS do
 	faneifyTab(_G["ChatFrame"..i.."Tab"])

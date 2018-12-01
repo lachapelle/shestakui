@@ -1,38 +1,66 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Font replacement
 ----------------------------------------------------------------------------------------
-WorldMapFrameAreaLabel:SetFont(C.media.normal_font, 30)
+WorldMapFrameAreaLabel:SetFont(C.media.normal_font, 45)
 WorldMapFrameAreaLabel:SetShadowOffset(2, -2)
 WorldMapFrameAreaLabel:SetTextColor(0.9, 0.83, 0.64)
-
-WorldMapFrameAreaPetLevels:SetFont(C.media.normal_font, 30)
-WorldMapFrameAreaPetLevels:SetShadowOffset(2, -2)
 
 WorldMapFrameAreaDescription:SetFont(C.media.normal_font, 30)
 WorldMapFrameAreaDescription:SetShadowOffset(2, -2)
 
-MapQuestInfoRewardsFrame.XPFrame.Name:SetFont(C.media.normal_font, 13)
-
-WorldMapFrame.UIElementsFrame.BountyBoard.BountyName:SetFont(C.media.normal_font, 16)
-WorldMapFrame.UIElementsFrame.BountyBoard.BountyName:SetShadowOffset(1, -1)
-
 ----------------------------------------------------------------------------------------
 --	Change position
 ----------------------------------------------------------------------------------------
-hooksecurefunc("WorldMap_ToggleSizeDown", function()
-	WorldMapFrame:ClearAllPoints()
-	WorldMapFrame:SetPoint(unpack(C.position.map))
+function SetUIPanelAttribute(frame, name, value)
+	local info = UIPanelWindows[frame:GetName()]
+	if not info then return end
+
+	if not frame:GetAttribute("UIPanelLayout-defined") then
+		frame:SetAttribute("UIPanelLayout-defined", true)
+		for name,value in pairs(info) do
+			frame:SetAttribute("UIPanelLayout-"..name, value)
+		end
+	end
+
+	frame:SetAttribute("UIPanelLayout-"..name, value)
+end
+
+BlackoutWorld:SetTexture(nil)
+WorldMapFrame:SetParent(UIParent)
+WorldMapFrame:SetScale(1)
+WorldMapFrame:EnableKeyboard(false)
+WorldMapFrame:EnableMouse(false)
+WorldMapFrame:SetToplevel()
+
+table.insert(UISpecialFrames, WorldMapFrame:GetName())
+
+if WorldMapFrame:GetAttribute("UIPanelLayout-area") ~= "center" then
+	SetUIPanelAttribute(WorldMapFrame, "area", "center")
+end
+
+if WorldMapFrame:GetAttribute("UIPanelLayout-allowOtherPanels") ~= true then
+	SetUIPanelAttribute(WorldMapFrame, "allowOtherPanels", true)
+end
+
+DropDownList1:HookScript("OnShow", function()
+	if DropDownList1:GetScale() ~= UIParent:GetScale() then
+		DropDownList1:SetScale(UIParent:GetScale())
+	end
 end)
+
+WorldMapTooltip:SetFrameLevel(WorldMapPositioningGuide:GetFrameLevel() + 110)
 
 ----------------------------------------------------------------------------------------
 --	Creating coordinate
 ----------------------------------------------------------------------------------------
 local coords = CreateFrame("Frame", "CoordsFrame", WorldMapFrame)
-coords:SetFrameLevel(90)
+-- coords:SetFrameLevel(90)
+coords:SetFrameLevel(WorldMapFrame:GetFrameLevel() + 2)
+coords:SetFrameStrata(WorldMapFrame:GetFrameStrata())
 coords.PlayerText = coords:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-coords.PlayerText:SetPoint("BOTTOMLEFT", WorldMapFrame.UIElementsFrame, "BOTTOMLEFT", 5, 5)
+coords.PlayerText:SetPoint("BOTTOMLEFT", WorldMapButton, "BOTTOMLEFT", 5, 5)
 coords.PlayerText:SetJustifyH("LEFT")
 coords.PlayerText:SetText(UnitName("player")..": 0,0")
 

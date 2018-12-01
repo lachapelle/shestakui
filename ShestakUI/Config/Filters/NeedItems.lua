@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.loot.auto_greed ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -7,5 +7,5 @@ if C.loot.auto_greed ~= true then return end
 --	Take the number ID at the end of the URL, and add it to the list
 ----------------------------------------------------------------------------------------
 T.NeedLoot = {
-	33865,	-- Amani Hex Stick
+	-- 33865,	-- Amani Hex Stick
 }

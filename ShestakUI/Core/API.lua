@@ -1,7 +1,52 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 local backdropr, backdropg, backdropb, backdropa = unpack(C.media.backdrop_color)
 local borderr, borderg, borderb, bordera = unpack(C.media.border_color)
+
+----------------------------------------------------------------------------------------
+--	Widget API
+----------------------------------------------------------------------------------------
+local function GetSize(frame)
+	return frame:GetWidth(), frame:GetHeight()
+end
+
+local function SetSize(frame, width, height)
+	width, height = tonumber(width), tonumber(height)
+
+	assert(type(width) == "number" or type(width) == "string", format("Usage: %s:SetSize(width, height)", frame.GetName and frame:GetName() or tostring(frame)))
+
+	frame:SetWidth(width)
+	frame:SetHeight(type(height) == "number" and height or width)
+end
+
+----------------------------------------------------------------------------------------
+--	Position functions
+----------------------------------------------------------------------------------------
+local function SetOutside(obj, anchor, xOffset, yOffset)
+	xOffset = xOffset or 2
+	yOffset = yOffset or 2
+	anchor = anchor or obj:GetParent()
+
+	if obj:GetPoint() then
+		obj:ClearAllPoints()
+	end
+
+	obj:SetPoint("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
+	obj:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", xOffset, -yOffset)
+end
+
+local function SetInside(obj, anchor, xOffset, yOffset)
+	xOffset = xOffset or 2
+	yOffset = yOffset or 2
+	anchor = anchor or obj:GetParent()
+
+	if obj:GetPoint() then
+		obj:ClearAllPoints()
+	end
+
+	obj:SetPoint("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
+	obj:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", -xOffset, yOffset)
+end
 
 ----------------------------------------------------------------------------------------
 --	Template functions
@@ -155,13 +200,13 @@ local function Kill(object)
 end
 
 ----------------------------------------------------------------------------------------
---	Style ActionBars/Bags buttons function(by Chiril & Karudon)
+--	Style ActionBars/Bags buttons function (by Chiril & Karudon)
 ----------------------------------------------------------------------------------------
 local function StyleButton(button, t, size)
 	if not size then size = 2 end
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture(nil, nil, self)
-		hover:SetColorTexture(1, 1, 1, 0.3)
+		hover:SetTexture(1, 1, 1, 0.3)
 		hover:SetPoint("TOPLEFT", button, size, -size)
 		hover:SetPoint("BOTTOMRIGHT", button, -size, size)
 		button.hover = hover
@@ -170,7 +215,7 @@ local function StyleButton(button, t, size)
 
 	if not t and button.SetPushedTexture and not button.pushed then
 		local pushed = button:CreateTexture(nil, nil, self)
-		pushed:SetColorTexture(0.9, 0.8, 0.1, 0.3)
+		pushed:SetTexture(0.9, 0.8, 0.1, 0.3)
 		pushed:SetPoint("TOPLEFT", button, size, -size)
 		pushed:SetPoint("BOTTOMRIGHT", button, -size, size)
 		button.pushed = pushed
@@ -179,7 +224,7 @@ local function StyleButton(button, t, size)
 
 	if button.SetCheckedTexture and not button.checked then
 		local checked = button:CreateTexture(nil, nil, self)
-		checked:SetColorTexture(0, 1, 0, 0.3)
+		checked:SetTexture(0, 1, 0, 0.3)
 		checked:SetPoint("TOPLEFT", button, size, -size)
 		checked:SetPoint("BOTTOMRIGHT", button, -size, size)
 		button.checked = checked
@@ -271,12 +316,12 @@ local function FadeOut(f)
 	UIFrameFadeOut(f, 0.8, f:GetAlpha(), 0)
 end
 
-local function addapi(object)
+local function addAPI(object)
 	local mt = getmetatable(object).__index
-	if not object.Size then mt.Size = Size end
-	if not object.Width then mt.Width = Width end
-	if not object.Height then mt.Height = Height end
-	if not object.Point then mt.Point = Point end
+	if not object.GetSize then mt.GetSize = GetSize end
+	if not object.SetSize then mt.SetSize = SetSize end
+	if not object.SetOutside then mt.SetOutside = SetOutside end
+	if not object.SetInside then mt.SetInside = SetInside end
 	if not object.CreateOverlay then mt.CreateOverlay = CreateOverlay end
 	if not object.CreateBorder then mt.CreateBorder = CreateBorder end
 	if not object.SetTemplate then mt.SetTemplate = SetTemplate end
@@ -293,14 +338,14 @@ end
 
 local handled = {["Frame"] = true}
 local object = CreateFrame("Frame")
-addapi(object)
-addapi(object:CreateTexture())
-addapi(object:CreateFontString())
+addAPI(object)
+addAPI(object:CreateTexture())
+addAPI(object:CreateFontString())
 
 object = EnumerateFrames()
 while object do
-	if not object:IsForbidden() and not handled[object:GetObjectType()] then
-		addapi(object)
+	if not handled[object:GetObjectType()] then
+		addAPI(object)
 		handled[object:GetObjectType()] = true
 	end
 
@@ -309,4 +354,4 @@ end
 
 -- Hacky fix for issue on 7.1 PTR where scroll frames no longer seem to inherit the methods from the "Frame" widget
 local scrollFrame = CreateFrame("ScrollFrame")
-addapi(scrollFrame)
+addAPI(scrollFrame)

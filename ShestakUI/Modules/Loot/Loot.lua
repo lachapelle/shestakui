@@ -1,10 +1,11 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.loot.lootframe ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Loot frame(Butsu by Haste)
+--	Loot frame (Butsu by Haste)
 ----------------------------------------------------------------------------------------
-local _, _NS = ...
+local _, _NS = "Butsu", {}
+ButsuAddonInfo = function () return _, _NS end
 local Butsu = CreateFrame("Button", "Butsu")
 local lb = CreateFrame("Button", "ButsuAdv", Butsu, "UIPanelScrollDownButtonTemplate")
 local LDD = CreateFrame("Frame", "ButsuLDD", Butsu, "UIDropDownMenuTemplate")
@@ -47,12 +48,12 @@ function Butsu:LOOT_OPENED(event, autoloot)
 	if items > 0 then
 		for i = 1, items do
 			local slot = _NS.slots[i] or _NS.CreateSlot(i)
-			local texture, item, quantity, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(i)
+			local texture, item, quantity, quality = GetLootSlotInfo(i)
 			if texture then
 				local color = ITEM_QUALITY_COLORS[quality]
 				local r, g, b = color.r, color.g, color.b
 
-				if GetLootSlotType(i) == LOOT_SLOT_MONEY then
+				if LootSlotIsCoin(i) then
 					item = item:gsub("\n", ", ")
 				end
 
@@ -63,24 +64,13 @@ function Butsu:LOOT_OPENED(event, autoloot)
 					slot.count:Hide()
 				end
 
-				if questId and not isActive then
-					slot.quest:Show()
-				else
-					slot.quest:Hide()
-				end
-
-				if color or questId or isQuestItem then
-					if questId or isQuestItem then
-						r, g, b = 1, 1, 0.2
-					end
-
+				if color then
 					slot.iconFrame:SetBackdropBorderColor(r, g, b)
 					slot.backdrop:SetBackdropBorderColor(r, g, b)
 					slot.drop:SetVertexColor(r, g, b)
 				end
 				slot.drop:Show()
 
-				slot.isQuestItem = isQuestItem
 				slot.quality = quality
 
 				slot.name:SetText(item)
@@ -197,17 +187,17 @@ close:SetScript("OnClick", function() CloseLoot() end)
 ----------------------------------------------------------------------------------------
 local function Announce(chn)
 	local nums = GetNumLootItems()
-	if nums == 0 or (nums == 1 and GetLootSlotType(1) == LOOT_SLOT_MONEY) then return end
+	if nums == 0 or (nums == 1 and LootSlotIsCoin(1)) then return end
 	if UnitIsPlayer("target") or not UnitExists("target") then
 		SendChatMessage(">> "..LOOT..":", chn)
 	else
 		SendChatMessage(">> "..LOOT.." - '"..UnitName("target").."':", chn)
 	end
 	for i = 1, GetNumLootItems() do
-		if LootSlotHasItem(i) then
+		if LootSlotIsItem(i) then
 			local link = GetLootSlotLink(i)
 			local messlink = "- %s"
-			if GetLootSlotType(i) ~= LOOT_SLOT_MONEY then
+			if not LootSlotIsCoin(i) then
 				SendChatMessage(format(messlink, link), chn)
 			end
 		end
@@ -280,27 +270,19 @@ do
 
 	local OnEnter = function(self)
 		local slot = self:GetID()
-		if LootSlotHasItem(slot) then
+		if LootSlotIsItem(slot) then
 			GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 			GameTooltip:SetLootItem(slot)
 			CursorUpdate(self)
 		end
 
 		self.drop:Show()
-		if self.isQuestItem then
-			self.drop:SetVertexColor(0.8, 0.8, 0.2)
-		else
-			self.drop:SetVertexColor(1, 1, 0)
-		end
+		self.drop:SetVertexColor(1, 1, 0)
 	end
 
 	local OnLeave = function(self)
 		local color = ITEM_QUALITY_COLORS[self.quality]
-		if self.isQuestItem then
-			self.drop:SetVertexColor(1, 1, 0.2)
-		elseif color then
-			self.drop:SetVertexColor(color.r, color.g, color.b)
-		end
+		self.drop:SetVertexColor(color.r, color.g, color.b)
 
 		GameTooltip:Hide()
 		ResetCursor()
@@ -352,13 +334,6 @@ do
 		icon:SetPoint("TOPLEFT", 2, -2)
 		icon:SetPoint("BOTTOMRIGHT", -2, 2)
 		frame.icon = icon
-
-		local quest = iconFrame:CreateTexture(nil, "OVERLAY")
-		quest:SetTexture("Interface\\Minimap\\ObjectIcons")
-		quest:SetTexCoord(1/8, 2/8, 1/8, 2/8)
-		quest:SetSize(C.loot.icon_size * 0.8, C.loot.icon_size * 0.8)
-		quest:SetPoint("BOTTOMLEFT", -C.loot.icon_size * 0.15, 0)
-		frame.quest = quest
 
 		local count = iconFrame:CreateFontString(nil, "OVERLAY")
 		count:SetJustifyH("RIGHT")

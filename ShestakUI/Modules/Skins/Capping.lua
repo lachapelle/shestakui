@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.capping ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ function self:StyleBar(...)
 		i:CreateBackdrop("Default")
 
 		self:PosBar(parent)
-		tinsert(bars, parent)
+		table.insert(bars, parent)
 	end
 
 	self:SortBars()

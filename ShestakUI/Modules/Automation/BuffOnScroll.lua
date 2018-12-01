@@ -1,22 +1,10 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.automation.buff_on_scroll ~= true or T.level ~= MAX_PLAYER_LEVEL then return end
 
 ----------------------------------------------------------------------------------------
 --	Cast buff on mouse scroll(by Gsuz)
 ----------------------------------------------------------------------------------------
 local frame = CreateFrame("Frame", "AutomatorFrame")
-
-DEATHKNIGHT1 = {
-	3714,	-- Path of Frost
-}
-
-DEATHKNIGHT2 = {
-	3714,	-- Path of Frost
-}
-
-DEATHKNIGHT3 = {
-	3714,	-- Path of Frost
-}
 
 DRUID1 = {}
 
@@ -37,12 +25,6 @@ MAGE1 = {}
 MAGE2 = {}
 
 MAGE3 = {}
-
-MONK1 = {}
-
-MONK2 = {}
-
-MONK3 = {}
 
 PALADIN1 = {}
 
@@ -106,7 +88,7 @@ function CheckBuffs()
 	btn:SetAttribute("spell", nil)
 	for i, v in pairs(_G[T.class..spec]) do
 		local name = GetSpellInfo(v)
-		if name and not UnitAura("player", name) then
+		if name and not T.CheckPlayerBuff(name) then
 			if GetSpellCooldown(name) == 0 then
 				btn:SetAttribute("spell", name)
 				SetOverrideBindingClick(btn, true, "MOUSEWHEELUP", "AutoBuffButton")
@@ -127,5 +109,5 @@ frame:RegisterEvent("SPELL_UPDATE_USABLE")
 frame:RegisterEvent("SPELL_UPDATE_COOLDOWN")
 frame:RegisterEvent("PLAYER_LEAVE_COMBAT")
 frame:RegisterEvent("READY_CHECK")
-frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
+-- frame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 frame:SetScript("OnEvent", CheckBuffs)

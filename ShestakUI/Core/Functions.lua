@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Number value function
@@ -34,23 +34,26 @@ T.RGBToHex = function(r, g, b)
 	r = tonumber(r) <= 1 and tonumber(r) >= 0 and tonumber(r) or 0
 	g = tonumber(g) <= tonumber(g) and tonumber(g) >= 0 and tonumber(g) or 0
 	b = tonumber(b) <= 1 and tonumber(b) >= 0 and tonumber(b) or 0
-	return string.format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
+	return format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
 end
 
 ----------------------------------------------------------------------------------------
 --	Chat channel check
 ----------------------------------------------------------------------------------------
 T.CheckChat = function(warning)
-	if IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
-		return "INSTANCE_CHAT"
-	elseif IsInRaid(LE_PARTY_CATEGORY_HOME) then
-		if warning and (UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") or IsEveryoneAssistant()) then
-			return "RAID_WARNING"
+	local _, instanceType = IsInInstance()
+	if IsInInstance then
+		if instanceType == "pvp" then
+			return "BATTLEGROUND"
+		elseif instanceType == "raid" then
+			if warning and (IsRaidLeader() or IsRaidOfficer()) then
+				return "RAID_WARNING"
+			else
+				return "RAID"
+			end
 		else
-			return "RAID"
+			return "PARTY"
 		end
-	elseif IsInGroup(LE_PARTY_CATEGORY_HOME) then
-		return "PARTY"
 	end
 	return "SAY"
 end
@@ -58,41 +61,77 @@ end
 ----------------------------------------------------------------------------------------
 --	Player's role check
 ----------------------------------------------------------------------------------------
-local isCaster = {
-	DEATHKNIGHT = {nil, nil, nil},
-	DEMONHUNTER = {nil, nil},
-	DRUID = {true},					-- Balance
-	HUNTER = {nil, nil, nil},
-	MAGE = {true, true, true},
-	MONK = {nil, nil, nil},
-	PALADIN = {nil, nil, nil},
-	PRIEST = {nil, nil, true},		-- Shadow
-	ROGUE = {nil, nil, nil},
-	SHAMAN = {true},				-- Elemental
-	WARLOCK = {true, true, true},
-	WARRIOR = {nil, nil, nil}
-}
-
 local function CheckRole(self, event, unit)
-	local spec = GetSpecialization()
-	local role = spec and GetSpecializationRole(spec)
-
-	if role == "TANK" then
+	if event == "UNIT_AURA" and unit ~= "player" then return end
+	if (T.Class == "PALADIN" and T.CheckPlayerBuff(25780)) and GetCombatRatingBonus(CR_DEFENSE_SKILL) > 50 or
+	(T.Class == "WARRIOR" and GetBonusBarOffset() == 2) or
+	(T.Class == "DRUID" and GetBonusBarOffset() == 3) then
 		T.Role = "Tank"
-	elseif role == "HEALER" then
-		T.Role = "Healer"
-	elseif role == "DAMAGER" then
-		if isCaster[T.class][spec] then
-			T.Role = "Caster"
-		else
+	else
+		local playerint = select(2, UnitStat("player", 4))
+		local playeragi	= select(2, UnitStat("player", 2))
+		local base, posBuff, negBuff = UnitAttackPower("player")
+		local rbase, rposBuff, rnegBuff = UnitRangedAttackPower("player")
+		local playerap = base + posBuff + negBuff
+		local playerrap = rbase + rposBuff + rnegBuff
+
+		if (playerap > playerrap) and (playerap > playerint) then
 			T.Role = "Melee"
+		elseif ((playerap < playerrap) and (playerrap > playerint)) or (playeragi > playerint) then
+			T.Role = "Ranged"
+		else
+			T.Role = "Caster"
 		end
 	end
 end
 local RoleUpdater = CreateFrame("Frame")
 RoleUpdater:RegisterEvent("PLAYER_ENTERING_WORLD")
 RoleUpdater:RegisterEvent("PLAYER_TALENT_UPDATE")
+RoleUpdater:RegisterEvent("CHARACTER_POINTS_CHANGED")
+RoleUpdater:RegisterEvent("UNIT_INVENTORY_CHANGED")
+RoleUpdater:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
 RoleUpdater:SetScript("OnEvent", CheckRole)
+
+----------------------------------------------------------------------------------------
+--	Player's talent check
+----------------------------------------------------------------------------------------
+T.CheckForKnownTalent = function(spellid)
+	local wanted_name = GetSpellInfo(spellid)
+	if not wanted_name then return nil end
+	local num_tabs = GetNumTalentTabs()
+	for t = 1, num_tabs do
+		local num_talents = GetNumTalents(t)
+		for i = 1, num_talents do
+			local name_talent, _, _, _, current_rank = GetTalentInfo(t, i)
+			if name_talent and name_talent == wanted_name then
+				if current_rank and current_rank > 0 then
+					return true
+				else
+					return false
+				end
+			end
+		end
+	end
+	return false
+end
+
+----------------------------------------------------------------------------------------
+--	Player's buff check
+----------------------------------------------------------------------------------------
+T.CheckPlayerBuff = function(spell)
+	for i = 1, BUFF_MAX_DISPLAY do
+		local buffIndex = GetPlayerBuff(i)
+		if buffIndex ~= 0 then
+			if type(spell) == "number" then
+				spell = GetSpellInfo(spell)
+			end
+			if spell == GetPlayerBuffName(buffIndex) then
+				return true, i
+			end
+		end
+	end
+	return false
+end
 
 ----------------------------------------------------------------------------------------
 --	UTF functions
@@ -167,12 +206,12 @@ function T.SkinScrollBar(frame, parent)
 	if UpButton and DownButton then
 		if not UpButton.icon then
 			T.SkinNextPrevButton(UpButton, nil, "Up")
-			UpButton:SetSize(UpButton:GetWidth() + 7, UpButton:GetHeight() + 7)
+			UpButton:SetSize(UpButton:GetWidth() + 6, UpButton:GetHeight() + 8)
 		end
 
 		if not DownButton.icon then
 			T.SkinNextPrevButton(DownButton, nil, "Down")
-			DownButton:SetSize(DownButton:GetWidth() + 7, DownButton:GetHeight() + 7)
+			DownButton:SetSize(DownButton:GetWidth() + 6, DownButton:GetHeight() + 8)
 		end
 
 		if ThumbTexture then
@@ -192,6 +231,7 @@ function T.SkinScrollBar(frame, parent)
 					end
 				end)
 
+				--[[
 				frame:HookScript("OnMinMaxChanged", function()
 					local _, maxValue = frame:GetMinMaxValues()
 					if maxValue == 0 then
@@ -200,14 +240,19 @@ function T.SkinScrollBar(frame, parent)
 						frame:SetAlpha(1)
 					end
 				end)
+				--]]
 
+				--[[
 				frame:HookScript("OnDisable", function()
 					frame:SetAlpha(0)
 				end)
+				--]]
 
+				--[[
 				frame:HookScript("OnEnable", function()
 					frame:SetAlpha(1)
 				end)
+				--]]
 			end
 		end
 	end
@@ -253,9 +298,9 @@ end
 
 function T.SkinNextPrevButton(btn, left, scroll)
 	local normal, pushed, disabled
-	local isPrevButton = btn:GetName() and (string.find(btn:GetName(), "Left") or string.find(btn:GetName(), "Prev") or string.find(btn:GetName(), "Decrement") or string.find(btn:GetName(), "Back")) or left
-	local isScrollUpButton = btn:GetName() and string.find(btn:GetName(), "ScrollUp") or scroll == "Up"
-	local isScrollDownButton = btn:GetName() and string.find(btn:GetName(), "ScrollDown") or scroll == "Down"
+	local isPrevButton = btn:GetName() and (strfind(btn:GetName(), "Left") or strfind(btn:GetName(), "Prev") or strfind(btn:GetName(), "Decrement") or strfind(btn:GetName(), "Back")) or left
+	local isScrollUpButton = btn:GetName() and strfind(btn:GetName(), "ScrollUp") or scroll == "Up"
+	local isScrollDownButton = btn:GetName() and strfind(btn:GetName(), "ScrollDown") or scroll == "Down"
 
 	if btn:GetNormalTexture() then
 		normal = btn:GetNormalTexture():GetTexture()
@@ -318,7 +363,7 @@ function T.SkinNextPrevButton(btn, left, scroll)
 	btn:SetDisabledTexture(disabled)
 
 	btn:SetTemplate("Overlay")
-	btn:SetSize(btn:GetWidth() - 7, btn:GetHeight() - 7)
+	btn:SetSize(btn:GetWidth() - 6, btn:GetHeight() - 6)
 
 	if normal and pushed and disabled then
 		btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.81, 0.65, 0.29, 0.65, 0.81)
@@ -338,7 +383,7 @@ function T.SkinNextPrevButton(btn, left, scroll)
 		if btn:GetPushedTexture() then
 			btn:GetPushedTexture():SetAllPoints(btn:GetNormalTexture())
 		end
-		btn:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+		btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 		btn:GetHighlightTexture():SetAllPoints(btn:GetNormalTexture())
 	end
 end
@@ -350,7 +395,7 @@ function T.SkinRotateButton(btn)
 	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 	btn:GetPushedTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
 
-	btn:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 
 	btn:GetNormalTexture():ClearAllPoints()
 	btn:GetNormalTexture():SetPoint("TOPLEFT", 2, -2)
@@ -392,15 +437,23 @@ function T.SkinEditBox(frame, width, height)
 end
 
 function T.SkinDropDownBox(frame, width)
-	local button = _G[frame:GetName().."Button"] or _G[frame:GetName().."_Button"]
+	-- local button = _G[frame:GetName().."Button"] or _G[frame:GetName().."_Button"]
+	local button = _G[frame:GetName()] and (_G[frame:GetName().."Button"] or _G[frame:GetName().."_Button"]) or frame.Button
+	local text = _G[frame:GetName()] and _G[frame:GetName().."Text"] or frame.Text
 	if not width then width = 155 end
 
 	frame:StripTextures()
 	frame:SetWidth(width)
 
+	--[[
 	if _G[frame:GetName().."Text"] then
 		_G[frame:GetName().."Text"]:ClearAllPoints()
 		_G[frame:GetName().."Text"]:SetPoint("RIGHT", button, "LEFT", -2, 0)
+	end
+	--]]
+	if text then
+		text:ClearAllPoints()
+		text:SetPoint("RIGHT", button, "LEFT", -2, 0)
 	end
 
 	button:ClearAllPoints()
@@ -424,17 +477,17 @@ function T.SkinCheckBox(frame, default)
 	frame.backdrop:SetPoint("BOTTOMRIGHT", -4, 4)
 
 	if frame.SetHighlightTexture then
-		local highligh = frame:CreateTexture(nil, nil, self)
-		highligh:SetColorTexture(1, 1, 1, 0.3)
-		highligh:SetPoint("TOPLEFT", frame, 6, -6)
-		highligh:SetPoint("BOTTOMRIGHT", frame, -6, 6)
-		frame:SetHighlightTexture(highligh)
+		local highlight = frame:CreateTexture(nil, nil, self)
+		highlight:SetTexture(1, 1, 1, 0.3)
+		highlight:SetPoint("TOPLEFT", frame, 6, -6)
+		highlight:SetPoint("BOTTOMRIGHT", frame, -6, 6)
+		frame:SetHighlightTexture(highlight)
 	end
 
 	if frame.SetCheckedTexture then
 		if default then return end
 		local checked = frame:CreateTexture(nil, nil, self)
-		checked:SetColorTexture(1, 0.82, 0, 0.8)
+		checked:SetTexture(1, 0.82, 0, 0.8)
 		checked:SetPoint("TOPLEFT", frame, 6, -6)
 		checked:SetPoint("BOTTOMRIGHT", frame, -6, 6)
 		frame:SetCheckedTexture(checked)
@@ -442,12 +495,13 @@ function T.SkinCheckBox(frame, default)
 
 	if frame.SetDisabledCheckedTexture then
 		local disabled = frame:CreateTexture(nil, nil, self)
-		disabled:SetColorTexture(0.6, 0.6, 0.6, 0.75)
+		disabled:SetTexture(0.6, 0.6, 0.6, 0.75)
 		disabled:SetPoint("TOPLEFT", frame, 6, -6)
 		disabled:SetPoint("BOTTOMRIGHT", frame, -6, 6)
 		frame:SetDisabledCheckedTexture(disabled)
 	end
 
+	--[[
 	frame:HookScript("OnDisable", function(self)
 		if not self.SetDisabledTexture then return end
 		if self:GetChecked() then
@@ -456,6 +510,7 @@ function T.SkinCheckBox(frame, default)
 			self:SetDisabledTexture("")
 		end
 	end)
+	--]]
 end
 
 function T.SkinCloseButton(f, point, text, pixel)
@@ -467,10 +522,10 @@ function T.SkinCloseButton(f, point, text, pixel)
 	if not f.text then
 		if pixel then
 			f.text = f:FontString(nil, C.media.pixel_font, 8)
-			f.text:SetPoint("CENTER", 0, 0)
+			f.text:SetPoint("CENTER", -1, 1)
 		else
 			f.text = f:FontString(nil, C.media.normal_font, 17)
-			f.text:SetPoint("CENTER", 0, 1)
+			f.text:SetPoint("CENTER", -1, 2)
 		end
 		f.text:SetText(text)
 	end
@@ -485,10 +540,10 @@ function T.SkinCloseButton(f, point, text, pixel)
 	f:HookScript("OnLeave", T.SetOriginalBackdrop)
 end
 
-function T.HandleIcon(icon, parent)
+function T.SkinIcon(icon, parent)
 	parent = parent or icon:GetParent()
 
-	parent:CreateBackdrop("Default")
+	parent:CreateBackdrop("Overlay")
 	parent.backdrop:SetPoint("TOPLEFT", icon, -2, 2)
 	parent.backdrop:SetPoint("BOTTOMRIGHT", icon, 2, -2)
 
@@ -510,32 +565,35 @@ function T.SkinSlider(f)
 	end
 	bd:SetFrameLevel(f:GetFrameLevel() - 1)
 
-	local slider = select(4, f:GetRegions())
-	slider:SetTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
-	slider:SetBlendMode("ADD")
+	f:SetThumbTexture("Interface\\CastingBar\\UI-CastingBar-Spark")
+	f:GetThumbTexture():SetBlendMode("ADD")
 end
 
 function T.SkinIconSelectionFrame(frame, numIcons, buttonNameTemplate, frameNameOverride)
 	local frameName = frameNameOverride or frame:GetName()
 	local scrollFrame = _G[frameName.."ScrollFrame"]
 	local editBox = _G[frameName.."EditBox"]
-	local okayButton = _G[frameName.."OkayButton"] or _G[frameName.."Okay"]
-	local cancelButton = _G[frameName.."CancelButton"] or _G[frameName.."Cancel"]
+	local okayButton = _G[frameName.."OkayButton"] or _G[frameName.."Okay"] or frame.BorderBox.OkayButton
+	local cancelButton = _G[frameName.."CancelButton"] or _G[frameName.."Cancel"] or frame.BorderBox.CancelButton
 
 	frame:StripTextures()
-	frame.BorderBox:StripTextures()
+	-- frame.BorderBox:StripTextures()
+	frame:CreateBackdrop("Transparent")
+	frame.backdrop:SetPoint("TOPLEFT", 2, 1)
+	frame:SetHeight(frame:GetHeight() + 13)
+
 	scrollFrame:StripTextures()
 	scrollFrame:CreateBackdrop("Overlay")
-	scrollFrame.backdrop:SetPoint("TOPLEFT", 15, 4)
-	scrollFrame.backdrop:SetPoint("BOTTOMRIGHT", 28, -8)
-	editBox:DisableDrawLayer("BACKGROUND")
-
-	frame:SetTemplate("Transparent")
-	frame:SetHeight(frame:GetHeight() + 10)
-	scrollFrame:SetHeight(scrollFrame:GetHeight() + 10)
+	scrollFrame.backdrop:SetPoint("TOPLEFT", 47, 4)
+	scrollFrame.backdrop:SetPoint("BOTTOMRIGHT", 34, -8)
+	scrollFrame:SetHeight(scrollFrame:GetHeight() + 12)
 
 	okayButton:SkinButton()
 	cancelButton:SkinButton()
+	cancelButton:ClearAllPoints()
+	cancelButton:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -5, 5)
+
+	editBox:DisableDrawLayer("BACKGROUND")
 	T.SkinEditBox(editBox)
 
 	cancelButton:ClearAllPoints()
@@ -589,7 +647,7 @@ end)
 --	Unit frames functions
 ----------------------------------------------------------------------------------------
 if C.unitframe.enable ~= true then return end
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 T.UpdateAllElements = function(frame)
@@ -598,6 +656,13 @@ T.UpdateAllElements = function(frame)
 	end
 end
 
+T.UpdateAuras = function(frame)
+	for _, v in ipairs(frame.__elements) do
+		v(frame, "UpdateAuras", frame.unit)
+	end
+end
+
+--[[
 local SetUpAnimGroup = function(self)
 	self.anim = self:CreateAnimationGroup()
 	self.anim:SetLooping("BOUNCE")
@@ -607,7 +672,9 @@ local SetUpAnimGroup = function(self)
 	self.anim.fade:SetDuration(0.6)
 	self.anim.fade:SetSmoothing("IN_OUT")
 end
+--]]
 
+--[[
 local Flash = function(self)
 	if not self.anim then
 		SetUpAnimGroup(self)
@@ -617,10 +684,24 @@ local Flash = function(self)
 		self.anim:Play()
 	end
 end
+--]]
 
+--[[
 local StopFlash = function(self)
 	if self.anim then
 		self.anim:Finish()
+	end
+end
+--]]
+
+T.SpawnMenu = function(self)
+	local unit = self.unit:gsub("(.)", strupper, 1)
+	if unit == "targettarget" or unit == "focustarget" or unit == "pettarget" then return end
+
+	if _G[unit.."FrameDropDown"] then
+		ToggleDropDownMenu(1, nil, _G[unit.."FrameDropDown"], "cursor")
+	elseif self.unit:match("party") then
+		ToggleDropDownMenu(1, nil, _G["PartyMemberFrame"..self.id.."DropDown"], "cursor")
 	end
 end
 
@@ -631,8 +712,8 @@ T.SetFontString = function(parent, fontName, fontHeight, fontStyle)
 	return fs
 end
 
-T.PostUpdateHealth = function(health, unit, min, max)
-	if unit and unit:find("arena%dtarget") then return end
+T.PostUpdateHealth = function(health, unit, cur, max)
+	-- if unit and unit:find("arena%dtarget") then return end
 	if not UnitIsConnected(unit) or UnitIsDead(unit) or UnitIsGhost(unit) then
 		health:SetValue(0)
 		if not UnitIsConnected(unit) then
@@ -654,7 +735,7 @@ T.PostUpdateHealth = function(health, unit, min, max)
 				health:SetStatusBarColor(r, g, b)
 			end
 		end
-		if unit == "pet" or unit == "vehicle" then
+		if unit == "pet" then
 			local _, class = UnitClass("player")
 			local r, g, b = unpack(T.oUF_colors.class[class])
 			if C.unitframe.own_color == true then
@@ -676,7 +757,7 @@ T.PostUpdateHealth = function(health, unit, min, max)
 			else
 				r, g, b = health:GetStatusBarColor()
 			end
-			local newr, newg, newb = oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, r, g, b)
+			local newr, newg, newb = oUF.ColorGradient(cur, max, 1, 0, 0, 1, 1, 0, r, g, b)
 
 			health:SetStatusBarColor(newr, newg, newb)
 			if health.bg and health.bg.multiplier then
@@ -684,47 +765,49 @@ T.PostUpdateHealth = function(health, unit, min, max)
 				health.bg:SetVertexColor(newr * mu, newg * mu, newb * mu)
 			end
 		end
-		if min ~= max then
-			r, g, b = oUF.ColorGradient(min, max, 0.69, 0.31, 0.31, 0.65, 0.63, 0.35, 0.33, 0.59, 0.33)
+		if cur ~= max then
+			r, g, b = oUF.ColorGradient(cur, max, 0.69, 0.31, 0.31, 0.65, 0.63, 0.35, 0.33, 0.59, 0.33)
 			if unit == "player" and health:GetAttribute("normalUnit") ~= "pet" then
 				if C.unitframe.show_total_value == true then
 					if C.unitframe.color_value == true then
-						health.value:SetFormattedText("|cff559655%s|r |cffD7BEA5-|r |cff559655%s|r", T.ShortValue(min), T.ShortValue(max))
+						health.value:SetFormattedText("|cff559655%s|r |cffD7BEA5-|r |cff559655%s|r", T.ShortValue(cur), T.ShortValue(max))
 					else
-						health.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(min), T.ShortValue(max))
+						health.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(cur), T.ShortValue(max))
 					end
 				else
 					if C.unitframe.color_value == true then
-						health.value:SetFormattedText("|cffAF5050%d|r |cffD7BEA5-|r |cff%02x%02x%02x%d%%|r", min, r * 255, g * 255, b * 255, floor(min / max * 100))
+						health.value:SetFormattedText("|cffAF5050%d|r |cffD7BEA5-|r |cff%02x%02x%02x%d%%|r", cur, r * 255, g * 255, b * 255, floor(cur / max * 100))
 					else
-						health.value:SetFormattedText("|cffffffff%d - %d%%|r", min, floor(min / max * 100))
+						health.value:SetFormattedText("|cffffffff%d - %d%%|r", cur, floor(cur / max * 100))
 					end
 				end
 			elseif unit == "target" then
 				if C.unitframe.show_total_value == true then
 					if C.unitframe.color_value == true then
-						health.value:SetFormattedText("|cff559655%s|r |cffD7BEA5-|r |cff559655%s|r", T.ShortValue(min), T.ShortValue(max))
+						health.value:SetFormattedText("|cff559655%s|r |cffD7BEA5-|r |cff559655%s|r", T.ShortValue(cur), T.ShortValue(max))
 					else
-						health.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(min), T.ShortValue(max))
+						health.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(cur), T.ShortValue(max))
 					end
 				else
 					if C.unitframe.color_value == true then
-						health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r |cffD7BEA5-|r |cffAF5050%s|r", r * 255, g * 255, b * 255, floor(min / max * 100), T.ShortValue(min))
+						health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r |cffD7BEA5-|r |cffAF5050%s|r", r * 255, g * 255, b * 255, floor(cur / max * 100), T.ShortValue(cur))
 					else
-						health.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(min / max * 100), T.ShortValue(min))
+						health.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(cur / max * 100), T.ShortValue(cur))
 					end
 				end
+			--[[
 			elseif unit and unit:find("boss%d") then
 				if C.unitframe.color_value == true then
-					health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r |cffD7BEA5-|r |cffAF5050%s|r", r * 255, g * 255, b * 255, floor(min / max * 100), T.ShortValue(min))
+					health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r |cffD7BEA5-|r |cffAF5050%s|r", r * 255, g * 255, b * 255, floor(cur / max * 100), T.ShortValue(cur))
 				else
-					health.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(min / max * 100), T.ShortValue(min))
+					health.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(cur / max * 100), T.ShortValue(cur))
 				end
+			--]]
 			else
 				if C.unitframe.color_value == true then
-					health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r", r * 255, g * 255, b * 255, floor(min / max * 100))
+					health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r", r * 255, g * 255, b * 255, floor(cur / max * 100))
 				else
-					health.value:SetFormattedText("|cffffffff%d%%|r", floor(min / max * 100))
+					health.value:SetFormattedText("|cffffffff%d%%|r", floor(cur / max * 100))
 				end
 			end
 		else
@@ -745,7 +828,7 @@ T.PostUpdateHealth = function(health, unit, min, max)
 	end
 end
 
-T.PostUpdateRaidHealth = function(health, unit, min, max)
+T.PostUpdateRaidHealth = function(health, unit, cur, max)
 	local self = health:GetParent()
 	local power = self.Power
 	local border = self.backdrop
@@ -775,7 +858,7 @@ T.PostUpdateRaidHealth = function(health, unit, min, max)
 			else
 				r, g, b = health:GetStatusBarColor()
 			end
-			local newr, newg, newb = oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, r, g, b)
+			local newr, newg, newb = oUF.ColorGradient(cur, max, 1, 0, 0, 1, 1, 0, r, g, b)
 
 			health:SetStatusBarColor(newr, newg, newb)
 			if health.bg and health.bg.multiplier then
@@ -783,26 +866,26 @@ T.PostUpdateRaidHealth = function(health, unit, min, max)
 				health.bg:SetVertexColor(newr * mu, newg * mu, newb * mu)
 			end
 		end
-		if min ~= max then
-			r, g, b = oUF.ColorGradient(min, max, 0.69, 0.31, 0.31, 0.65, 0.63, 0.35, 0.33, 0.59, 0.33)
+		if cur ~= max then
+			r, g, b = oUF.ColorGradient(cur, max, 0.69, 0.31, 0.31, 0.65, 0.63, 0.35, 0.33, 0.59, 0.33)
 			if self:GetParent():GetName():match("oUF_PartyDPS") then
 				if C.unitframe.color_value == true then
-					health.value:SetFormattedText("|cffAF5050%s|r |cffD7BEA5-|r |cff%02x%02x%02x%d%%|r", T.ShortValue(min), r * 255, g * 255, b * 255, floor(min / max * 100))
+					health.value:SetFormattedText("|cffAF5050%s|r |cffD7BEA5-|r |cff%02x%02x%02x%d%%|r", T.ShortValue(cur), r * 255, g * 255, b * 255, floor(cur / max * 100))
 				else
-					health.value:SetFormattedText("|cffffffff%s - %d%%|r", T.ShortValue(min), floor(min / max * 100))
+					health.value:SetFormattedText("|cffffffff%s - %d%%|r", T.ShortValue(cur), floor(cur / max * 100))
 				end
 			else
 				if C.unitframe.color_value == true then
 					if C.raidframe.deficit_health == true then
-						health.value:SetText("|cffffffff".."-"..T.ShortValue(max - min))
+						health.value:SetText("|cffffffff".."-"..T.ShortValue(max - cur))
 					else
-						health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r", r * 255, g * 255, b * 255, floor(min / max * 100))
+						health.value:SetFormattedText("|cff%02x%02x%02x%d%%|r", r * 255, g * 255, b * 255, floor(cur / max * 100))
 					end
 				else
 					if C.raidframe.deficit_health == true then
-						health.value:SetText("|cffffffff".."-"..T.ShortValue(max - min))
+						health.value:SetText("|cffffffff".."-"..T.ShortValue(max - cur))
 					else
-						health.value:SetFormattedText("|cffffffff%d%%|r", floor(min / max * 100))
+						health.value:SetFormattedText("|cffffffff%d%%|r", floor(cur / max * 100))
 					end
 				end
 			end
@@ -814,7 +897,7 @@ T.PostUpdateRaidHealth = function(health, unit, min, max)
 			end
 		end
 		if C.raidframe.alpha_health == true then
-			if min / max > 0.95 then
+			if cur / max > 0.95 then
 				health:SetAlpha(0.6)
 				power:SetAlpha(0.6)
 				border:SetAlpha(0.6)
@@ -828,19 +911,19 @@ T.PostUpdateRaidHealth = function(health, unit, min, max)
 end
 
 T.PreUpdatePower = function(power, unit)
-	local _, pToken = UnitPowerType(unit)
+	local pType = UnitPowerType(unit)
 
-	local color = T.oUF_colors.power[pToken]
+	local color = T.oUF_colors.power[pType]
 	if color then
 		power:SetStatusBarColor(color[1], color[2], color[3])
 	end
 end
 
-T.PostUpdatePower = function(power, unit, min, max)
-	if unit and unit:find("arena%dtarget") then return end
+T.PostUpdatePower = function(power, unit, cur, max)
+	-- if unit and unit:find("arena%dtarget") then return end
 	local self = power:GetParent()
-	local pType, pToken = UnitPowerType(unit)
-	local color = T.oUF_colors.power[pToken]
+	local pType = UnitPowerType(unit)
+	local color = T.oUF_colors.power[pType]
 
 	if color then
 		power.value:SetTextColor(color[1], color[2], color[3])
@@ -857,82 +940,85 @@ T.PostUpdatePower = function(power, unit, min, max)
 	elseif UnitIsDead(unit) or UnitIsGhost(unit) or max == 0 then
 		power.value:SetText()
 	else
-		if min ~= max then
-			if pType == 0 and pToken ~= "POWER_TYPE_DINO_SONIC" then
+		if cur ~= max then
+			if pType == 0 then
 				if unit == "target" then
 					if C.unitframe.show_total_value == true then
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						else
-							power.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						end
 					else
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%d%% |cffD7BEA5-|r %s", floor(min / max * 100), T.ShortValue(max - (max - min)))
+							power.value:SetFormattedText("%d%% |cffD7BEA5-|r %s", floor(cur / max * 100), T.ShortValue(max - (max - cur)))
 						else
-							power.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(min / max * 100), T.ShortValue(max - (max - min)))
+							power.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(cur / max * 100), T.ShortValue(max - (max - cur)))
 						end
 					end
 				elseif (unit == "player" and power:GetAttribute("normalUnit") == "pet") or unit == "pet" then
 					if C.unitframe.show_total_value == true then
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						else
-							power.value:SetFormattedText("%s |cffffffff-|r %s", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("%s |cffffffff-|r %s", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						end
 					else
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%d%%", floor(min / max * 100))
+							power.value:SetFormattedText("%d%%", floor(cur / max * 100))
 						else
-							power.value:SetFormattedText("|cffffffff%d%%|r", floor(min / max * 100))
+							power.value:SetFormattedText("|cffffffff%d%%|r", floor(cur / max * 100))
 						end
 					end
+				--[[
 				elseif unit and (unit:find("arena%d") or unit:find("boss%d")) then
 					if C.unitframe.color_value == true then
-						power.value:SetFormattedText("|cffD7BEA5%d%% - %s|r", floor(min / max * 100), T.ShortValue(max - (max - min)))
+						power.value:SetFormattedText("|cffD7BEA5%d%% - %s|r", floor(cur / max * 100), T.ShortValue(max - (max - cur)))
 					else
-						power.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(min / max * 100), T.ShortValue(max - (max - min)))
+						power.value:SetFormattedText("|cffffffff%d%% - %s|r", floor(cur / max * 100), T.ShortValue(max - (max - cur)))
 					end
+				--]]
 				elseif self:GetParent():GetName():match("oUF_PartyDPS") then
 					if C.unitframe.color_value == true then
-						power.value:SetFormattedText("%s |cffD7BEA5-|r %d%%", T.ShortValue(max - (max - min)), floor(min / max * 100))
+						power.value:SetFormattedText("%s |cffD7BEA5-|r %d%%", T.ShortValue(max - (max - cur)), floor(cur / max * 100))
 					else
-						power.value:SetFormattedText("|cffffffff%s - %d%%|r", T.ShortValue(max - (max - min)), floor(min / max * 100))
+						power.value:SetFormattedText("|cffffffff%s - %d%%|r", T.ShortValue(max - (max - cur)), floor(cur / max * 100))
 					end
 				else
 					if C.unitframe.show_total_value == true then
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("%s |cffD7BEA5-|r %s", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						else
-							power.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(max - (max - min)), T.ShortValue(max))
+							power.value:SetFormattedText("|cffffffff%s - %s|r", T.ShortValue(max - (max - cur)), T.ShortValue(max))
 						end
 					else
 						if C.unitframe.color_value == true then
-							power.value:SetFormattedText("%d |cffD7BEA5-|r %d%%", max - (max - min), floor(min / max * 100))
+							power.value:SetFormattedText("%d |cffD7BEA5-|r %d%%", max - (max - cur), floor(cur / max * 100))
 						else
-							power.value:SetFormattedText("|cffffffff%d - %d%%|r", max - (max - min), floor(min / max * 100))
+							power.value:SetFormattedText("|cffffffff%d - %d%%|r", max - (max - cur), floor(cur / max * 100))
 						end
 					end
 				end
 			else
 				if C.unitframe.color_value == true then
-					power.value:SetText(max - (max - min))
+					power.value:SetText(max - (max - cur))
 				else
-					power.value:SetText("|cffffffff"..max - (max - min).."|r")
+					power.value:SetText("|cffffffff"..max - (max - cur).."|r")
 				end
 			end
 		else
-			if unit == "pet" or unit == "target" or (unit and unit:find("arena%d")) or (self:GetParent():GetName():match("oUF_PartyDPS")) then
+			-- if unit == "pet" or unit == "target" or (unit and unit:find("arena%d")) or (self:GetParent():GetName():match("oUF_PartyDPS")) then
+			if unit == "pet" or unit == "target" or (self:GetParent():GetName():match("oUF_PartyDPS")) then
 				if C.unitframe.color_value == true then
-					power.value:SetText(T.ShortValue(min))
+					power.value:SetText(T.ShortValue(cur))
 				else
-					power.value:SetText("|cffffffff"..T.ShortValue(min).."|r")
+					power.value:SetText("|cffffffff"..T.ShortValue(cur).."|r")
 				end
 			else
 				if C.unitframe.color_value == true then
-					power.value:SetText(min)
+					power.value:SetText(cur)
 				else
-					power.value:SetText("|cffffffff"..min.."|r")
+					power.value:SetText("|cffffffff"..cur.."|r")
 				end
 			end
 		end
@@ -948,31 +1034,34 @@ T.UpdateManaLevel = function(self, elapsed)
 		local percMana = UnitMana("player") / UnitManaMax("player") * 100
 		if percMana <= 20 and not UnitIsDeadOrGhost("player") then
 			self.ManaLevel:SetText("|cffaf5050"..MANA_LOW.."|r")
-			Flash(self)
+			-- Flash(self)
 		else
 			self.ManaLevel:SetText()
-			StopFlash(self)
+			-- StopFlash(self)
 		end
-	elseif T.class ~= "DRUID" and T.class ~= "PRIEST" and T.class ~= "SHAMAN" then
+	elseif T.class ~= "DRUID" then
 		self.ManaLevel:SetText()
-		StopFlash(self)
+		-- StopFlash(self)
 	end
 end
 
 T.UpdateClassMana = function(self)
 	if self.unit ~= "player" then return end
 
+	local LDM = LibStub("LibDruidMana-1.0")
+
 	if UnitPowerType("player") ~= 0 then
-		local min = UnitPower("player", 0)
-		local max = UnitPowerMax("player", 0)
+		-- local min = UnitMana("player", 0)
+		-- local max = UnitManaMax("player", 0)
+		local min, max = LDM:GetCurrentMana(), LDM:GetMaximumMana()
 
 		local percMana = min / max * 100
 		if percMana <= 20 and not UnitIsDeadOrGhost("player") then
 			self.FlashInfo.ManaLevel:SetText("|cffaf5050"..MANA_LOW.."|r")
-			Flash(self.FlashInfo)
+			-- Flash(self.FlashInfo)
 		else
 			self.FlashInfo.ManaLevel:SetText()
-			StopFlash(self.FlashInfo)
+			-- StopFlash(self.FlashInfo)
 		end
 
 		if min ~= max then
@@ -1026,62 +1115,13 @@ T.UpdatePvPStatus = function(self, elapsed)
 end
 
 T.UpdateComboPoint = function(self, event, unit)
-	if powerType and powerType ~= 'COMBO_POINTS' then return end
+	if powerType and powerType ~= "COMBO_POINTS" then return end
 	if unit == "pet" then return end
 
-	local cpoints = self.CPoints
-	local cp = (UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")) and UnitPower("vehicle", 4) or UnitPower("player", 4)
-	local cpOld = (UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")) and GetComboPoints("vehicle", "target") or GetComboPoints("player", "target")
-	if cpOld and cp and (cpOld > cp) then cp = cpOld end
+	local cpoints = self.ComboPoints
+	local cp = GetComboPoints("player", "target")
 
-	local numMax
-	if (UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")) then
-		numMax = MAX_COMBO_POINTS
-	else
-		numMax = UnitPowerMax("player", SPELL_POWER_COMBO_POINTS)
-		if numMax == 0 then
-			numMax = MAX_COMBO_POINTS
-		end
-	end
-
-	local spacing = select(4, cpoints[5]:GetPoint())
-	local w = cpoints:GetWidth()
-	local s = 0
-
-	if cpoints.numMax ~= numMax then
-		if numMax == 10 then
-			cpoints[6]:Show()
-			cpoints[7]:Show()
-			cpoints[8]:Show()
-			cpoints[9]:Show()
-			cpoints[10]:Show()
-		elseif numMax == 6 then
-			cpoints[6]:Show()
-			cpoints[7]:Hide()
-			cpoints[8]:Hide()
-			cpoints[9]:Hide()
-			cpoints[10]:Hide()
-		else
-			cpoints[6]:Hide()
-			cpoints[7]:Hide()
-			cpoints[8]:Hide()
-			cpoints[9]:Hide()
-			cpoints[10]:Hide()
-		end
-
-		for i = 1, numMax do
-			if i ~= numMax then
-				cpoints[i]:SetWidth(w / numMax - spacing)
-				s = s + (w / numMax)
-			else
-				cpoints[i]:SetWidth(w - s)
-			end
-		end
-
-		cpoints.numMax = numMax
-	end
-
-	for i = 1, numMax do
+	for i = 1, MAX_COMBO_POINTS do
 		if i <= cp then
 			cpoints[i]:SetAlpha(1)
 		else
@@ -1090,9 +1130,9 @@ T.UpdateComboPoint = function(self, event, unit)
 	end
 
 	if T.class == "DRUID" and C.unitframe_class_bar.combo_always ~= true then
-		local form = GetShapeshiftFormID()
+		local form = GetShapeshiftForm()
 
-		if form == CAT_FORM or ((UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle")) and cp > 0) then
+		if form == 3 and cp > 0 then
 			cpoints:Show()
 			if self.Debuffs then self.Debuffs:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 2, 19) end
 		else
@@ -1103,62 +1143,13 @@ T.UpdateComboPoint = function(self, event, unit)
 end
 
 T.UpdateComboPointOld = function(self, event, unit)
-	if powerType and powerType ~= 'COMBO_POINTS' then return end
+	if powerType and powerType ~= "COMBO_POINTS" then return end
 	if unit == "pet" then return end
 
-	local cpoints = self.CPoints
-	local cp
-	local numMax
+	local cpoints = self.ComboPoints
+	local cp = GetComboPoints("player", "target")
 
-	if UnitHasVehicleUI("player") or UnitHasVehicleUI("vehicle") then
-		cp = GetComboPoints("vehicle", "target")
-		numMax = MAX_COMBO_POINTS
-	else
-		cp = GetComboPoints("player", "target")
-		numMax = UnitPowerMax("player", SPELL_POWER_COMBO_POINTS)
-		if numMax == 0 then
-			numMax = MAX_COMBO_POINTS
-		end
-	end
-
-	local spacing = select(4, cpoints[5]:GetPoint())
-	local w = cpoints:GetWidth()
-	local s = 0
-
-	if cpoints.numMax ~= numMax then
-		if numMax == 10 then
-			cpoints[6]:Show()
-			cpoints[7]:Show()
-			cpoints[8]:Show()
-			cpoints[9]:Show()
-			cpoints[10]:Show()
-		elseif numMax == 6 then
-			cpoints[6]:Show()
-			cpoints[7]:Hide()
-			cpoints[8]:Hide()
-			cpoints[9]:Hide()
-			cpoints[10]:Hide()
-		else
-			cpoints[6]:Hide()
-			cpoints[7]:Hide()
-			cpoints[8]:Hide()
-			cpoints[9]:Hide()
-			cpoints[10]:Hide()
-		end
-
-		for i = 1, numMax do
-			if i ~= numMax then
-				cpoints[i]:SetWidth(w / numMax - spacing)
-				s = s + (w / numMax)
-			else
-				cpoints[i]:SetWidth(w - s)
-			end
-		end
-
-		cpoints.numMax = numMax
-	end
-
-	for i = 1, numMax do
+	for i = 1, MAX_COMBO_POINTS do
 		if i <= cp then
 			cpoints[i]:SetAlpha(1)
 		else
@@ -1167,82 +1158,67 @@ T.UpdateComboPointOld = function(self, event, unit)
 	end
 
 	if cpoints[1]:GetAlpha() == 1 then
-		for i = 1, numMax do
+		for i = 1, MAX_COMBO_POINTS do
 			cpoints:Show()
 			cpoints[i]:Show()
 		end
 	else
-		for i = 1, numMax do
+		for i = 1, MAX_COMBO_POINTS do
 			cpoints:Hide()
 			cpoints[i]:Hide()
 		end
 	end
 
-	if self.RangeBar then
-		if cpoints[1]:IsShown() and self.RangeBar:IsShown() then
-			cpoints:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 21)
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 33) end
-		elseif cpoints[1]:IsShown() or self.RangeBar:IsShown() then
-			cpoints:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 7)
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 19) end
-		elseif self.Friendship and self.Friendship:IsShown() then
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 19) end
-		else
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 5) end
-		end
+	if cpoints[1]:IsShown() then
+		if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 19) end
 	else
-		if cpoints[1]:IsShown() or (self.Friendship and self.Friendship:IsShown()) then
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 19) end
-		else
-			if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 5) end
-		end
+		if self.Auras then self.Auras:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, 5) end
 	end
 end
 
 local ticks = {}
 local channelingTicks = T.CastBarTicks
 
-local setBarTicks = function(Castbar, ticknum)
+local setBarTicks = function(CastBar, ticknum)
 	for k, v in pairs(ticks) do
 		v:Hide()
 	end
 	if ticknum and ticknum > 0 then
-		local delta = Castbar:GetWidth() / ticknum
+		local delta = CastBar:GetWidth() / ticknum
 		for k = 1, ticknum do
 			if not ticks[k] then
-				ticks[k] = Castbar:CreateTexture(nil, "OVERLAY")
+				ticks[k] = CastBar:CreateTexture(nil, "OVERLAY")
 				ticks[k]:SetTexture(C.media.texture)
 				ticks[k]:SetVertexColor(unpack(C.media.border_color))
 				ticks[k]:SetWidth(1)
-				ticks[k]:SetHeight(Castbar:GetHeight())
+				ticks[k]:SetHeight(CastBar:GetHeight())
 				ticks[k]:SetDrawLayer("OVERLAY", 7)
 			end
 			ticks[k]:ClearAllPoints()
-			ticks[k]:SetPoint("CENTER", Castbar, "RIGHT", -delta * k, 0)
+			ticks[k]:SetPoint("CENTER", CastBar, "RIGHT", -delta * k, 0)
 			ticks[k]:Show()
 		end
 	end
 end
 
-T.PostCastStart = function(Castbar, unit, name, castid)
-	Castbar.channeling = false
-	if unit == "vehicle" then unit = "player" end
+T.PostCastStart = function(CastBar, unit, name)
+	CastBar.channeling = false
 
-	if unit == "player" and C.unitframe.castbar_latency == true and Castbar.Latency then
-		local _, _, _, lag = GetNetStats()
-		local latency = GetTime() - (Castbar.castSent or 0)
-		lag = lag / 1e3 > Castbar.max and Castbar.max or lag / 1e3
-		latency = latency > Castbar.max and lag or latency
-		Castbar.Latency:SetText(("%dms"):format(latency * 1e3))
-		Castbar.SafeZone:SetWidth(Castbar:GetWidth() * latency / Castbar.max)
-		Castbar.SafeZone:ClearAllPoints()
-		Castbar.SafeZone:SetPoint("TOPRIGHT")
-		Castbar.SafeZone:SetPoint("BOTTOMRIGHT")
-		Castbar.castSent = nil
+	if unit == "player" and C.unitframe.castbar_latency == true and CastBar.Latency then
+		local _, _, lag = GetNetStats()
+		local latency = GetTime() - (CastBar.castSent or 0)
+		lag = lag / 1e3 > CastBar.max and CastBar.max or lag / 1e3
+		latency = latency > CastBar.max and lag or latency
+		CastBar.Latency:SetText(("%dms"):format(latency * 1e3))
+		CastBar.SafeZone:SetWidth(CastBar:GetWidth() * latency / CastBar.max)
+		CastBar.SafeZone:ClearAllPoints()
+		CastBar.SafeZone:SetPoint("TOPRIGHT")
+		CastBar.SafeZone:SetPoint("BOTTOMRIGHT")
+		CastBar.castSent = nil
 	end
 
 	if unit == "player" and C.unitframe.castbar_ticks == true then
-		setBarTicks(Castbar, 0)
+		setBarTicks(CastBar, 0)
 	end
 
 	local r, g, b, color
@@ -1262,63 +1238,62 @@ T.PostCastStart = function(Castbar, unit, name, castid)
 		r, g, b = color[1], color[2], color[3]
 	end
 
-	if Castbar.interrupt and UnitCanAttack("player", unit) then
-		Castbar:SetStatusBarColor(0.8, 0, 0)
-		Castbar.bg:SetVertexColor(0.8, 0, 0, 0.2)
-		Castbar.Overlay:SetBackdropBorderColor(0.8, 0, 0)
+	if CastBar.interrupt and UnitCanAttack("player", unit) then
+		CastBar:SetStatusBarColor(0.8, 0, 0)
+		CastBar.bg:SetVertexColor(0.8, 0, 0, 0.2)
+		CastBar.Overlay:SetBackdropBorderColor(0.8, 0, 0)
 		if C.unitframe.castbar_icon == true and (unit == "target" or unit == "focus") then
-			Castbar.Button:SetBackdropBorderColor(0.8, 0, 0)
+			CastBar.Button:SetBackdropBorderColor(0.8, 0, 0)
 		end
 	else
-		if unit == "pet" or unit == "vehicle" then
+		if unit == "pet" then
 			local _, class = UnitClass("player")
 			local r, g, b = unpack(T.oUF_colors.class[class])
 			if C.unitframe.own_color == true then
-				Castbar:SetStatusBarColor(unpack(C.unitframe.uf_color))
-				Castbar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
+				CastBar:SetStatusBarColor(unpack(C.unitframe.uf_color))
+				CastBar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
 			else
 				if b then
-					Castbar:SetStatusBarColor(r, g, b)
-					Castbar.bg:SetVertexColor(r, g, b, 0.2)
+					CastBar:SetStatusBarColor(r, g, b)
+					CastBar.bg:SetVertexColor(r, g, b, 0.2)
 				end
 			end
 		else
 			if C.unitframe.own_color == true then
-				Castbar:SetStatusBarColor(unpack(C.unitframe.uf_color))
-				Castbar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
+				CastBar:SetStatusBarColor(unpack(C.unitframe.uf_color))
+				CastBar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
 			else
-				Castbar:SetStatusBarColor(r, g, b)
-				Castbar.bg:SetVertexColor(r, g, b, 0.2)
+				CastBar:SetStatusBarColor(r, g, b)
+				CastBar.bg:SetVertexColor(r, g, b, 0.2)
 			end
 		end
-		Castbar.Overlay:SetBackdropBorderColor(unpack(C.media.border_color))
+		CastBar.Overlay:SetBackdropBorderColor(unpack(C.media.border_color))
 		if C.unitframe.castbar_icon == true and (unit == "target" or unit == "focus") then
-			Castbar.Button:SetBackdropBorderColor(unpack(C.media.border_color))
+			CastBar.Button:SetBackdropBorderColor(unpack(C.media.border_color))
 		end
 	end
 end
 
-T.PostChannelStart = function(Castbar, unit, name)
-	Castbar.channeling = true
-	if unit == "vehicle" then unit = "player" end
+T.PostChannelStart = function(CastBar, unit, name)
+	CastBar.channeling = true
 
-	if unit == "player" and C.unitframe.castbar_latency == true and Castbar.Latency then
-		local _, _, _, lag = GetNetStats()
-		local latency = GetTime() - (Castbar.castSent or 0)
-		lag = lag / 1e3 > Castbar.max and Castbar.max or lag / 1e3
-		latency = latency > Castbar.max and lag or latency
-		Castbar.Latency:SetText(("%dms"):format(latency * 1e3))
-		Castbar.SafeZone:SetWidth(Castbar:GetWidth() * latency / Castbar.max)
-		Castbar.SafeZone:ClearAllPoints()
-		Castbar.SafeZone:SetPoint("TOPLEFT")
-		Castbar.SafeZone:SetPoint("BOTTOMLEFT")
-		Castbar.castSent = nil
+	if unit == "player" and C.unitframe.castbar_latency == true and CastBar.Latency then
+		local _, _, lag = GetNetStats()
+		local latency = GetTime() - (CastBar.castSent or 0)
+		lag = lag / 1e3 > CastBar.max and CastBar.max or lag / 1e3
+		latency = latency > CastBar.max and lag or latency
+		CastBar.Latency:SetText(("%dms"):format(latency * 1e3))
+		CastBar.SafeZone:SetWidth(CastBar:GetWidth() * latency / CastBar.max)
+		CastBar.SafeZone:ClearAllPoints()
+		CastBar.SafeZone:SetPoint("TOPLEFT")
+		CastBar.SafeZone:SetPoint("BOTTOMLEFT")
+		CastBar.castSent = nil
 	end
 
 	if unit == "player" and C.unitframe.castbar_ticks == true then
 		local spell = UnitChannelInfo(unit)
-		Castbar.channelingTicks = channelingTicks[spell] or 0
-		setBarTicks(Castbar, Castbar.channelingTicks)
+		CastBar.channelingTicks = channelingTicks[spell] or 0
+		setBarTicks(CastBar, CastBar.channelingTicks)
 	end
 
 	local r, g, b, color
@@ -1338,38 +1313,38 @@ T.PostChannelStart = function(Castbar, unit, name)
 		r, g, b = color[1], color[2], color[3]
 	end
 
-	if Castbar.interrupt and UnitCanAttack("player", unit) then
-		Castbar:SetStatusBarColor(0.8, 0, 0)
-		Castbar.bg:SetVertexColor(0.8, 0, 0, 0.2)
-		Castbar.Overlay:SetBackdropBorderColor(0.8, 0, 0)
+	if CastBar.interrupt and UnitCanAttack("player", unit) then
+		CastBar:SetStatusBarColor(0.8, 0, 0)
+		CastBar.bg:SetVertexColor(0.8, 0, 0, 0.2)
+		CastBar.Overlay:SetBackdropBorderColor(0.8, 0, 0)
 		if C.unitframe.castbar_icon == true and (unit == "target" or unit == "focus") then
-			Castbar.Button:SetBackdropBorderColor(0.8, 0, 0)
+			CastBar.Button:SetBackdropBorderColor(0.8, 0, 0)
 		end
 	else
-		if unit == "pet" or unit == "vehicle" then
+		if unit == "pet" then
 			local _, class = UnitClass("player")
 			local r, g, b = unpack(T.oUF_colors.class[class])
 			if C.unitframe.own_color == true then
-				Castbar:SetStatusBarColor(unpack(C.unitframe.uf_color))
-				Castbar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
+				CastBar:SetStatusBarColor(unpack(C.unitframe.uf_color))
+				CastBar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
 			else
 				if b then
-					Castbar:SetStatusBarColor(r, g, b)
-					Castbar.bg:SetVertexColor(r, g, b, 0.2)
+					CastBar:SetStatusBarColor(r, g, b)
+					CastBar.bg:SetVertexColor(r, g, b, 0.2)
 				end
 			end
 		else
 			if C.unitframe.own_color == true then
-				Castbar:SetStatusBarColor(unpack(C.unitframe.uf_color))
-				Castbar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
+				CastBar:SetStatusBarColor(unpack(C.unitframe.uf_color))
+				CastBar.bg:SetVertexColor(C.unitframe.uf_color[1], C.unitframe.uf_color[2], C.unitframe.uf_color[3], 0.2)
 			else
-				Castbar:SetStatusBarColor(r, g, b)
-				Castbar.bg:SetVertexColor(r, g, b, 0.2)
+				CastBar:SetStatusBarColor(r, g, b)
+				CastBar.bg:SetVertexColor(r, g, b, 0.2)
 			end
 		end
-		Castbar.Overlay:SetBackdropBorderColor(unpack(C.media.border_color))
+		CastBar.Overlay:SetBackdropBorderColor(unpack(C.media.border_color))
 		if C.unitframe.castbar_icon == true and (unit == "target" or unit == "focus") then
-			Castbar.Button:SetBackdropBorderColor(unpack(C.media.border_color))
+			CastBar.Button:SetBackdropBorderColor(unpack(C.media.border_color))
 		end
 	end
 end
@@ -1382,7 +1357,7 @@ T.CustomCastDelayText = function(self, duration)
 	self.Time:SetText(("%.1f |cffaf5050%s %.1f|r"):format(self.channeling and duration or self.max - duration, self.channeling and "-" or "+", abs(self.delay)))
 end
 
-local FormatTime = function(s)
+T.FormatTime = function(s)
 	local day, hour, minute = 86400, 3600, 60
 	if s >= day then
 		return format("%dd", floor(s / day + 0.5)), s % day
@@ -1396,6 +1371,19 @@ local FormatTime = function(s)
 	return format("%.1f", s), (s * 100 - floor(s * 100)) / 100
 end
 
+T.FormatMoney = function(money)
+	local gold = floor(math.abs(money) / 10000)
+	local silver = mod(floor(math.abs(money) / 100), 100)
+	local copper = mod(floor(math.abs(money)), 100)
+	if gold ~= 0 then
+		return format("%s".."|cffffd700"..L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL.."|r".." %s".."|cffc7c7cfs|r".." %s".."|cffeda55fc|r", gold, silver, copper)
+	elseif silver ~= 0 then
+		return format("%s".."|cffc7c7cf"..L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL.."|r".." %s".."|cffeda55fc|r", silver, copper)
+	else
+		return format("%s".."|cffeda55f"..L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL.."|r", copper)
+	end
+end
+
 local CreateAuraTimer = function(self, elapsed)
 	if self.timeLeft then
 		self.elapsed = (self.elapsed or 0) + elapsed
@@ -1407,7 +1395,7 @@ local CreateAuraTimer = function(self, elapsed)
 				self.first = false
 			end
 			if self.timeLeft > 0 then
-				local time = FormatTime(self.timeLeft)
+				local time = T.FormatTime(self.timeLeft)
 				self.remaining:SetText(time)
 				self.remaining:SetTextColor(1, 1, 1)
 			else
@@ -1441,13 +1429,24 @@ T.HideAuraFrame = function(self)
 			BuffFrame:UnregisterEvent("UNIT_AURA")
 			BuffFrame:Hide()
 			TemporaryEnchantFrame:Hide()
+			self.Buffs:Hide()
 			self.Debuffs:Hide()
+			self.Enchant:Hide()
+		else
+			BuffFrame:Hide()
+			TemporaryEnchantFrame:Hide()
 		end
 	elseif self.unit == "pet" and not C.aura.pet_debuffs or self.unit == "focus" and not C.aura.focus_debuffs
 	or self.unit == "focustarget" and not C.aura.fot_debuffs or self.unit == "targettarget" and not C.aura.tot_debuffs then
 		self.Debuffs:Hide()
 	elseif self.unit == "target" and not C.aura.target_auras then
 		self.Auras:Hide()
+	end
+end
+
+local CancelAura = function(self, button)
+	if button == "RightButton" and not self.debuff then
+		CancelPlayerBuff(self:GetID(), self:GetParent().filter)
 	end
 end
 
@@ -1483,64 +1482,114 @@ T.PostCreateAura = function(element, button)
 	else
 		element.disableCooldown = true
 	end
+	
+	if unit == "player" then
+		button:SetScript("OnMouseUp", CancelAura)
+	end
 end
 
-T.PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff, duration, timeLeft)
-	local _, _, _, _, dtype, duration, expirationTime, _, isStealable = UnitAura(unit, index, icon.filter)
+T.CreateEnchantTimer = function(self, icons)
+	for i = 1, 2 do
+		local icon = icons[i]
+		if icon.expTime then
+			icon.timeLeft = icon.expTime - GetTime()
+			icon.remaining:Show()
+		else
+			icon.remaining:Hide()
+		end
+		icon:SetScript("OnUpdate", CreateAuraTimer)
+	end
+end
 
+T.PostUpdateIcon = function(element, unit, button, index, offset, filter, isDebuff, duration, timeLeft)
+	local unstableAffliction = GetSpellInfo(30108)
+	local vampiricTouch = GetSpellInfo(34914)
+
+	local name, _, _, _, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
+	--[[
+	if not button.isDebuff then
+		local name, _, _, _, duration, expirationTime = UnitBuff(unit, index)
+	else
+		local name, _, _, _, dtype, duration, expirationTime = UnitDebuff(unit, index)
+	end
+	--]]
+	if expirationTime then expirationTime = expirationTime + GetTime() end
+
+	--[[
 	local playerUnits = {
 		player = true,
 		pet = true,
-		vehicle = true,
 	}
+	--]]
+	
+	if expirationTime then
+		button.owner = true
+	else
+		button.owner = false
+	end
 
-	if icon.debuff then
-		if not UnitIsFriend("player", unit) and not playerUnits[icon.owner] then
+	if button.isDebuff then
+		-- if not UnitIsFriend("player", unit) and not playerUnits[button.owner] then
+		if not UnitIsFriend("player", unit) and not button.owner then
 			if C.aura.player_aura_only then
-				icon:Hide()
+				button:Hide()
 			else
-				icon:SetBackdropBorderColor(unpack(C.media.border_color))
-				icon.icon:SetDesaturated(true)
+				button:SetBackdropBorderColor(unpack(C.media.border_color))
+				button.icon:SetDesaturated(true)
 			end
 		else
 			if C.aura.debuff_color_type == true then
-				local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
-				icon:SetBackdropBorderColor(color.r, color.g, color.b)
-				icon.icon:SetDesaturated(false)
+				if (name == unstableAffliction or name == vampiricTouch) and T.class ~= "WARLOCK" then
+					button:SetBackdropBorderColor(0.05, 0.85, 0.94)
+				else
+					local color = DebuffTypeColor[dtype] or DebuffTypeColor.none
+					button:SetBackdropBorderColor(color.r, color.g, color.b)
+					button.icon:SetDesaturated(false)
+				end
 			else
-				icon:SetBackdropBorderColor(1, 0, 0)
+				button:SetBackdropBorderColor(1, 0, 0)
 			end
 		end
 	else
-		if (isStealable or ((T.class == "MAGE" or T.class == "PRIEST" or T.class == "SHAMAN" or T.class == "HUNTER") and dtype == "Magic")) and not UnitIsFriend("player", unit) then
-			icon:SetBackdropBorderColor(1, 0.85, 0)
+		if (((T.class == "MAGE" or T.class == "PRIEST" or T.class == "SHAMAN") and dtype == "Magic")) and not UnitIsFriend("player", unit) then
+			button:SetBackdropBorderColor(1, 0.85, 0)
 		else
-			icon:SetBackdropBorderColor(unpack(C.media.border_color))
+			button:SetBackdropBorderColor(unpack(C.media.border_color))
 		end
-		icon.icon:SetDesaturated(false)
+		button:SetBackdropBorderColor(unpack(C.media.border_color))
+		button.icon:SetDesaturated(false)
 	end
+	
+	button.spell = name
+	button.duration = duration
 
 	if duration and duration > 0 and C.aura.show_timer == true then
-		icon.remaining:Show()
-		icon.timeLeft = expirationTime
-		icon:SetScript("OnUpdate", CreateAuraTimer)
+		button.remaining:Show()
+		button.timeLeft = expirationTime
+		button:SetScript("OnUpdate", CreateAuraTimer)
 	else
-		icon.remaining:Hide()
-		icon.timeLeft = math.huge
-		icon:SetScript("OnUpdate", nil)
+		button.remaining:Hide()
+		button.timeLeft = huge
+		button:SetScript("OnUpdate", nil)
 	end
 
-	icon.first = true
+	button.first = true
 end
+
+local Banzai = LibStub("LibBanzai-2.0", true)
+local lastCombatLogUpdate = 0
 
 T.UpdateThreat = function(self, event, unit)
 	if self.unit ~= unit then return end
-	local threat = UnitThreatSituation(self.unit)
-	if threat and threat > 1 then
-		r, g, b = GetThreatStatusColor(threat)
-		self.backdrop:SetBackdropBorderColor(r, g, b)
-	else
-		self.backdrop:SetBackdropBorderColor(unpack(C.media.border_color))
+	if GetTime() - lastCombatLogUpdate > 0.2 then
+		lastCombatLogUpdate = GetTime()
+		-- local threat = Banzai:GetUnitAggroByUnitId(self.unit)
+		local threat = nil
+		if threat then
+			self.backdrop:SetBackdropBorderColor(1, 0, 0)
+		else
+			self.backdrop:SetBackdropBorderColor(unpack(C.media.border_color))
+		end
 	end
 end
 
@@ -1571,6 +1620,8 @@ T.CreateAuraWatch = function(self, unit)
 	local auras = CreateFrame("Frame", nil, self)
 	auras:SetPoint("TOPLEFT", self.Health, 0, 0)
 	auras:SetPoint("BOTTOMRIGHT", self.Health, 0, 0)
+	auras.presentAlpha = 1
+	auras.missingAlpha = 0
 	auras.icons = {}
 	auras.PostCreateIcon = T.CreateAuraWatchIcon
 
@@ -1598,6 +1649,7 @@ T.CreateAuraWatch = function(self, unit)
 			icon.spellID = spell[1]
 			icon.anyUnit = spell[4]
 			icon.strictMatching = spell[5]
+			icon.textThreshold = -1
 			icon:SetWidth(7)
 			icon:SetHeight(7)
 			icon:SetPoint(spell[2], 0, 0)
@@ -1614,6 +1666,12 @@ T.CreateAuraWatch = function(self, unit)
 			local count = T.SetFontString(icon, C.font.unit_frames_font, C.font.unit_frames_font_size, C.font.unit_frames_font_style)
 			count:SetPoint("CENTER", unpack(CountOffSets[spell[2]]))
 			icon.count = count
+
+			if not icon.text then
+				local f = CreateFrame("Frame", nil, icon)
+				f:SetFrameLevel(icon:GetFrameLevel() + 50)
+				icon.text = f:CreateFontString(nil, "BORDER")
+			end
 
 			auras.icons[spell[1]] = icon
 		end

@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.announcements.flask_food ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -9,7 +9,7 @@ local foods = T.ReminderBuffs["Food"]
 local flasks = T.ReminderBuffs["Flask"]
 
 local function scan(unit)
-	table.wipe(unitBuffs)
+	wipe(unitBuffs)
 	local i = 1
 	while true do
 		local name = UnitAura(unit, i, "HELPFUL")
@@ -58,8 +58,8 @@ local function run(autoreport)
 
 	if C.announcements.flask_food_auto == true then C.announcements.flask_food_raid = true end
 
-	table.wipe(noFood)
-	table.wipe(noFlask)
+	wipe(noFood)
+	wipe(noFlask)
 
 	if UnitInRaid("player") then
 		checkType = "raid"
@@ -68,7 +68,7 @@ local function run(autoreport)
 		checkUnit("player")
 	end
 
-	for i = 1, GetNumGroupMembers() do
+	for i = 1, GetNumRaidMembers() or MAX_PARTY_MEMBERS do
 		if checkType == "raid" then
 			local online = select(8, GetRaidRosterInfo(i))
 			if online then
@@ -84,7 +84,7 @@ local function run(autoreport)
 	end
 
 	if #noFlask > 0 then
-		table.sort(noFlask)
+		sort(noFlask)
 		output = L_ANNOUNCE_FF_NOFLASK..table.concat(noFlask, ", ")
 		if C.announcements.flask_food_raid then
 			SendChatMessage(output, T.CheckChat())
@@ -94,7 +94,7 @@ local function run(autoreport)
 	end
 
 	if #noFood > 0 then
-		table.sort(noFood)
+		sort(noFood)
 		output = L_ANNOUNCE_FF_NOFOOD..table.concat(noFood, ", ")
 		if C.announcements.flask_food_raid then
 			SendChatMessage(output, T.CheckChat())
@@ -131,7 +131,8 @@ if C.misc.raid_tools == true then
 	RaidUtilityPanel:SetHeight(168)
 
 	local button = CreateFrame("Button", "FoodFlaskCheckButton", RaidUtilityPanel, "UIPanelButtonTemplate")
-	button:SetWidth(RaidUtilityRoleButton:GetWidth())
+	-- button:SetWidth(RaidUtilityRoleButton:GetWidth())
+	button:SetWidth(RaidUtilityReadyCheckButton:GetWidth())
 	button:SetHeight(18)
 	button:SetPoint("TOP", RaidUtilityRaidControlButton, "BOTTOM", 0, -5)
 	if IsAddOnLoaded("Aurora") then

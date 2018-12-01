@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -35,7 +35,6 @@ if C.chat.filter == true then
 	ERR_PET_SPELL_UNLEARNED_S = ""
 	ERR_LEARN_ABILITY_S = ""
 	ERR_LEARN_SPELL_S = ""
-	ERR_LEARN_PASSIVE_S = ""
 	ERR_SPELL_UNLEARNED_S = ""
 	ERR_CHAT_THROTTLED = ""
 end

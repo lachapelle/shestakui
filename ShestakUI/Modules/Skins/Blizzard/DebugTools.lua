@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -7,14 +7,17 @@ if C.skins.blizzard_frames ~= true then return end
 local function LoadSkin()
 	ScriptErrorsFrame:SetParent(UIParent)
 	ScriptErrorsFrame:SetTemplate("Transparent")
-	ScriptErrorsFrame.Reload:SkinButton()
-	ScriptErrorsFrame.Close:SkinButton()
-	T.SkinNextPrevButton(ScriptErrorsFrame.PreviousError, true)
-	T.SkinNextPrevButton(ScriptErrorsFrame.NextError)
-	T.SkinScrollBar(ScriptErrorsFrameScrollBar)
+	-- ScriptErrorsFrame.Reload:SkinButton()
+	-- ScriptErrorsFrame.Close:SkinButton()
+	-- T.SkinNextPrevButton(ScriptErrorsFrame.PreviousError, true)
+	-- T.SkinNextPrevButton(ScriptErrorsFrame.NextError)
+	-- T.SkinScrollBar(ScriptErrorsFrameScrollBar)
+	T.SkinScrollBar(ScriptErrorsFrameScrollFrameScrollBar)
 	T.SkinCloseButton(ScriptErrorsFrameClose)
-	ScriptErrorsFrame.ScrollFrame:CreateBackdrop("Overlay")
-	ScriptErrorsFrame.ScrollFrame:SetHeight(ScriptErrorsFrame:GetHeight() - 71)
+	-- ScriptErrorsFrame.ScrollFrame:CreateBackdrop("Overlay")
+	ScriptErrorsFrameScrollFrame:CreateBackdrop("Overlay")
+	-- ScriptErrorsFrame.ScrollFrame:SetHeight(ScriptErrorsFrame:GetHeight() - 71)
+	ScriptErrorsFrameScrollFrame:SetHeight(ScriptErrorsFrame:GetHeight() - 71)
 
 	local texs = {
 		"TopLeft",
@@ -37,6 +40,13 @@ local function LoadSkin()
 	EventTraceFrame:SetTemplate("Transparent")
 	T.SkinCloseButton(EventTraceFrameCloseButton)
 	EventTraceFrameScrollBG:SetTexture(nil)
+	
+	for i = 1, ScriptErrorsFrame:GetNumChildren() do
+		local child = select(i, ScriptErrorsFrame:GetChildren())
+		if child:GetObjectType() == "Button" and not child:GetName() then
+			child:SkinButton()
+		end
+	end
 
 	local scroll = EventTraceFrameScroll
 	scroll:GetThumbTexture():SetTexture(nil)

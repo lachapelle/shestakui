@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true or C.skins.clique ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -26,8 +26,7 @@ local function LoadSkin()
 	CliqueDialog:SetTemplate("Transparent")
 
 	T.SkinCloseButton(CliqueConfigCloseButton)
-	if CliqueDialog.CloseButton then T.SkinCloseButton(CliqueDialog.CloseButton) end
-	if CliqueDialogCloseButton then T.SkinCloseButton(CliqueDialogCloseButton) end
+	T.SkinCloseButton(CliqueDialogCloseButton)
 
 	CliqueConfigPage1ButtonOptions:SkinButton(true)
 	CliqueConfigPage1ButtonOther:SkinButton(true)
@@ -45,7 +44,7 @@ local function LoadSkin()
 	CliqueSpellTab:GetNormalTexture():SetPoint("BOTTOMRIGHT", -2, 2)
 	CliqueSpellTab:CreateBackdrop("Default")
 	CliqueSpellTab.backdrop:SetAllPoints()
-	CliqueSpellTab:StyleButton()
+	CliqueSpellTab:StyleButton(true)
 
 	CliqueConfigPage1:SetScript("OnShow", function(self)
 		for i = 1, 12 do
@@ -64,4 +63,4 @@ local function LoadSkin()
 	end)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe_class_bar.range ~= true or T.class ~= "PRIEST" then return end
 
 ----------------------------------------------------------------------------------------
 --	RangeBar for Priest(by m2jest1c)
 ----------------------------------------------------------------------------------------
-local parent, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local Items = {

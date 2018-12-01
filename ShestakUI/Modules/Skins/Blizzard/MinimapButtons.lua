@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.minimap_buttons ~= true or C.minimap.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------

@@ -1,11 +1,11 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	MSBT settings
 ----------------------------------------------------------------------------------------
 local UploadMSBT = function()
-	if MSBTProfiles_SavedVars then table.wipe(MSBTProfiles_SavedVars) end
-	if MSBT_SavedMedia then table.wipe(MSBT_SavedMedia) end
+	if MSBTProfiles_SavedVars then wipe(MSBTProfiles_SavedVars) end
+	if MSBT_SavedMedia then wipe(MSBT_SavedMedia) end
 	MSBTProfiles_SavedVars = {
 		["profiles"] = {
 			["Default"] = {
@@ -340,7 +340,7 @@ end
 --	Skada settings
 ----------------------------------------------------------------------------------------
 local UploadSkada = function()
-	if SkadaDB then table.wipe(SkadaDB) end
+	if SkadaDB then wipe(SkadaDB) end
 	SkadaDB = {
 		["profiles"] = {
 			["Default"] = {

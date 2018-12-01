@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true or C.tooltip.item_icon ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Adds item icons to tooltips(Tipachu by Tuller)
+--	Adds item icons to tooltips (Tipachu by Tuller)
 ----------------------------------------------------------------------------------------
 local function setTooltipIcon(self, icon)
 	local title = icon and _G[self:GetName().."TextLeft1"]
@@ -42,16 +42,7 @@ local hookSpell = newTooltipHooker("OnTooltipSetSpell", function(self, ...)
 	end
 end)
 
-for _, tooltip in pairs{GameTooltip, ItemRefTooltip, ItemRefShoppingTooltip1, ItemRefShoppingTooltip2, ShoppingTooltip1, ShoppingTooltip2} do
+for _, tooltip in pairs{GameTooltip, ItemRefTooltip, ShoppingTooltip1, ShoppingTooltip2} do
 	hookItem(tooltip)
 	hookSpell(tooltip)
 end
-
--- WorldQuest Tooltip
-hooksecurefunc("EmbeddedItemTooltip_SetItemByQuestReward", function(self)
-	if self.Icon then
-		self.Icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-		self.IconBorder:Hide()
-	end
-end)
-BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT = "|T%1$s:16:16:0:0:64:64:5:59:5:59|t |cffffffff%2$d|r %3$s"

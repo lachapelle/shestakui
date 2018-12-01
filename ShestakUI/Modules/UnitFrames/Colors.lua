@@ -1,24 +1,22 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Colors
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 T.oUF_colors = setmetatable({
 	tapped = {0.6, 0.6, 0.6},
 	disconnected = {0.84, 0.75, 0.65},
 	power = setmetatable({
-		["MANA"] = {0.31, 0.45, 0.63},
-		["RAGE"] = {0.69, 0.31, 0.31},
-		["FOCUS"] = {0.71, 0.43, 0.27},
-		["ENERGY"] = {0.65, 0.63, 0.35},
-		["POWER_TYPE_FEL_ENERGY"] = {0.65, 0.63, 0.35},
-		["RUNES"] = {0.55, 0.57, 0.61},
-		["RUNIC_POWER"] = {0, 0.82, 1},
-		["AMMOSLOT"] = {0.8, 0.6, 0},
-		["FUEL"] = {0, 0.55, 0.5},
+		[0] = {0.31, 0.45, 0.63}, -- MANA
+		[1] = {0.69, 0.31, 0.31}, -- RAGE
+		[2] = {0.71, 0.43, 0.27}, -- FOCUS
+		[3] = {0.65, 0.63, 0.35}, -- ENERGY
+		[4] = {0.00, 0.82, 1.00}, -- HAPPINESS
+		[5] = {0.55, 0.57, 0.61}, -- RUNES
+		[6] = {0.00, 0.82, 1.00}, -- RUNIC_POWER
 	}, {__index = oUF.colors.power}),
 	reaction = setmetatable({
 		[1] = {0.85, 0.27, 0.27}, -- Hated

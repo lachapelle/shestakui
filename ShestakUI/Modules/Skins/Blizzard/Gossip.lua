@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -48,10 +48,12 @@ local function LoadSkin()
 	GossipGreetingScrollFrame:StripTextures()
 	T.SkinScrollBar(GossipGreetingScrollFrameScrollBar)
 
+	--[[
 	NPCFriendshipStatusBar:StripTextures()
 	NPCFriendshipStatusBar:SetStatusBarTexture(C.media.texture)
 	NPCFriendshipStatusBar:CreateBackdrop("Overlay")
 	NPCFriendshipStatusBar.icon:SetPoint("TOPLEFT", -30, 7)
+	--]]
 
 	-- Extreme hackage, blizzard makes button text on quest frame use hex color codes for some reason
 	hooksecurefunc("GossipFrameUpdate", function()
@@ -67,4 +69,4 @@ local function LoadSkin()
 	end)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

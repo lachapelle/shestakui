@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -27,12 +27,20 @@ local function LoadSkin()
 	T.SkinCheckBox(ShowOnPlayerCheckButton)
 	T.SkinCheckBox(ExactMatchCheckButton)
 
+	--[[
 	-- Dress Up Frame
 	AuctionFrame:HookScript("OnShow", function()
 		SideDressUpFrame:ClearAllPoints()
 		SideDressUpFrame:SetPoint("TOPLEFT", AuctionFrame, "TOPRIGHT", 3, 0)
 	end)
+	--]]
+	-- Dress Up Frame
+	AuctionFrame:HookScript("OnShow", function()
+		AuctionDressUpFrame:ClearAllPoints()
+		AuctionDressUpFrame:SetPoint("TOPLEFT", AuctionFrame, "TOPRIGHT", 3, 0)
+	end)
 
+	--[[
 	-- WoW Token Tutorial Frame
 	WowTokenGameTimeTutorial:CreateBackdrop("Transparent")
 	T.SkinCloseButton(WowTokenGameTimeTutorial.CloseButton)
@@ -55,7 +63,9 @@ local function LoadSkin()
 	WowTokenGameTimeTutorialBottomBorder:SetAlpha(0)
 	WowTokenGameTimeTutorialLeftBorder:SetAlpha(0)
 	WowTokenGameTimeTutorialRightBorder:SetAlpha(0)
+	--]]
 
+	--[[
 	local Token = BrowseWowTokenResultsToken
 	Token.ItemBorder:Hide()
 	Token.IconBorder:Hide()
@@ -63,6 +73,7 @@ local function LoadSkin()
 	Token:CreateBackdrop("Default")
 	Token.backdrop:SetPoint("TOPLEFT", Token.IconBorder, -2, 2)
 	Token.backdrop:SetPoint("BOTTOMRIGHT", Token.IconBorder, 2, -2)
+	--]]
 
 	-- Progress Frame
 	AuctionProgressFrame:StripTextures()
@@ -77,16 +88,20 @@ local function LoadSkin()
 	AuctionProgressFrameCancelButton:SetSize(28, 28)
 	AuctionProgressFrameCancelButton:SetPoint("LEFT", AuctionProgressBar, "RIGHT", 8, 0)
 
-	AuctionProgressBar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	-- AuctionProgressBar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
+	--[[
 	local backdrop = CreateFrame("Frame", nil, AuctionProgressBar.Icon:GetParent())
 	backdrop:SetPoint("TOPLEFT", AuctionProgressBar.Icon, "TOPLEFT", -2, 2)
 	backdrop:SetPoint("BOTTOMRIGHT", AuctionProgressBar.Icon, "BOTTOMRIGHT", 2, -2)
 	backdrop:SetTemplate("Default")
 	AuctionProgressBar.Icon:SetParent(backdrop)
+	--]]
 
+	--[[
 	AuctionProgressBar.Text:ClearAllPoints()
 	AuctionProgressBar.Text:SetPoint("CENTER")
+	--]]
 
 	AuctionProgressBar:StripTextures()
 	AuctionProgressBar:CreateBackdrop("Default")
@@ -115,8 +130,8 @@ local function LoadSkin()
 	for _, button in pairs(buttons) do
 		_G[button]:SkinButton(true)
 	end
-	BrowseWowTokenResults.Buyout:SkinButton(true)
-	StoreButton:SkinButton()
+	-- BrowseWowTokenResults.Buyout:SkinButton(true)
+	-- StoreButton:SkinButton()
 
 	-- Fix Button Positions
 	AuctionsCloseButton:SetPoint("BOTTOMRIGHT", AuctionFrameAuctions, "BOTTOMRIGHT", 66, 10)
@@ -135,7 +150,7 @@ local function LoadSkin()
 	AuctionsItemButton:StripTextures()
 	AuctionsItemButton:StyleButton(true)
 	AuctionsItemButton:SetTemplate("Default")
-	AuctionsItemButton.IconBorder:Kill()
+	-- AuctionsItemButton.IconBorder:Kill()
 
 	AuctionsItemButton:HookScript("OnEvent", function(self, event, ...)
 		if event == "NEW_AUCTION_UPDATE" and self:GetNormalTexture() then
@@ -205,7 +220,7 @@ local function LoadSkin()
 		T.SkinEditBox(_G[editbox])
 		_G[editbox]:SetTextInsets(1, 1, -1, 1)
 	end
-	_G["BrowseName"]:SetTextInsets(15, 15, -1, 1)
+	-- _G["BrowseName"]:SetTextInsets(15, 15, -1, 1)
 	BrowseMaxLevel:SetPoint("LEFT", BrowseMinLevel, "RIGHT", 8, 0)
 	AuctionsStackSizeEntry.backdrop:SetAllPoints()
 	AuctionsNumStacksEntry.backdrop:SetAllPoints()
@@ -226,7 +241,7 @@ local function LoadSkin()
 			icon:StyleButton()
 			icon:CreateBackdrop("Default")
 			icon.backdrop:SetAllPoints()
-			icon.IconBorder:Kill()
+			-- icon.IconBorder:Kill()
 		end
 
 		if button then
@@ -253,7 +268,7 @@ local function LoadSkin()
 		icon:StyleButton()
 		icon:CreateBackdrop("Default")
 		icon.backdrop:SetAllPoints()
-		icon.IconBorder:Kill()
+		-- icon.IconBorder:Kill()
 
 		button:StripTextures()
 		button:StyleButton()
@@ -277,7 +292,7 @@ local function LoadSkin()
 		icon:StyleButton()
 		icon:CreateBackdrop("Default")
 		icon.backdrop:SetAllPoints()
-		icon.IconBorder:Kill()
+		-- icon.IconBorder:Kill()
 
 		button:StripTextures()
 		button:StyleButton()
@@ -347,6 +362,7 @@ local function LoadSkin()
 		"Atr_FullScanDone",
 		"Atr_CheckActives_Yes_Button",
 		"Atr_CheckActives_No_Button",
+		"Atr_Adv_Search_Button",
 		"Atr_Adv_Search_ResetBut",
 		"Atr_Adv_Search_OKBut",
 		"Atr_Adv_Search_CancelBut",
@@ -434,7 +450,7 @@ local function LoadSkin()
 	end
 
 	T.SkinCheckBox(Atr_Exact_Search_Button)
-	T.SkinCheckBox(Atr_Adv_Search_Button)
+	-- T.SkinCheckBox(Atr_Adv_Search_Button)
 
 	Atr_Mask:ClearAllPoints()
 	Atr_Mask:SetPoint("TOPLEFT", AuctionFrame, "TOPLEFT", 0, 0)
@@ -490,14 +506,14 @@ local function LoadSkin()
 
 	Atr_AddToSListButton:SetWidth(97)
 	Atr_RemFromSListButton:SetWidth(97)
-	Atr_SrchSListButton:SetWidth(197)
-	Atr_MngSListsButton:SetWidth(197)
+	-- Atr_SrchSListButton:SetWidth(197)
+	-- Atr_MngSListsButton:SetWidth(197)
 	Atr_NewSListButton:SetWidth(197)
 
 	Atr_AddToSListButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -321)
 	Atr_RemFromSListButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -95, -321)
-	Atr_SrchSListButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -344)
-	Atr_MngSListsButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -367)
+	-- Atr_SrchSListButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -344)
+	-- Atr_MngSListsButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -367)
 	Atr_NewSListButton:SetPoint("TOPLEFT", Atr_Main_Panel, "TOPLEFT", -195, -390)
 
 	Atr_Hilite1:CreateBackdrop("Overlay")

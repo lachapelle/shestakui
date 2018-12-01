@@ -3,6 +3,7 @@
 ----------------------------------------------------------------------------------------
 local realm = GetRealmName()
 local name = UnitName("player")
+local GlobalHeight = 545
 
 local ALLOWED_GROUPS = {
 	["general"] = 1,
@@ -30,493 +31,454 @@ local ALLOWED_GROUPS = {
 	["unitframe_class_bar"] = 23,
 	["raidframe"] = 24,
 	["toppanel"] = 25,
-	["error"] = 26,
-	["stats"] = 27,
+	["stats"] = 26,
+	["error"] = 27,
 }
 
 local function Local(o)
-	local T, C, L = unpack(ShestakUI)
+	local T, C, L, _ = unpack(ShestakUI)
 	-- General options
-	if o == "UIConfiggeneral" then o = GENERAL_LABEL end
-	if o == "UIConfiggeneralauto_scale" then o = L_GUI_GENERAL_AUTOSCALE end
-	if o == "UIConfiggeneraluiscale" then o = L_GUI_GENERAL_UISCALE end
-	if o == "UIConfiggeneralwelcome_message" then o = L_GUI_GENERAL_WELCOME_MESSAGE end
-	if o == "UIConfiggeneralcustom_lagtolerance" then o = L_GUI_GENERAL_LAG_TOLERANCE end
+	if o == "UIConfig_general" then o = L_COMPATIBILITY_GENERAL_LABEL end
+	if o == "UIConfig_generalauto_scale" then o = L_GUI_GENERAL_AUTOSCALE end
+	if o == "UIConfig_generalnormal_font" then o = L_GUI_GENERAL_NORMALFONT end
+	if o == "UIConfig_generaluiscale" then o = L_GUI_GENERAL_UISCALE end
+	if o == "UIConfig_generalwelcome_message" then o = L_GUI_GENERAL_WELCOME_MESSAGE end
 
 	-- Miscellaneous options
-	if o == "UIConfigmisc" then o = OTHER end
-	if o == "UIConfigmiscshift_marking" then o = L_GUI_MISC_MARKING end
-	if o == "UIConfigmiscinvite_keyword" then o = L_GUI_MISC_INVKEYWORD end
-	if o == "UIConfigmiscafk_spin_camera" then o = L_GUI_MISC_SPIN_CAMERA end
-	if o == "UIConfigmiscvehicle_mouseover" then o = L_GUI_MISC_VEHICLE_MOUSEOVER end
-	if o == "UIConfigmiscquest_auto_button" then o = L_GUI_MISC_QUEST_AUTOBUTTON end
-	if o == "UIConfigmiscraid_tools" then o = L_GUI_MISC_RAID_TOOLS end
-	if o == "UIConfigmiscprofession_tabs" then o = L_GUI_MISC_PROFESSION_TABS end
-	if o == "UIConfigmischide_bg_spam" then o = L_GUI_MISC_HIDE_BG_SPAM end
-	if o == "UIConfigmiscitem_level" then o = L_GUI_MISC_ITEM_LEVEL end
-	if o == "UIConfigmiscalready_known" then o = L_GUI_MISC_ALREADY_KNOWN end
-	if o == "UIConfigmiscdisenchanting" then o = L_GUI_MISC_DISENCHANTING end
-	if o == "UIConfigmiscsum_buyouts" then o = L_GUI_MISC_SUM_BUYOUTS end
-	if o == "UIConfigmiscclick_cast" then o = L_GUI_MISC_CLICK_CAST end
-	if o == "UIConfigmiscclick_cast_filter" then o = L_GUI_MISC_CLICK_CAST_FILTER end
-	if o == "UIConfigmiscmove_blizzard" then o = L_GUI_MISC_MOVE_BLIZZARD end
-	if o == "UIConfigmisccolor_picker" then o = L_GUI_MISC_COLOR_PICKER end
-	if o == "UIConfigmiscenchantment_scroll" then o = L_GUI_MISC_ENCHANTMENT_SCROLL end
-	if o == "UIConfigmiscarchaeology" then o = L_GUI_MISC_ARCHAEOLOGY end
-	if o == "UIConfigmiscchars_currency" then o = L_GUI_MISC_CHARS_CURRENCY end
-	if o == "UIConfigmiscarmory_link" then o = L_GUI_MISC_ARMORY_LINK end
-	if o == "UIConfigmiscmerchant_itemlevel" then o = L_GUI_MISC_MERCHANT_ITEMLEVEL end
-	if o == "UIConfigmiscminimize_mouseover" then o = L_GUI_MISC_MINIMIZE_MOUSEOVER end
-	if o == "UIConfigmischide_banner" then o = L_GUI_MISC_HIDE_BANNER end
-	if o == "UIConfigmischide_talking_head" then o = L_GUI_MISC_HIDE_TALKING_HEAD end
+	if o == "UIConfig_misc" then o = OTHER end
+	if o == "UIConfig_miscshift_marking" then o = L_GUI_MISC_MARKING end
+	if o == "UIConfig_miscinvite_keyword" then o = L_GUI_MISC_INVKEYWORD end
+	if o == "UIConfig_miscafk_spin_camera" then o = L_GUI_MISC_SPIN_CAMERA end
+	if o == "UIConfig_miscquest_auto_button" then o = L_GUI_MISC_QUEST_AUTOBUTTON end
+	if o == "UIConfig_miscraid_tools" then o = L_GUI_MISC_RAID_TOOLS end
+	if o == "UIConfig_miscprofession_tabs" then o = L_GUI_MISC_PROFESSION_TABS end
+	if o == "UIConfig_mischide_bg_spam" then o = L_GUI_MISC_HIDE_BG_SPAM end
+	if o == "UIConfig_miscitem_level" then o = L_GUI_MISC_ITEM_LEVEL end
+	if o == "UIConfig_miscalready_known" then o = L_GUI_MISC_ALREADY_KNOWN end
+	if o == "UIConfig_miscdisenchanting" then o = L_GUI_MISC_DISENCHANTING end
+	if o == "UIConfig_miscsum_buyouts" then o = L_GUI_MISC_SUM_BUYOUTS end
+	if o == "UIConfig_miscclick_cast" then o = L_GUI_MISC_CLICK_CAST end
+	if o == "UIConfig_miscclick_cast_filter" then o = L_GUI_MISC_CLICK_CAST_FILTER end
+	if o == "UIConfig_miscmove_blizzard" then o = L_GUI_MISC_MOVE_BLIZZARD end
+	if o == "UIConfig_misccolor_picker" then o = L_GUI_MISC_COLOR_PICKER end
+	if o == "UIConfig_miscchars_currency" then o = L_GUI_MISC_CHARS_CURRENCY end
+	if o == "UIConfig_miscmerchant_itemlevel" then o = L_GUI_MISC_MERCHANT_ITEMLEVEL end
+	if o == "UIConfig_miscminimize_mouseover" then o = L_GUI_MISC_MINIMIZE_MOUSEOVER end
 
 	-- Announcements options
-	if o == "UIConfigannouncements" then o = L_GUI_ANNOUNCEMENTS end
-	if o == "UIConfigannouncementsdrinking" then o = L_GUI_ANNOUNCEMENTS_DRINKING end
-	if o == "UIConfigannouncementsinterrupts" then o = L_GUI_ANNOUNCEMENTS_INTERRUPTS end
-	if o == "UIConfigannouncementsspells" then o = L_GUI_ANNOUNCEMENTS_SPELLS end
-	if o == "UIConfigannouncementsspells_from_all" then o = L_GUI_ANNOUNCEMENTS_SPELLS_FROM_ALL end
-	if o == "UIConfigannouncementstoys" then o = L_GUI_ANNOUNCEMENTS_TOY_TRAIN end
-	if o == "UIConfigannouncementssays_thanks" then o = L_GUI_ANNOUNCEMENTS_SAYS_THANKS end
-	if o == "UIConfigannouncementspull_countdown" then o = L_GUI_ANNOUNCEMENTS_PULL_COUNTDOWN end
-	if o == "UIConfigannouncementsflask_food" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD end
-	if o == "UIConfigannouncementsflask_food_auto" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD_AUTO end
-	if o == "UIConfigannouncementsflask_food_raid" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD_RAID end
-	if o == "UIConfigannouncementsfeasts" then o = L_GUI_ANNOUNCEMENTS_FEASTS end
-	if o == "UIConfigannouncementsportals" then o = L_GUI_ANNOUNCEMENTS_PORTALS end
-	if o == "UIConfigannouncementsbad_gear" then o = L_GUI_ANNOUNCEMENTS_BAD_GEAR end
-	if o == "UIConfigannouncementssafari_hat" then o = L_GUI_ANNOUNCEMENTS_SAFARI_HAT end
+	if o == "UIConfig_announcements" then o = L_GUI_ANNOUNCEMENTS end
+	if o == "UIConfig_announcementsdrinking" then o = L_GUI_ANNOUNCEMENTS_DRINKING end
+	if o == "UIConfig_announcementsinterrupts" then o = L_GUI_ANNOUNCEMENTS_INTERRUPTS end
+	if o == "UIConfig_announcementsspells" then o = L_GUI_ANNOUNCEMENTS_SPELLS end
+	if o == "UIConfig_announcementsspells_from_all" then o = L_GUI_ANNOUNCEMENTS_SPELLS_FROM_ALL end
+	if o == "UIConfig_announcementstoys" then o = L_GUI_ANNOUNCEMENTS_TOY_TRAIN end
+	if o == "UIConfig_announcementssays_thanks" then o = L_GUI_ANNOUNCEMENTS_SAYS_THANKS end
+	if o == "UIConfig_announcementspull_countdown" then o = L_GUI_ANNOUNCEMENTS_PULL_COUNTDOWN end
+	if o == "UIConfig_announcementsflask_food" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD end
+	if o == "UIConfig_announcementsflask_food_auto" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD_AUTO end
+	if o == "UIConfig_announcementsflask_food_raid" then o = L_GUI_ANNOUNCEMENTS_FLASK_FOOD_RAID end
+	if o == "UIConfig_announcementsfeasts" then o = L_GUI_ANNOUNCEMENTS_FEASTS end
+	if o == "UIConfig_announcementsportals" then o = L_GUI_ANNOUNCEMENTS_PORTALS end
+	if o == "UIConfig_announcementsbad_gear" then o = L_GUI_ANNOUNCEMENTS_BAD_GEAR end
 
 	-- Automation options
-	if o == "UIConfigautomation" then o = L_GUI_AUTOMATION end
-	if o == "UIConfigautomationrelease" then o = L_GUI_AUTOMATION_RELEASE end
-	if o == "UIConfigautomationscreenshot" then o = L_GUI_AUTOMATION_SCREENSHOT end
-	if o == "UIConfigautomationsolve_artifact" then o = L_GUI_AUTOMATION_SOLVE_ARTIFACT end
-	if o == "UIConfigautomationaccept_invite" then o = L_GUI_AUTOMATION_ACCEPT_INVITE end
-	if o == "UIConfigautomationdecline_duel" then o = L_GUI_AUTOMATION_DECLINE_DUEL end
-	if o == "UIConfigautomationaccept_quest" then o = L_GUI_AUTOMATION_ACCEPT_QUEST end
-	if o == "UIConfigautomationauto_collapse" then o = L_GUI_AUTOMATION_AUTO_COLLAPSE end
-	if o == "UIConfigautomationauto_collapse_reload" then o = L_GUI_AUTOMATION_AUTO_COLLAPSE_RELOAD end
-	if o == "UIConfigautomationskip_cinematic" then o = L_GUI_AUTOMATION_SKIP_CINEMATIC end
-	if o == "UIConfigautomationauto_role" then o = L_GUI_AUTOMATION_AUTO_ROLE end
-	if o == "UIConfigautomationcancel_bad_buffs" then o = L_GUI_AUTOMATION_CANCEL_BAD_BUFFS end
-	if o == "UIConfigautomationtab_binder" then o = L_GUI_AUTOMATION_TAB_BINDER end
-	if o == "UIConfigautomationlogging_combat" then o = L_GUI_AUTOMATION_LOGGING_COMBAT end
-	if o == "UIConfigautomationcurrency_cap" then o = L_GUI_AUTOMATION_CURRENCY_CAP end
-	if o == "UIConfigautomationbuff_on_scroll" then o = L_GUI_AUTOMATION_BUFF_ON_SCROLL end
-	if o == "UIConfigautomationopen_items" then o = L_GUI_AUTOMATION_OPEN_ITEMS end
+	if o == "UIConfig_automation" then o = L_GUI_AUTOMATION end
+	if o == "UIConfig_automationrelease" then o = L_GUI_AUTOMATION_RELEASE end
+	if o == "UIConfig_automationaccept_invite" then o = L_GUI_AUTOMATION_ACCEPT_INVITE end
+	if o == "UIConfig_automationdecline_duel" then o = L_GUI_AUTOMATION_DECLINE_DUEL end
+	if o == "UIConfig_automationaccept_quest" then o = L_GUI_AUTOMATION_ACCEPT_QUEST end
+	if o == "UIConfig_automationauto_collapse" then o = L_GUI_AUTOMATION_AUTO_COLLAPSE end
+	if o == "UIConfig_automationauto_collapse_reload" then o = L_GUI_AUTOMATION_AUTO_COLLAPSE_RELOAD end
+	if o == "UIConfig_automationcancel_bad_buffs" then o = L_GUI_AUTOMATION_CANCEL_BAD_BUFFS end
+	if o == "UIConfig_automationtab_binder" then o = L_GUI_AUTOMATION_TAB_BINDER end
+	if o == "UIConfig_automationlogging_combat" then o = L_GUI_AUTOMATION_LOGGING_COMBAT end
+	if o == "UIConfig_automationcurrency_cap" then o = L_GUI_AUTOMATION_CURRENCY_CAP end
+	if o == "UIConfig_automationbuff_on_scroll" then o = L_GUI_AUTOMATION_BUFF_ON_SCROLL end
+	if o == "UIConfig_automationopen_items" then o = L_GUI_AUTOMATION_OPEN_ITEMS end
 
 	-- Skins options
-	if o == "UIConfigskins" then o = L_GUI_SKINS end
-	if o == "UIConfigskinsblizzard_frames" then o = L_GUI_SKINS_BLIZZARD end
-	if o == "UIConfigskinsminimap_buttons" then o = L_GUI_SKINS_MINIMAP_BUTTONS end
-	if o == "UIConfigskinsclcret" then o = L_GUI_SKINS_CLCR end
-	if o == "UIConfigskinsclcprot" then o = L_GUI_SKINS_CLCP end
-	if o == "UIConfigskinscombustion_helper" then o = L_GUI_SKINS_COMBUSTION_HELPER end
-	if o == "UIConfigskinsbigwigs" then o = L_GUI_SKINS_BW end
-	if o == "UIConfigskinsdbm" then o = L_GUI_SKINS_DBM end
-	if o == "UIConfigskinsdbm_movable" then o = L_GUI_SKINS_DBM_MOVABLE end
-	if o == "UIConfigskinsdxe" then o = L_GUI_SKINS_DXE end
-	if o == "UIConfigskinsomen" then o = L_GUI_SKINS_OMEN end
-	if o == "UIConfigskinsrecount" then o = L_GUI_SKINS_RECOUNT end
-	if o == "UIConfigskinsblood_shield_tracker" then o = L_GUI_SKINS_BLOOD_SHIELD_TRACKER end
-	if o == "UIConfigskinsdominos" then o = L_GUI_SKINS_DOMINOS end
-	if o == "UIConfigskinsflyout_button" then o = L_GUI_SKINS_FLYOUT_BUTTON end
-	if o == "UIConfigskinsnug_running" then o = L_GUI_SKINS_NUG_RUNNING end
-	if o == "UIConfigskinsovale" then o = L_GUI_SKINS_OVALE end
-	if o == "UIConfigskinsclique" then o = L_GUI_SKINS_CLIQUE end
-	if o == "UIConfigskinsace3" then o = L_GUI_SKINS_ACE3 end
-	if o == "UIConfigskinscapping" then o = L_GUI_SKINS_CAPPING end
-	if o == "UIConfigskinscool_line" then o = L_GUI_SKINS_COOL_LINE end
-	if o == "UIConfigskinsatlasloot" then o = L_GUI_SKINS_ATLASLOOT end
-	if o == "UIConfigskinstiny_dps" then o = L_GUI_SKINS_TINY_DPS end
-	if o == "UIConfigskinsface_shooter" then o = L_GUI_SKINS_FACE_SHOOTER end
-	if o == "UIConfigskinsmage_nuggets" then o = L_GUI_SKINS_MAGE_NUGGETS end
-	if o == "UIConfigskinsnpcscan" then o = L_GUI_SKINS_NPCSCAN end
-	if o == "UIConfigskinsvanaskos" then o = L_GUI_SKINS_VANASKOS end
-	if o == "UIConfigskinsweak_auras" then o = L_GUI_SKINS_WEAK_AURAS end
-	if o == "UIConfigskinsskada" then o = L_GUI_SKINS_SKADA end
-	if o == "UIConfigskinsmy_role_play" then o = L_GUI_SKINS_MY_ROLE_PLAY end
-	if o == "UIConfigskinsarh" then o = L_GUI_SKINS_ARH end
-	if o == "UIConfigskinspostal" then o = L_GUI_SKINS_POSTAL end
-	if o == "UIConfigskinsopie" then o = L_GUI_SKINS_OPIE end
-	if o == "UIConfigskinsrematch" then o = L_GUI_SKINS_REMATCH end
-	if o == "UIConfigskinsls_toasts" then o = L_GUI_SKINS_LS_TOASTS end
+	if o == "UIConfig_skins" then o = L_GUI_SKINS end
+	if o == "UIConfig_skinsblizzard_frames" then o = L_GUI_SKINS_BLIZZARD end
+	if o == "UIConfig_skinsminimap_buttons" then o = L_GUI_SKINS_MINIMAP_BUTTONS end
+	if o == "UIConfig_skinsbigwigs" then o = L_GUI_SKINS_BW end
+	if o == "UIConfig_skinsdbm" then o = L_GUI_SKINS_DBM end
+	if o == "UIConfig_skinsdbm_movable" then o = L_GUI_SKINS_DBM_MOVABLE end
+	if o == "UIConfig_skinsdxe" then o = L_GUI_SKINS_DXE end
+	if o == "UIConfig_skinsomen" then o = L_GUI_SKINS_OMEN end
+	if o == "UIConfig_skinsrecount" then o = L_GUI_SKINS_RECOUNT end
+	if o == "UIConfig_skinsdominos" then o = L_GUI_SKINS_DOMINOS end
+	if o == "UIConfig_skinsnug_running" then o = L_GUI_SKINS_NUG_RUNNING end
+	if o == "UIConfig_skinsovale" then o = L_GUI_SKINS_OVALE end
+	if o == "UIConfig_skinsclique" then o = L_GUI_SKINS_CLIQUE end
+	if o == "UIConfig_skinsace3" then o = L_GUI_SKINS_ACE3 end
+	if o == "UIConfig_skinscapping" then o = L_GUI_SKINS_CAPPING end
+	if o == "UIConfig_skinscool_line" then o = L_GUI_SKINS_COOL_LINE end
+	if o == "UIConfig_skinsatlasloot" then o = L_GUI_SKINS_ATLASLOOT end
+	if o == "UIConfig_skinstiny_dps" then o = L_GUI_SKINS_TINY_DPS end
+	if o == "UIConfig_skinsnpcscan" then o = L_GUI_SKINS_NPCSCAN end
+	if o == "UIConfig_skinsvanaskos" then o = L_GUI_SKINS_VANASKOS end
+	if o == "UIConfig_skinsweak_auras" then o = L_GUI_SKINS_WEAK_AURAS end
+	if o == "UIConfig_skinsskada" then o = L_GUI_SKINS_SKADA end
+	if o == "UIConfig_skinspostal" then o = L_GUI_SKINS_POSTAL end
+	if o == "UIConfig_skinsopie" then o = L_GUI_SKINS_OPIE end
 
 	-- Combat text options
-	if o == "UIConfigcombattext" then o = L_GUI_COMBATTEXT end
-	if o == "UIConfigcombattextenable" then o = L_GUI_COMBATTEXT_ENABLE end
-	if o == "UIConfigcombattextblizz_head_numbers" then o = L_GUI_COMBATTEXT_BLIZZ_HEAD_NUMBERS end
-	if o == "UIConfigcombattextdamage_style" then o = L_GUI_COMBATTEXT_DAMAGE_STYLE end
-	if o == "UIConfigcombattextdamage" then o = L_GUI_COMBATTEXT_DAMAGE end
-	if o == "UIConfigcombattexthealing" then o = L_GUI_COMBATTEXT_HEALING end
-	if o == "UIConfigcombattextshow_hots" then o = L_GUI_COMBATTEXT_HOTS end
-	if o == "UIConfigcombattextshow_overhealing" then o = L_GUI_COMBATTEXT_OVERHEALING end
-	if o == "UIConfigcombattextpet_damage" then o = L_GUI_COMBATTEXT_PET_DAMAGE end
-	if o == "UIConfigcombattextdot_damage" then o = L_GUI_COMBATTEXT_DOT_DAMAGE end
-	if o == "UIConfigcombattextdamage_color" then o = L_GUI_COMBATTEXT_DAMAGE_COLOR end
-	if o == "UIConfigcombattextcrit_prefix" then o = L_GUI_COMBATTEXT_CRIT_PREFIX end
-	if o == "UIConfigcombattextcrit_postfix" then o = L_GUI_COMBATTEXT_CRIT_POSTFIX end
-	if o == "UIConfigcombattexticons" then o = L_GUI_COMBATTEXT_ICONS end
-	if o == "UIConfigcombattexticon_size" then o = L_GUI_COMBATTEXT_ICON_SIZE end
-	if o == "UIConfigcombattexttreshold" then o = L_GUI_COMBATTEXT_TRESHOLD end
-	if o == "UIConfigcombattextheal_treshold" then o = L_GUI_COMBATTEXT_HEAL_TRESHOLD end
-	if o == "UIConfigcombattextscrollable" then o = L_GUI_COMBATTEXT_SCROLLABLE end
-	if o == "UIConfigcombattextmax_lines" then o = L_GUI_COMBATTEXT_MAX_LINES end
-	if o == "UIConfigcombattexttime_visible" then o = L_GUI_COMBATTEXT_TIME_VISIBLE end
-	if o == "UIConfigcombattextdk_runes" then o = L_GUI_COMBATTEXT_DK_RUNES end
-	if o == "UIConfigcombattextkillingblow" then o = L_GUI_COMBATTEXT_KILLINGBLOW end
-	if o == "UIConfigcombattextmerge_aoe_spam" then o = L_GUI_COMBATTEXT_MERGE_AOE_SPAM end
-	if o == "UIConfigcombattextmerge_melee" then o = L_GUI_COMBATTEXT_MERGE_MELEE end
-	if o == "UIConfigcombattextdispel" then o = L_GUI_COMBATTEXT_DISPEL end
-	if o == "UIConfigcombattextinterrupt" then o = L_GUI_COMBATTEXT_INTERRUPT end
-	if o == "UIConfigcombattextdirection" then o = L_GUI_COMBATTEXT_DIRECTION end
-	if o == "UIConfigcombattextshort_numbers" then o = L_GUI_COMBATTEXT_SHORT_NUMBERS end
+	if o == "UIConfig_combattext" then o = L_GUI_COMBATTEXT end
+	if o == "UIConfig_combattextenable" then o = L_GUI_COMBATTEXT_ENABLE end
+	if o == "UIConfig_combattextblizz_head_numbers" then o = L_GUI_COMBATTEXT_BLIZZ_HEAD_NUMBERS end
+	if o == "UIConfig_combattextdamage_style" then o = L_GUI_COMBATTEXT_DAMAGE_STYLE end
+	if o == "UIConfig_combattextdamage" then o = L_GUI_COMBATTEXT_DAMAGE end
+	if o == "UIConfig_combattexthealing" then o = L_GUI_COMBATTEXT_HEALING end
+	if o == "UIConfig_combattextshow_hots" then o = L_GUI_COMBATTEXT_HOTS end
+	if o == "UIConfig_combattextshow_overhealing" then o = L_GUI_COMBATTEXT_OVERHEALING end
+	if o == "UIConfig_combattextpet_damage" then o = L_GUI_COMBATTEXT_PET_DAMAGE end
+	if o == "UIConfig_combattextdot_damage" then o = L_GUI_COMBATTEXT_DOT_DAMAGE end
+	if o == "UIConfig_combattextdamage_color" then o = L_GUI_COMBATTEXT_DAMAGE_COLOR end
+	if o == "UIConfig_combattextcrit_prefix" then o = L_GUI_COMBATTEXT_CRIT_PREFIX end
+	if o == "UIConfig_combattextcrit_postfix" then o = L_GUI_COMBATTEXT_CRIT_POSTFIX end
+	if o == "UIConfig_combattexticons" then o = L_GUI_COMBATTEXT_ICONS end
+	if o == "UIConfig_combattexticon_size" then o = L_GUI_COMBATTEXT_ICON_SIZE end
+	if o == "UIConfig_combattextthreshold" then o = L_GUI_COMBATTEXT_THRESHOLD end
+	if o == "UIConfig_combattextheal_threshold" then o = L_GUI_COMBATTEXT_HEAL_THRESHOLD end
+	if o == "UIConfig_combattextscrollable" then o = L_GUI_COMBATTEXT_SCROLLABLE end
+	if o == "UIConfig_combattextmax_lines" then o = L_GUI_COMBATTEXT_MAX_LINES end
+	if o == "UIConfig_combattexttime_visible" then o = L_GUI_COMBATTEXT_TIME_VISIBLE end
+	if o == "UIConfig_combattextdk_runes" then o = L_GUI_COMBATTEXT_DK_RUNES end
+	if o == "UIConfig_combattextkillingblow" then o = L_GUI_COMBATTEXT_KILLINGBLOW end
+	if o == "UIConfig_combattextmerge_aoe_spam" then o = L_GUI_COMBATTEXT_MERGE_AOE_SPAM end
+	if o == "UIConfig_combattextmerge_melee" then o = L_GUI_COMBATTEXT_MERGE_MELEE end
+	if o == "UIConfig_combattextdispel" then o = L_GUI_COMBATTEXT_DISPEL end
+	if o == "UIConfig_combattextinterrupt" then o = L_GUI_COMBATTEXT_INTERRUPT end
+	if o == "UIConfig_combattextdirection" then o = L_GUI_COMBATTEXT_DIRECTION end
+	if o == "UIConfig_combattextshort_numbers" then o = L_GUI_COMBATTEXT_SHORT_NUMBERS end
 
 	-- Buffs reminder options
-	if o == "UIConfigreminder" then o = L_GUI_REMINDER end
-	if o == "UIConfigremindersolo_buffs_enable" then o = L_GUI_REMINDER_SOLO_ENABLE end
-	if o == "UIConfigremindersolo_buffs_sound" then o = L_GUI_REMINDER_SOLO_SOUND end
-	if o == "UIConfigremindersolo_buffs_size" then o = L_GUI_REMINDER_SOLO_SIZE end
-	if o == "UIConfigreminderraid_buffs_enable" then o = L_GUI_REMINDER_RAID_ENABLE end
-	if o == "UIConfigreminderraid_buffs_always" then o = L_GUI_REMINDER_RAID_ALWAYS end
-	if o == "UIConfigreminderraid_buffs_size" then o = L_GUI_REMINDER_RAID_SIZE end
-	if o == "UIConfigreminderraid_buffs_alpha" then o = L_GUI_REMINDER_RAID_ALPHA end
+	if o == "UIConfig_reminder" then o = L_GUI_REMINDER end
+	if o == "UIConfig_remindersolo_buffs_enable" then o = L_GUI_REMINDER_SOLO_ENABLE end
+	if o == "UIConfig_remindersolo_buffs_sound" then o = L_GUI_REMINDER_SOLO_SOUND end
+	if o == "UIConfig_remindersolo_buffs_size" then o = L_GUI_REMINDER_SOLO_SIZE end
+	if o == "UIConfig_reminderraid_buffs_enable" then o = L_GUI_REMINDER_RAID_ENABLE end
+	if o == "UIConfig_reminderraid_buffs_always" then o = L_GUI_REMINDER_RAID_ALWAYS end
+	if o == "UIConfig_reminderraid_buffs_size" then o = L_GUI_REMINDER_RAID_SIZE end
+	if o == "UIConfig_reminderraid_buffs_alpha" then o = L_GUI_REMINDER_RAID_ALPHA end
 
 	-- Raid cooldowns options
-	if o == "UIConfigraidcooldown" then o = L_GUI_COOLDOWN_RAID end
-	if o == "UIConfigraidcooldownenable" then o = L_GUI_COOLDOWN_RAID_ENABLE end
-	if o == "UIConfigraidcooldownheight" then o = L_GUI_COOLDOWN_RAID_HEIGHT end
-	if o == "UIConfigraidcooldownwidth" then o = L_GUI_COOLDOWN_RAID_WIDTH end
-	if o == "UIConfigraidcooldownupwards" then o = L_GUI_COOLDOWN_RAID_SORT end
-	if o == "UIConfigraidcooldownexpiration" then o = L_GUI_COOLDOWN_RAID_EXPIRATION end
-	if o == "UIConfigraidcooldownshow_self" then o = L_GUI_COOLDOWN_RAID_SHOW_SELF end
-	if o == "UIConfigraidcooldownshow_icon" then o = L_GUI_COOLDOWN_RAID_ICONS end
-	if o == "UIConfigraidcooldownshow_inraid" then o = L_GUI_COOLDOWN_RAID_IN_RAID end
-	if o == "UIConfigraidcooldownshow_inparty" then o = L_GUI_COOLDOWN_RAID_IN_PARTY end
-	if o == "UIConfigraidcooldownshow_inarena" then o = L_GUI_COOLDOWN_RAID_IN_ARENA end
+	if o == "UIConfig_raidcooldown" then o = L_GUI_COOLDOWN_RAID end
+	if o == "UIConfig_raidcooldownenable" then o = L_GUI_COOLDOWN_RAID_ENABLE end
+	if o == "UIConfig_raidcooldownheight" then o = L_GUI_COOLDOWN_RAID_HEIGHT end
+	if o == "UIConfig_raidcooldownwidth" then o = L_GUI_COOLDOWN_RAID_WIDTH end
+	if o == "UIConfig_raidcooldownupwards" then o = L_GUI_COOLDOWN_RAID_SORT end
+	if o == "UIConfig_raidcooldownexpiration" then o = L_GUI_COOLDOWN_RAID_EXPIRATION end
+	if o == "UIConfig_raidcooldownshow_self" then o = L_GUI_COOLDOWN_RAID_SHOW_SELF end
+	if o == "UIConfig_raidcooldownshow_icon" then o = L_GUI_COOLDOWN_RAID_ICONS end
+	if o == "UIConfig_raidcooldownshow_inraid" then o = L_GUI_COOLDOWN_RAID_IN_RAID end
+	if o == "UIConfig_raidcooldownshow_inparty" then o = L_GUI_COOLDOWN_RAID_IN_PARTY end
+	if o == "UIConfig_raidcooldownshow_inarena" then o = L_GUI_COOLDOWN_RAID_IN_ARENA end
 
 	-- Enemy cooldowns options
-	if o == "UIConfigenemycooldown" then o = L_GUI_COOLDOWN_ENEMY end
-	if o == "UIConfigenemycooldownenable" then o = L_GUI_COOLDOWN_ENEMY_ENABLE end
-	if o == "UIConfigenemycooldownsize" then o = L_GUI_COOLDOWN_ENEMY_SIZE end
-	if o == "UIConfigenemycooldowndirection" then o = L_GUI_COOLDOWN_ENEMY_DIRECTION end
-	if o == "UIConfigenemycooldownshow_always" then o = L_GUI_COOLDOWN_ENEMY_EVERYWHERE end
-	if o == "UIConfigenemycooldownshow_inpvp" then o = L_GUI_COOLDOWN_ENEMY_IN_BG end
-	if o == "UIConfigenemycooldownshow_inarena" then o = L_GUI_COOLDOWN_ENEMY_IN_ARENA end
+	if o == "UIConfig_enemycooldown" then o = L_GUI_COOLDOWN_ENEMY end
+	if o == "UIConfig_enemycooldownenable" then o = L_GUI_COOLDOWN_ENEMY_ENABLE end
+	if o == "UIConfig_enemycooldownsize" then o = L_GUI_COOLDOWN_ENEMY_SIZE end
+	if o == "UIConfig_enemycooldowndirection" then o = L_GUI_COOLDOWN_ENEMY_DIRECTION end
+	if o == "UIConfig_enemycooldownshow_always" then o = L_GUI_COOLDOWN_ENEMY_EVERYWHERE end
+	if o == "UIConfig_enemycooldownshow_inpvp" then o = L_GUI_COOLDOWN_ENEMY_IN_BG end
+	if o == "UIConfig_enemycooldownshow_inarena" then o = L_GUI_COOLDOWN_ENEMY_IN_ARENA end
 
 	-- Pulse cooldown options
-	if o == "UIConfigpulsecooldown" then o = L_GUI_COOLDOWN_PULSE end
-	if o == "UIConfigpulsecooldownenable" then o = L_GUI_COOLDOWN_PULSE_ENABLE end
-	if o == "UIConfigpulsecooldownsize" then o = L_GUI_COOLDOWN_PULSE_SIZE end
-	if o == "UIConfigpulsecooldownsound" then o = L_GUI_COOLDOWN_PULSE_SOUND end
-	if o == "UIConfigpulsecooldownanim_scale" then o = L_GUI_COOLDOWN_PULSE_ANIM_SCALE end
-	if o == "UIConfigpulsecooldownhold_time" then o = L_GUI_COOLDOWN_PULSE_HOLD_TIME end
-	if o == "UIConfigpulsecooldownthreshold" then o = L_GUI_COOLDOWN_PULSE_THRESHOLD end
+	if o == "UIConfig_pulsecooldown" then o = L_GUI_COOLDOWN_PULSE end
+	if o == "UIConfig_pulsecooldownenable" then o = L_GUI_COOLDOWN_PULSE_ENABLE end
+	if o == "UIConfig_pulsecooldownsize" then o = L_GUI_COOLDOWN_PULSE_SIZE end
+	if o == "UIConfig_pulsecooldownsound" then o = L_GUI_COOLDOWN_PULSE_SOUND end
+	if o == "UIConfig_pulsecooldownanim_scale" then o = L_GUI_COOLDOWN_PULSE_ANIM_SCALE end
+	if o == "UIConfig_pulsecooldownhold_time" then o = L_GUI_COOLDOWN_PULSE_HOLD_TIME end
+	if o == "UIConfig_pulsecooldownthreshold" then o = L_GUI_COOLDOWN_PULSE_THRESHOLD end
 
 	-- Threat options
-	if o == "UIConfigthreat" then o = L_GUI_THREAT end
-	if o == "UIConfigthreatenable" then o = L_GUI_THREAT_ENABLE end
-	if o == "UIConfigthreatheight" then o = L_GUI_THREAT_HEIGHT end
-	if o == "UIConfigthreatwidth" then o = L_GUI_THREAT_WIDTH end
-	if o == "UIConfigthreatbar_rows" then o = L_GUI_THREAT_ROWS end
-	if o == "UIConfigthreathide_solo" then o = L_GUI_THREAT_HIDE_SOLO end
+	if o == "UIConfig_threat" then o = L_GUI_THREAT end
+	if o == "UIConfig_threatenable" then o = L_GUI_THREAT_ENABLE end
+	if o == "UIConfig_threatheight" then o = L_GUI_THREAT_HEIGHT end
+	if o == "UIConfig_threatwidth" then o = L_GUI_THREAT_WIDTH end
+	if o == "UIConfig_threatbar_rows" then o = L_GUI_THREAT_ROWS end
+	if o == "UIConfig_threathide_solo" then o = L_GUI_THREAT_HIDE_SOLO end
 
 	-- Tooltip options
-	if o == "UIConfigtooltip" then o = L_GUI_TOOLTIP end
-	if o == "UIConfigtooltipenable" then o = L_GUI_TOOLTIP_ENABLE end
-	if o == "UIConfigtooltipshift_modifer" then o = L_GUI_TOOLTIP_SHIFT end
-	if o == "UIConfigtooltipcursor" then o = L_GUI_TOOLTIP_CURSOR end
-	if o == "UIConfigtooltipitem_icon" then o = L_GUI_TOOLTIP_ICON end
-	if o == "UIConfigtooltiphealth_value" then o = L_GUI_TOOLTIP_HEALTH end
-	if o == "UIConfigtooltiphidebuttons" then o = L_GUI_TOOLTIP_HIDE end
-	if o == "UIConfigtooltiphide_combat" then o = L_GUI_TOOLTIP_HIDE_COMBAT end
-	if o == "UIConfigtooltiptalents" then o = L_GUI_TOOLTIP_TALENTS end
-	if o == "UIConfigtooltipachievements" then o = L_GUI_TOOLTIP_ACHIEVEMENTS end
-	if o == "UIConfigtooltiptarget" then o = L_GUI_TOOLTIP_TARGET end
-	if o == "UIConfigtooltiptitle" then o = L_GUI_TOOLTIP_TITLE end
-	if o == "UIConfigtooltiprealm" then o = L_GUI_TOOLTIP_REALM end
-	if o == "UIConfigtooltiprank" then o = L_GUI_TOOLTIP_RANK end
-	if o == "UIConfigtooltiparena_experience" then o = L_GUI_TOOLTIP_ARENA_EXPERIENCE end
-	if o == "UIConfigtooltipspell_id" then o = L_GUI_TOOLTIP_SPELL_ID end
-	if o == "UIConfigtooltipaverage_lvl" then o = STAT_AVERAGE_ITEM_LEVEL end
-	if o == "UIConfigtooltipraid_icon" then o = L_GUI_TOOLTIP_RAID_ICON end
-	if o == "UIConfigtooltipwho_targetting" then o = L_GUI_TOOLTIP_WHO_TARGETTING end
-	if o == "UIConfigtooltipitem_count" then o = L_GUI_TOOLTIP_ITEM_COUNT end
-	if o == "UIConfigtooltipunit_role" then o = L_GUI_TOOLTIP_UNIT_ROLE end
-	if o == "UIConfigtooltipinstance_lock" then o = L_GUI_TOOLTIP_INSTANCE_LOCK end
+	if o == "UIConfig_tooltip" then o = L_GUI_TOOLTIP end
+	if o == "UIConfig_tooltipenable" then o = L_GUI_TOOLTIP_ENABLE end
+	if o == "UIConfig_tooltipshift_modifer" then o = L_GUI_TOOLTIP_SHIFT end
+	if o == "UIConfig_tooltipcursor" then o = L_GUI_TOOLTIP_CURSOR end
+	if o == "UIConfig_tooltipitem_icon" then o = L_GUI_TOOLTIP_ICON end
+	if o == "UIConfig_tooltiphealth_value" then o = L_GUI_TOOLTIP_HEALTH end
+	if o == "UIConfig_tooltiphidebuttons" then o = L_GUI_TOOLTIP_HIDE end
+	if o == "UIConfig_tooltiphide_combat" then o = L_GUI_TOOLTIP_HIDE_COMBAT end
+	if o == "UIConfig_tooltiptalents" then o = L_GUI_TOOLTIP_TALENTS end
+	if o == "UIConfig_tooltiptarget" then o = L_GUI_TOOLTIP_TARGET end
+	if o == "UIConfig_tooltiptitle" then o = L_GUI_TOOLTIP_TITLE end
+	if o == "UIConfig_tooltiprealm" then o = L_GUI_TOOLTIP_REALM end
+	if o == "UIConfig_tooltiprank" then o = L_GUI_TOOLTIP_RANK end
+	if o == "UIConfig_tooltiparena_experience" then o = L_GUI_TOOLTIP_ARENA_EXPERIENCE end
+	if o == "UIConfig_tooltipspell_id" then o = L_GUI_TOOLTIP_SPELL_ID end
+	if o == "UIConfig_tooltipaverage_lvl" then o = L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL end
+	if o == "UIConfig_tooltipraid_icon" then o = L_GUI_TOOLTIP_RAID_ICON end
+	if o == "UIConfig_tooltipwho_targetting" then o = L_GUI_TOOLTIP_WHO_TARGETTING end
+	if o == "UIConfig_tooltipitem_count" then o = L_GUI_TOOLTIP_ITEM_COUNT end
+	if o == "UIConfig_tooltipunit_role" then o = L_GUI_TOOLTIP_UNIT_ROLE end
 
 	-- Chat options
-	if o == "UIConfigchat" then o = SOCIALS end
-	if o == "UIConfigchatenable" then o = L_GUI_CHAT_ENABLE end
-	if o == "UIConfigchatbackground" then o = L_GUI_CHAT_BACKGROUND end
-	if o == "UIConfigchatbackground_alpha" then o = L_GUI_CHAT_BACKGROUND_ALPHA end
-	if o == "UIConfigchatfilter" then o = L_GUI_CHAT_SPAM end
-	if o == "UIConfigchatspam" then o = L_GUI_CHAT_GOLD end
-	if o == "UIConfigchatwidth" then o = L_GUI_CHAT_WIDTH end
-	if o == "UIConfigchatheight" then o = L_GUI_CHAT_HEIGHT end
-	if o == "UIConfigchatchat_bar" then o = L_GUI_CHAT_BAR end
-	if o == "UIConfigchatchat_bar_mouseover" then o = L_GUI_CHAT_BAR_MOUSEOVER end
-	if o == "UIConfigchattime_color" then o = L_GUI_CHAT_TIMESTAMP end
-	if o == "UIConfigchatwhisp_sound" then o = L_GUI_CHAT_WHISP end
-	if o == "UIConfigchatbubbles" then o = L_GUI_CHAT_SKIN_BUBBLE end
-	if o == "UIConfigchatcombatlog" then o = L_GUI_CHAT_CL_TAB end
-	if o == "UIConfigchattabs_mouseover" then o = L_GUI_CHAT_TABS_MOUSEOVER end
-	if o == "UIConfigchatsticky" then o = L_GUI_CHAT_STICKY end
-	if o == "UIConfigchatdamage_meter_spam" then o = L_GUI_CHAT_DAMAGE_METER_SPAM end
+	if o == "UIConfig_chat" then o = SOCIALS end
+	if o == "UIConfig_chatenable" then o = L_GUI_CHAT_ENABLE end
+	if o == "UIConfig_chatbackground" then o = L_GUI_CHAT_BACKGROUND end
+	if o == "UIConfig_chatbackground_alpha" then o = L_GUI_CHAT_BACKGROUND_ALPHA end
+	if o == "UIConfig_chatfilter" then o = L_GUI_CHAT_SPAM end
+	if o == "UIConfig_chatspam" then o = L_GUI_CHAT_GOLD end
+	if o == "UIConfig_chatwidth" then o = L_GUI_CHAT_WIDTH end
+	if o == "UIConfig_chatheight" then o = L_GUI_CHAT_HEIGHT end
+	if o == "UIConfig_chatchat_bar" then o = L_GUI_CHAT_BAR end
+	if o == "UIConfig_chatchat_bar_mouseover" then o = L_GUI_CHAT_BAR_MOUSEOVER end
+	if o == "UIConfig_chattime" then o = L_GUI_CHAT_TIMESTAMP end
+	if o == "UIConfig_chattime_24" then o = L_GUI_CHAT_TIMESTAMP_24 end
+	if o == "UIConfig_chattime_seconds" then o = L_GUI_CHAT_TIMESTAMP_SECONDS end
+	if o == "UIConfig_chattime_color" then o = L_GUI_CHAT_TIMESTAMP_COLOR end
+	if o == "UIConfig_chatwhisp_sound" then o = L_GUI_CHAT_WHISP end
+	if o == "UIConfig_chatbubbles" then o = L_GUI_CHAT_SKIN_BUBBLE end
+	if o == "UIConfig_chatcombatlog" then o = L_GUI_CHAT_CL_TAB end
+	if o == "UIConfig_chattabs_mouseover" then o = L_GUI_CHAT_TABS_MOUSEOVER end
+	if o == "UIConfig_chatsticky" then o = L_GUI_CHAT_STICKY end
+	if o == "UIConfig_chatdamage_meter_spam" then o = L_GUI_CHAT_DAMAGE_METER_SPAM end
 
 	-- Bag options
-	if o == "UIConfigbag" then o = L_GUI_BAGS end
-	if o == "UIConfigbagenable" then o = L_GUI_BAGS_ENABLE end
-	if o == "UIConfigbagilvl" then o = L_GUI_BAGS_ILVL end
-	if o == "UIConfigbagbutton_size" then o = L_GUI_BAGS_BUTTON_SIZE end
-	if o == "UIConfigbagbutton_space" then o = L_GUI_BAGS_BUTTON_SPACE end
-	if o == "UIConfigbagbank_columns" then o = L_GUI_BAGS_BANK end
-	if o == "UIConfigbagbag_columns" then o = L_GUI_BAGS_BAG end
+	if o == "UIConfig_bag" then o = L_GUI_BAGS end
+	if o == "UIConfig_bagenable" then o = L_GUI_BAGS_ENABLE end
+	if o == "UIConfig_bagilvl" then o = L_GUI_BAGS_ILVL end
+	if o == "UIConfig_bagbutton_size" then o = L_GUI_BAGS_BUTTON_SIZE end
+	if o == "UIConfig_bagbutton_space" then o = L_GUI_BAGS_BUTTON_SPACE end
+	if o == "UIConfig_bagbank_columns" then o = L_GUI_BAGS_BANK end
+	if o == "UIConfig_bagbag_columns" then o = L_GUI_BAGS_BAG end
 
 	-- Minimap options
-	if o == "UIConfigminimap" then o = MINIMAP_LABEL end
-	if o == "UIConfigminimapenable" then o = L_GUI_MINIMAP_ENABLE end
-	if o == "UIConfigminimaptracking_icon" then o = L_GUI_MINIMAP_ICON end
-	if o == "UIConfigminimapgarrison_icon" then o = L_GUI_GARRISON_ICON end
-	if o == "UIConfigminimapsize" then o = L_GUI_MINIMAP_SIZE end
-	if o == "UIConfigminimaphide_combat" then o = L_GUI_MINIMAP_HIDE_COMBAT end
-	if o == "UIConfigminimaptoggle_menu" then o = L_GUI_MINIMAP_TOGGLE_MENU end
+	if o == "UIConfig_minimap" then o = MINIMAP_LABEL end
+	if o == "UIConfig_minimapenable" then o = L_GUI_MINIMAP_ENABLE end
+	if o == "UIConfig_minimaptracking_icon" then o = L_GUI_MINIMAP_ICON end
+	if o == "UIConfig_minimapsize" then o = L_GUI_MINIMAP_SIZE end
+	if o == "UIConfig_minimaphide_combat" then o = L_GUI_MINIMAP_HIDE_COMBAT end
+	if o == "UIConfig_minimaptoggle_menu" then o = L_GUI_MINIMAP_TOGGLE_MENU end
 
 	-- Map options
-	if o == "UIConfigmap" then o = WORLD_MAP end
-	if o == "UIConfigmapbg_map_stylization" then o = L_GUI_MAP_BG_STYLIZATION end
-	if o == "UIConfigmapmap_boss_count" then o = L_GUI_MAP_BOSS_COUNT end
-	if o == "UIConfigmapexplore_map" then o = L_GUI_MAP_EXPLORE end
-	if o == "UIConfigmapfog_of_war" then o = L_GUI_MAP_FOG_OF_WAR end
+	if o == "UIConfig_map" then o = WORLD_MAP end
+	if o == "UIConfig_mapbg_map_stylization" then o = L_GUI_MAP_BG_STYLIZATION end
+	if o == "UIConfig_mapfog_of_war" then o = L_GUI_MAP_FOG_OF_WAR end
 
 	-- Loot options
-	if o == "UIConfigloot" then o = LOOT end
-	if o == "UIConfiglootlootframe" then o = L_GUI_LOOT_ENABLE end
-	if o == "UIConfiglootrolllootframe" then o = L_GUI_LOOT_ROLL_ENABLE end
-	if o == "UIConfiglooticon_size" then o = L_GUI_LOOT_ICON_SIZE end
-	if o == "UIConfiglootwidth" then o = L_GUI_LOOT_WIDTH end
-	if o == "UIConfiglootauto_greed" then o = L_GUI_LOOT_AUTOGREED end
-	if o == "UIConfiglootauto_confirm_de" then o = L_GUI_LOOT_AUTODE end
+	if o == "UIConfig_loot" then o = LOOT end
+	if o == "UIConfig_lootlootframe" then o = L_GUI_LOOT_ENABLE end
+	if o == "UIConfig_lootrolllootframe" then o = L_GUI_LOOT_ROLL_ENABLE end
+	if o == "UIConfig_looticon_size" then o = L_GUI_LOOT_ICON_SIZE end
+	if o == "UIConfig_lootwidth" then o = L_GUI_LOOT_WIDTH end
+	if o == "UIConfig_lootauto_greed" then o = L_GUI_LOOT_AUTOGREED end
+	if o == "UIConfig_lootauto_confirm_de" then o = L_GUI_LOOT_AUTODE end
 
 	-- Nameplate options
-	if o == "UIConfignameplate" then o = UNIT_NAMEPLATES end
-	if o == "UIConfignameplateenable" then o = L_GUI_NAMEPLATE_ENABLE end
-	if o == "UIConfignameplateheight" then o = L_GUI_NAMEPLATE_HEIGHT end
-	if o == "UIConfignameplatewidth" then o = L_GUI_NAMEPLATE_WIDTH end
-	if o == "UIConfignameplatedistance" then o = L_GUI_NAMEPLATE_DISTANCE end
-	if o == "UIConfignameplatead_height" then o = L_GUI_NAMEPLATE_AD_HEIGHT end
-	if o == "UIConfignameplatead_width" then o = L_GUI_NAMEPLATE_AD_WIDTH end
-	if o == "UIConfignameplatecombat" then o = L_GUI_NAMEPLATE_COMBAT end
-	if o == "UIConfignameplatehealth_value" then o = L_GUI_NAMEPLATE_HEALTH end
-	if o == "UIConfignameplateshow_castbar" then o = L_GUI_NAMEPLATE_CASTBAR end
-	if o == "UIConfignameplateshow_castbar_name" then o = L_GUI_NAMEPLATE_CASTBAR_NAME end
-	if o == "UIConfignameplateenhance_threat" then o = L_GUI_NAMEPLATE_THREAT end
-	if o == "UIConfignameplateclass_icons" then o = L_GUI_NAMEPLATE_CLASS_ICON end
-	if o == "UIConfignameplatename_abbrev" then o = L_GUI_NAMEPLATE_NAME_ABBREV end
-	if o == "UIConfignameplateclamp" then o = L_GUI_NAMEPLATE_CLAMP end
-	if o == "UIConfignameplategood_color" then o = L_GUI_NAMEPLATE_GOOD_COLOR end
-	if o == "UIConfignameplatenear_color" then o = L_GUI_NAMEPLATE_NEAR_COLOR end
-	if o == "UIConfignameplatebad_color" then o = L_GUI_NAMEPLATE_BAD_COLOR end
-	if o == "UIConfignameplateofftank_color" then o = L_GUI_NAMEPLATE_OFFTANK_COLOR end
-	if o == "UIConfignameplatetrack_auras" then o = L_GUI_NAMEPLATE_SHOW_DEBUFFS end
-	if o == "UIConfignameplatetrack_buffs" then o = L_GUI_NAMEPLATE_SHOW_BUFFS end
-	if o == "UIConfignameplateauras_size" then o = L_GUI_NAMEPLATE_DEBUFFS_SIZE end
-	if o == "UIConfignameplatehealer_icon" then o = L_GUI_NAMEPLATE_HEALER_ICON end
-	if o == "UIConfignameplatetotem_icons" then o = L_GUI_NAMEPLATE_TOTEM_ICONS end
+	if o == "UIConfig_nameplate" then o = L_COMPATIBILITY_UNIT_NAMEPLATES end
+	if o == "UIConfig_nameplateenable" then o = L_GUI_NAMEPLATE_ENABLE end
+	if o == "UIConfig_nameplateheight" then o = L_GUI_NAMEPLATE_HEIGHT end
+	if o == "UIConfig_nameplatewidth" then o = L_GUI_NAMEPLATE_WIDTH end
+	if o == "UIConfig_nameplatead_height" then o = L_GUI_NAMEPLATE_AD_HEIGHT end
+	if o == "UIConfig_nameplatead_width" then o = L_GUI_NAMEPLATE_AD_WIDTH end
+	if o == "UIConfig_nameplatecombat" then o = L_GUI_NAMEPLATE_COMBAT end
+	if o == "UIConfig_nameplatehealth_value" then o = L_GUI_NAMEPLATE_HEALTH end
+	if o == "UIConfig_nameplateshow_castbar" then o = L_GUI_NAMEPLATE_CASTBAR end
+	if o == "UIConfig_nameplateshow_castbar_name" then o = L_GUI_NAMEPLATE_CASTBAR_NAME end
+	if o == "UIConfig_nameplateenhance_threat" then o = L_GUI_NAMEPLATE_THREAT end
+	if o == "UIConfig_nameplateclass_icons" then o = L_GUI_NAMEPLATE_CLASS_ICON end
+	if o == "UIConfig_nameplatename_abbrev" then o = L_GUI_NAMEPLATE_NAME_ABBREV end
+	if o == "UIConfig_nameplategood_color" then o = L_GUI_NAMEPLATE_GOOD_COLOR end
+	if o == "UIConfig_nameplatenear_color" then o = L_GUI_NAMEPLATE_NEAR_COLOR end
+	if o == "UIConfig_nameplatebad_color" then o = L_GUI_NAMEPLATE_BAD_COLOR end
+	if o == "UIConfig_nameplateofftank_color" then o = L_GUI_NAMEPLATE_OFFTANK_COLOR end
+	if o == "UIConfig_nameplatetrack_auras" then o = L_GUI_NAMEPLATE_SHOW_DEBUFFS end
+	if o == "UIConfig_nameplatetrack_buffs" then o = L_GUI_NAMEPLATE_SHOW_BUFFS end
+	if o == "UIConfig_nameplateauras_size" then o = L_GUI_NAMEPLATE_DEBUFFS_SIZE end
+	if o == "UIConfig_nameplatehealer_icon" then o = L_GUI_NAMEPLATE_HEALER_ICON end
+	if o == "UIConfig_nameplatetotem_icons" then o = L_GUI_NAMEPLATE_TOTEM_ICONS end
 
 	-- ActionBar options
-	if o == "UIConfigactionbar" then o = ACTIONBAR_LABEL end
-	if o == "UIConfigactionbarenable" then o = L_GUI_ACTIONBAR_ENABLE end
-	if o == "UIConfigactionbarhotkey" then o = L_GUI_ACTIONBAR_HOTKEY end
-	if o == "UIConfigactionbarmacro" then o = L_GUI_ACTIONBAR_MACRO end
-	if o == "UIConfigactionbarshow_grid" then o = L_GUI_ACTIONBAR_GRID end
-	if o == "UIConfigactionbarbutton_size" then o = L_GUI_ACTIONBAR_BUTTON_SIZE end
-	if o == "UIConfigactionbarbutton_space" then o = L_GUI_ACTIONBAR_BUTTON_SPACE end
-	if o == "UIConfigactionbarsplit_bars" then o = L_GUI_ACTIONBAR_SPLIT_BARS end
-	if o == "UIConfigactionbarclasscolor_border" then o = L_GUI_ACTIONBAR_CLASSCOLOR_BORDER end
-	if o == "UIConfigactionbartoggle_mode" then o = L_GUI_ACTIONBAR_TOGGLE_MODE end
-	if o == "UIConfigactionbarhide_highlight" then o = L_GUI_ACTIONBAR_HIDE_HIGHLIGHT end
-	if o == "UIConfigactionbarbottombars" then o = L_GUI_ACTIONBAR_BOTTOMBARS end
-	if o == "UIConfigactionbarrightbars" then o = L_GUI_ACTIONBAR_RIGHTBARS end
-	if o == "UIConfigactionbarrightbars_mouseover" then o = L_GUI_ACTIONBAR_RIGHTBARS_MOUSEOVER end
-	if o == "UIConfigactionbarpetbar_mouseover" then o = L_GUI_ACTIONBAR_PETBAR_MOUSEOVER end
-	if o == "UIConfigactionbarpetbar_hide" then o = L_GUI_ACTIONBAR_PETBAR_HIDE end
-	if o == "UIConfigactionbarpetbar_horizontal" then o = L_GUI_ACTIONBAR_PETBAR_HORIZONTAL end
-	if o == "UIConfigactionbarstancebar_mouseover" then o = L_GUI_ACTIONBAR_STANCEBAR_MOUSEOVER end
-	if o == "UIConfigactionbarstancebar_hide" then o = L_GUI_ACTIONBAR_STANCEBAR_HIDE end
-	if o == "UIConfigactionbarstancebar_horizontal" then o = L_GUI_ACTIONBAR_STANCEBAR_HORIZONTAL end
-	if o == "UIConfigactionbarmicromenu" then o = L_GUI_ACTIONBAR_MICROMENU end
-	if o == "UIConfigactionbarmicromenu_mouseover" then o = L_GUI_ACTIONBAR_MICROMENU_MOUSEOVER end
+	if o == "UIConfig_actionbar" then o = ACTIONBAR_LABEL end
+	if o == "UIConfig_actionbarenable" then o = L_GUI_ACTIONBAR_ENABLE end
+	if o == "UIConfig_actionbarhotkey" then o = L_GUI_ACTIONBAR_HOTKEY end
+	if o == "UIConfig_actionbarmacro" then o = L_GUI_ACTIONBAR_MACRO end
+	if o == "UIConfig_actionbarshow_grid" then o = L_GUI_ACTIONBAR_GRID end
+	if o == "UIConfig_actionbarbutton_size" then o = L_GUI_ACTIONBAR_BUTTON_SIZE end
+	if o == "UIConfig_actionbarbutton_space" then o = L_GUI_ACTIONBAR_BUTTON_SPACE end
+	if o == "UIConfig_actionbarsplit_bars" then o = L_GUI_ACTIONBAR_SPLIT_BARS end
+	if o == "UIConfig_actionbarclasscolor_border" then o = L_GUI_ACTIONBAR_CLASSCOLOR_BORDER end
+	if o == "UIConfig_actionbartoggle_mode" then o = L_GUI_ACTIONBAR_TOGGLE_MODE end
+	if o == "UIConfig_actionbarbottombars" then o = L_GUI_ACTIONBAR_BOTTOMBARS end
+	if o == "UIConfig_actionbarrightbars" then o = L_GUI_ACTIONBAR_RIGHTBARS end
+	if o == "UIConfig_actionbarrightbars_mouseover" then o = L_GUI_ACTIONBAR_RIGHTBARS_MOUSEOVER end
+	if o == "UIConfig_actionbarpetbar_hide" then o = L_GUI_ACTIONBAR_PETBAR_HIDE end
+	if o == "UIConfig_actionbarpetbar_horizontal" then o = L_GUI_ACTIONBAR_PETBAR_HORIZONTAL end
+	if o == "UIConfig_actionbarpetbar_mouseover" then o = L_GUI_ACTIONBAR_PETBAR_MOUSEOVER end
+	if o == "UIConfig_actionbarstancebar_hide" then o = L_GUI_ACTIONBAR_STANCEBAR_HIDE end
+	if o == "UIConfig_actionbarstancebar_horizontal" then o = L_GUI_ACTIONBAR_STANCEBAR_HORIZONTAL end
+	if o == "UIConfig_actionbarstancebar_mouseover" then o = L_GUI_ACTIONBAR_STANCEBAR_MOUSEOVER end
+	if o == "UIConfig_actionbarmicromenu" then o = L_GUI_ACTIONBAR_MICROMENU end
+	if o == "UIConfig_actionbarmicromenu_mouseover" then o = L_GUI_ACTIONBAR_MICROMENU_MOUSEOVER end
 
 	-- Auras/Buffs/Debuffs
-	if o == "UIConfigaura" then o = BUFFOPTIONS_LABEL end
-	if o == "UIConfigauraplayer_buff_size" then o = L_GUI_AURA_PLAYER_BUFF_SIZE end
-	if o == "UIConfigaurashow_spiral" then o = L_GUI_AURA_SHOW_SPIRAL end
-	if o == "UIConfigaurashow_timer" then o = L_GUI_AURA_SHOW_TIMER end
-	if o == "UIConfigauraplayer_auras" then o = L_GUI_AURA_PLAYER_AURAS end
-	if o == "UIConfigauratarget_auras" then o = L_GUI_AURA_TARGET_AURAS end
-	if o == "UIConfigaurafocus_debuffs" then o = L_GUI_AURA_FOCUS_DEBUFFS end
-	if o == "UIConfigaurafot_debuffs" then o = L_GUI_AURA_FOT_DEBUFFS end
-	if o == "UIConfigaurapet_debuffs" then o = L_GUI_AURA_PET_DEBUFFS end
-	if o == "UIConfigauratot_debuffs" then o = L_GUI_AURA_TOT_DEBUFFS end
-	if o == "UIConfigauraboss_buffs" then o = L_GUI_AURA_BOSS_BUFFS end
-	if o == "UIConfigauraplayer_aura_only" then o = L_GUI_AURA_PLAYER_AURA_ONLY end
-	if o == "UIConfigauradebuff_color_type" then o = L_GUI_AURA_DEBUFF_COLOR_TYPE end
-	if o == "UIConfigauracast_by" then o = L_GUI_AURA_CAST_BY end
-	if o == "UIConfigauraclasscolor_border" then o = L_GUI_AURA_CLASSCOLOR_BORDER end
+	if o == "UIConfig_aura" then o = L_COMPATIBILITY_BUFFOPTIONS_LABEL end
+	if o == "UIConfig_auraplayer_buff_size" then o = L_GUI_AURA_PLAYER_BUFF_SIZE end
+	if o == "UIConfig_aurashow_spiral" then o = L_GUI_AURA_SHOW_SPIRAL end
+	if o == "UIConfig_aurashow_timer" then o = L_GUI_AURA_SHOW_TIMER end
+	if o == "UIConfig_auraplayer_auras" then o = L_GUI_AURA_PLAYER_AURAS end
+	if o == "UIConfig_auratarget_auras" then o = L_GUI_AURA_TARGET_AURAS end
+	if o == "UIConfig_aurafocus_debuffs" then o = L_GUI_AURA_FOCUS_DEBUFFS end
+	if o == "UIConfig_aurafot_debuffs" then o = L_GUI_AURA_FOT_DEBUFFS end
+	if o == "UIConfig_aurapet_debuffs" then o = L_GUI_AURA_PET_DEBUFFS end
+	if o == "UIConfig_auratot_debuffs" then o = L_GUI_AURA_TOT_DEBUFFS end
+	if o == "UIConfig_auraboss_buffs" then o = L_GUI_AURA_BOSS_BUFFS end
+	if o == "UIConfig_auraplayer_aura_only" then o = L_GUI_AURA_PLAYER_AURA_ONLY end
+	if o == "UIConfig_auradebuff_color_type" then o = L_GUI_AURA_DEBUFF_COLOR_TYPE end
+	if o == "UIConfig_auraclasscolor_border" then o = L_GUI_AURA_CLASSCOLOR_BORDER end
 
 	-- Filger
-	if o == "UIConfigfilger" then o = L_GUI_FILGER end
-	if o == "UIConfigfilgerenable" then o = L_GUI_FILGER_ENABLE end
-	if o == "UIConfigfilgertest_mode" then o = L_GUI_FILGER_TEST_MODE end
-	if o == "UIConfigfilgermax_test_icon" then o = L_GUI_FILGER_MAX_TEST_ICON end
-	if o == "UIConfigfilgershow_tooltip" then o = L_GUI_FILGER_SHOW_TOOLTIP end
-	if o == "UIConfigfilgerdisable_cd" then o = L_GUI_FILGER_DISABLE_CD end
-	if o == "UIConfigfilgerbuffs_size" then o = L_GUI_FILGER_BUFFS_SIZE end
-	if o == "UIConfigfilgercooldown_size" then o = L_GUI_FILGER_COOLDOWN_SIZE end
-	if o == "UIConfigfilgerpvp_size" then o = L_GUI_FILGER_PVP_SIZE end
+	if o == "UIConfig_filger" then o = L_GUI_FILGER end
+	if o == "UIConfig_filgerenable" then o = L_GUI_FILGER_ENABLE end
+	if o == "UIConfig_filgertest_mode" then o = L_GUI_FILGER_TEST_MODE end
+	if o == "UIConfig_filgermax_test_icon" then o = L_GUI_FILGER_MAX_TEST_ICON end
+	if o == "UIConfig_filgershow_tooltip" then o = L_GUI_FILGER_SHOW_TOOLTIP end
+	if o == "UIConfig_filgerdisable_cd" then o = L_GUI_FILGER_DISABLE_CD end
+	if o == "UIConfig_filgerbuffs_size" then o = L_GUI_FILGER_BUFFS_SIZE end
+	if o == "UIConfig_filgercooldown_size" then o = L_GUI_FILGER_COOLDOWN_SIZE end
+	if o == "UIConfig_filgerpvp_size" then o = L_GUI_FILGER_PVP_SIZE end
 
 	-- Unit Frames options
-	if o == "UIConfigunitframe" then o = UNITFRAME_LABEL end
-	if o == "UIConfigunitframeenable" then o = L_GUI_UF_ENABLE end
-	if o == "UIConfigunitframeown_color" then o = L_GUI_UF_OWN_COLOR end
-	if o == "UIConfigunitframeuf_color" then o = L_GUI_UF_UF_COLOR end
-	if o == "UIConfigunitframeenemy_health_color" then o = L_GUI_UF_ENEMY_HEALTH_COLOR end
-	if o == "UIConfigunitframeshow_total_value" then o = L_GUI_UF_TOTAL_VALUE end
-	if o == "UIConfigunitframecolor_value" then o = L_GUI_UF_COLOR_VALUE end
-	if o == "UIConfigunitframebar_color_value" then o = L_GUI_UF_BAR_COLOR_VALUE end
-	if o == "UIConfigunitframelines" then o = L_GUI_UF_LINES end
-	if o == "UIConfigunitframeunit_castbar" then o = L_GUI_UF_UNIT_CASTBAR end
-	if o == "UIConfigunitframecastbar_icon" then o = L_GUI_UF_CASTBAR_ICON end
-	if o == "UIConfigunitframecastbar_latency" then o = L_GUI_UF_CASTBAR_LATENCY end
-	if o == "UIConfigunitframecastbar_ticks" then o = L_GUI_UF_CASTBAR_TICKS end
-	if o == "UIConfigunitframeshow_pet" then o = L_GUI_UF_SHOW_PET end
-	if o == "UIConfigunitframeshow_focus" then o = L_GUI_UF_SHOW_FOCUS end
-	if o == "UIConfigunitframeshow_target_target" then o = L_GUI_UF_SHOW_TOT end
-	if o == "UIConfigunitframeshow_boss" then o = L_GUI_UF_SHOW_BOSS end
-	if o == "UIConfigunitframeboss_on_right" then o = L_GUI_UF_BOSS_RIGHT end
-	if o == "UIConfigunitframeshow_arena" then o = L_GUI_UF_SHOW_ARENA end
-	if o == "UIConfigunitframearena_on_right" then o = L_GUI_UF_ARENA_RIGHT end
-	if o == "UIConfigunitframeboss_debuffs" then o = L_GUI_UF_BOSS_DEBUFFS end
-	if o == "UIConfigunitframeboss_buffs" then o = L_GUI_UF_BOSS_BUFFS end
-	if o == "UIConfigunitframeicons_pvp" then o = L_GUI_UF_ICONS_PVP end
-	if o == "UIConfigunitframeicons_combat" then o = L_GUI_UF_ICONS_COMBAT end
-	if o == "UIConfigunitframeicons_resting" then o = L_GUI_UF_ICONS_RESTING end
-	if o == "UIConfigunitframeportrait_enable" then o = L_GUI_UF_PORTRAIT_ENABLE end
-	if o == "UIConfigunitframeportrait_classcolor_border" then o = L_GUI_UF_PORTRAIT_CLASSCOLOR_BORDER end
-	if o == "UIConfigunitframeportrait_height" then o = L_GUI_UF_PORTRAIT_HEIGHT end
-	if o == "UIConfigunitframeportrait_width" then o = L_GUI_UF_PORTRAIT_WIDTH end
-	if o == "UIConfigunitframeplugins_gcd" then o = L_GUI_UF_PLUGINS_GCD end
-	if o == "UIConfigunitframeplugins_swing" then o = L_GUI_UF_PLUGINS_SWING end
-	if o == "UIConfigunitframeplugins_reputation_bar" then o = L_GUI_UF_PLUGINS_REPUTATION_BAR end
-	if o == "UIConfigunitframeplugins_experience_bar" then o = L_GUI_UF_PLUGINS_EXPERIENCE_BAR end
-	if o == "UIConfigunitframeplugins_artifact_bar" then o = L_GUI_UF_PLUGINS_ARTIFACT_BAR end
-	if o == "UIConfigunitframeplugins_smooth_bar" then o = L_GUI_UF_PLUGINS_SMOOTH_BAR end
-	if o == "UIConfigunitframeplugins_enemy_spec" then o = L_GUI_UF_PLUGINS_ENEMY_SPEC end
-	if o == "UIConfigunitframeplugins_combat_feedback" then o = L_GUI_UF_PLUGINS_COMBAT_FEEDBACK end
-	if o == "UIConfigunitframeplugins_fader" then o = L_GUI_UF_PLUGINS_FADER end
-	if o == "UIConfigunitframeplugins_diminishing" then o = L_GUI_UF_PLUGINS_DIMINISHING end
+	if o == "UIConfig_unitframe" then o = L_COMPATIBILITY_UNITFRAME_LABEL end
+	if o == "UIConfig_unitframeenable" then o = L_GUI_UF_ENABLE end
+	if o == "UIConfig_unitframeown_color" then o = L_GUI_UF_OWN_COLOR end
+	if o == "UIConfig_unitframeuf_color" then o = L_GUI_UF_UF_COLOR end
+	if o == "UIConfig_unitframeenemy_health_color" then o = L_GUI_UF_ENEMY_HEALTH_COLOR end
+	if o == "UIConfig_unitframeshow_total_value" then o = L_GUI_UF_TOTAL_VALUE end
+	if o == "UIConfig_unitframecolor_value" then o = L_GUI_UF_COLOR_VALUE end
+	if o == "UIConfig_unitframebar_color_value" then o = L_GUI_UF_BAR_COLOR_VALUE end
+	if o == "UIConfig_unitframelines" then o = L_GUI_UF_LINES end
+	if o == "UIConfig_unitframeunit_castbar" then o = L_GUI_UF_UNIT_CASTBAR end
+	if o == "UIConfig_unitframecastbar_icon" then o = L_GUI_UF_CASTBAR_ICON end
+	if o == "UIConfig_unitframecastbar_latency" then o = L_GUI_UF_CASTBAR_LATENCY end
+	if o == "UIConfig_unitframecastbar_ticks" then o = L_GUI_UF_CASTBAR_TICKS end
+	if o == "UIConfig_unitframeshow_pet" then o = L_GUI_UF_SHOW_PET end
+	if o == "UIConfig_unitframeshow_focus" then o = L_GUI_UF_SHOW_FOCUS end
+	if o == "UIConfig_unitframeshow_target_target" then o = L_GUI_UF_SHOW_TOT end
+	if o == "UIConfig_unitframeshow_boss" then o = L_GUI_UF_SHOW_BOSS end
+	if o == "UIConfig_unitframeboss_on_right" then o = L_GUI_UF_BOSS_RIGHT end
+	if o == "UIConfig_unitframeshow_arena" then o = L_GUI_UF_SHOW_ARENA end
+	if o == "UIConfig_unitframearena_on_right" then o = L_GUI_UF_ARENA_RIGHT end
+	if o == "UIConfig_unitframeboss_debuffs" then o = L_GUI_UF_BOSS_DEBUFFS end
+	if o == "UIConfig_unitframeboss_buffs" then o = L_GUI_UF_BOSS_BUFFS end
+	if o == "UIConfig_unitframeicons_pvp" then o = L_GUI_UF_ICONS_PVP end
+	if o == "UIConfig_unitframeicons_combat" then o = L_GUI_UF_ICONS_COMBAT end
+	if o == "UIConfig_unitframeicons_resting" then o = L_GUI_UF_ICONS_RESTING end
+	if o == "UIConfig_unitframeportrait_enable" then o = L_GUI_UF_PORTRAIT_ENABLE end
+	if o == "UIConfig_unitframeportrait_classcolor_border" then o = L_GUI_UF_PORTRAIT_CLASSCOLOR_BORDER end
+	if o == "UIConfig_unitframeportrait_height" then o = L_GUI_UF_PORTRAIT_HEIGHT end
+	if o == "UIConfig_unitframeportrait_width" then o = L_GUI_UF_PORTRAIT_WIDTH end
+	if o == "UIConfig_unitframeplugins_gcd" then o = L_GUI_UF_PLUGINS_GCD end
+	if o == "UIConfig_unitframeplugins_swing" then o = L_GUI_UF_PLUGINS_SWING end
+	if o == "UIConfig_unitframeplugins_reputation_bar" then o = L_GUI_UF_PLUGINS_REPUTATION_BAR end
+	if o == "UIConfig_unitframeplugins_experience_bar" then o = L_GUI_UF_PLUGINS_EXPERIENCE_BAR end
+	if o == "UIConfig_unitframeplugins_smooth_bar" then o = L_GUI_UF_PLUGINS_SMOOTH_BAR end
+	if o == "UIConfig_unitframeplugins_enemy_spec" then o = L_GUI_UF_PLUGINS_ENEMY_SPEC end
+	if o == "UIConfig_unitframeplugins_combat_feedback" then o = L_GUI_UF_PLUGINS_COMBAT_FEEDBACK end
+	if o == "UIConfig_unitframeplugins_fader" then o = L_GUI_UF_PLUGINS_FADER end
+	if o == "UIConfig_unitframeplugins_diminishing" then o = L_GUI_UF_PLUGINS_DIMINISHING end
 
 	-- Unit Frames Class bar options
-	if o == "UIConfigunitframe_class_bar" then o = L_GUI_UF_PLUGINS_CLASS_BAR end
-	if o == "UIConfigunitframe_class_barcombo" then o = L_GUI_UF_PLUGINS_COMBO_BAR end
-	if o == "UIConfigunitframe_class_barcombo_always" then o = L_GUI_UF_PLUGINS_COMBO_BAR_ALWAYS end
-	if o == "UIConfigunitframe_class_barcombo_old" then o = L_GUI_UF_PLUGINS_COMBO_BAR_OLD end
-	if o == "UIConfigunitframe_class_bararcane" then o = L_GUI_UF_PLUGINS_ARCANE_BAR end
-	if o == "UIConfigunitframe_class_barchi" then o = L_GUI_UF_PLUGINS_CHI_BAR end
-	if o == "UIConfigunitframe_class_barstagger" then o = L_GUI_UF_PLUGINS_STAGGER_BAR end
-	if o == "UIConfigunitframe_class_barholy" then o = L_GUI_UF_PLUGINS_HOLY_BAR end
-	if o == "UIConfigunitframe_class_barshard" then o = L_GUI_UF_PLUGINS_SHARD_BAR end
-	if o == "UIConfigunitframe_class_barrune" then o = L_GUI_UF_PLUGINS_RUNE_BAR end
-	if o == "UIConfigunitframe_class_bartotem" then o = L_GUI_UF_PLUGINS_TOTEM_BAR end
-	if o == "UIConfigunitframe_class_barrange" then o = L_GUI_UF_PLUGINS_RANGE_BAR end
+	if o == "UIConfig_unitframe_class_bar" then o = L_GUI_UF_PLUGINS_CLASS_BAR end
+	if o == "UIConfig_unitframe_class_barcombo" then o = L_GUI_UF_PLUGINS_COMBO_BAR end
+	if o == "UIConfig_unitframe_class_barcombo_always" then o = L_GUI_UF_PLUGINS_COMBO_BAR_ALWAYS end
+	if o == "UIConfig_unitframe_class_barcombo_old" then o = L_GUI_UF_PLUGINS_COMBO_BAR_OLD end
+	if o == "UIConfig_unitframe_class_bartotem" then o = L_GUI_UF_PLUGINS_TOTEM_BAR end
 
 	-- Raid Frames options
-	if o == "UIConfigraidframe" then o = RAID_FRAMES_LABEL end
-	if o == "UIConfigraidframeby_role" then o = L_GUI_UF_BY_ROLE end
-	if o == "UIConfigraidframeaggro_border" then o = L_GUI_UF_AGGRO_BORDER end
-	if o == "UIConfigraidframedeficit_health" then o = L_GUI_UF_DEFICIT_HEALTH end
-	if o == "UIConfigraidframeshow_party" then o = L_GUI_UF_SHOW_PARTY end
-	if o == "UIConfigraidframeshow_raid" then o = L_GUI_UF_SHOW_RAID end
-	if o == "UIConfigraidframevertical_health" then o = L_GUI_UF_VERTICAL_HEALTH end
-	if o == "UIConfigraidframealpha_health" then o = L_GUI_UF_ALPHA_HEALTH end
-	if o == "UIConfigraidframeshow_range" then o = L_GUI_UF_SHOW_RANGE end
-	if o == "UIConfigraidframerange_alpha" then o = L_GUI_UF_RANGE_ALPHA end
-	if o == "UIConfigraidframesolo_mode" then o = L_GUI_UF_SOLO_MODE end
-	if o == "UIConfigraidframeplayer_in_party" then o = L_GUI_UF_PLAYER_PARTY end
-	if o == "UIConfigraidframeraid_tanks" then o = L_GUI_UF_SHOW_TANK end
-	if o == "UIConfigraidframeraid_tanks_tt" then o = L_GUI_UF_SHOW_TANK_TT end
-	if o == "UIConfigraidframeraid_groups" then o = L_GUI_UF_RAID_GROUP end
-	if o == "UIConfigraidframeraid_groups_vertical" then o = L_GUI_UF_RAID_VERTICAL_GROUP end
-	if o == "UIConfigraidframeicons_leader" then o = L_GUI_UF_ICONS_LEADER end
-	if o == "UIConfigraidframeicons_role" then o = L_GUI_UF_ICONS_ROLE end
-	if o == "UIConfigraidframeicons_raid_mark" then o = L_GUI_UF_ICONS_RAID_MARK end
-	if o == "UIConfigraidframeicons_ready_check" then o = L_GUI_UF_ICONS_READY_CHECK end
-	if o == "UIConfigraidframeplugins_debuffhighlight_icon" then o = L_GUI_UF_PLUGINS_DEBUFFHIGHLIGHT_ICON end
-	if o == "UIConfigraidframeplugins_aura_watch" then o = L_GUI_UF_PLUGINS_AURA_WATCH end
-	if o == "UIConfigraidframeplugins_aura_watch_timer" then o = L_GUI_UF_PLUGINS_AURA_WATCH_TIMER end
-	if o == "UIConfigraidframeplugins_pvp_debuffs" then o = L_GUI_UF_PLUGINS_PVP_DEBUFFS end
-	if o == "UIConfigraidframeplugins_healcomm" then o = L_GUI_UF_PLUGINS_HEALCOMM end
-	if o == "UIConfigraidframeplugins_auto_resurrection" then o = L_GUI_UF_PLUGINS_AUTO_RESURRECTION end
+	if o == "UIConfig_raidframe" then o = L_COMPATIBILITY_RAID_FRAMES_LABEL end
+	if o == "UIConfig_raidframeby_role" then o = L_GUI_UF_BY_ROLE end
+	if o == "UIConfig_raidframeaggro_border" then o = L_GUI_UF_AGGRO_BORDER end
+	if o == "UIConfig_raidframedeficit_health" then o = L_GUI_UF_DEFICIT_HEALTH end
+	if o == "UIConfig_raidframeshow_party" then o = L_GUI_UF_SHOW_PARTY end
+	if o == "UIConfig_raidframeshow_raid" then o = L_GUI_UF_SHOW_RAID end
+	if o == "UIConfig_raidframevertical_health" then o = L_GUI_UF_VERTICAL_HEALTH end
+	if o == "UIConfig_raidframealpha_health" then o = L_GUI_UF_ALPHA_HEALTH end
+	if o == "UIConfig_raidframeshow_range" then o = L_GUI_UF_SHOW_RANGE end
+	if o == "UIConfig_raidframerange_alpha" then o = L_GUI_UF_RANGE_ALPHA end
+	if o == "UIConfig_raidframesolo_mode" then o = L_GUI_UF_SOLO_MODE end
+	if o == "UIConfig_raidframeplayer_in_party" then o = L_GUI_UF_PLAYER_PARTY end
+	if o == "UIConfig_raidframeraid_tanks" then o = L_GUI_UF_SHOW_TANK end
+	if o == "UIConfig_raidframeraid_tanks_tt" then o = L_GUI_UF_SHOW_TANK_TT end
+	if o == "UIConfig_raidframeraid_groups" then o = L_GUI_UF_RAID_GROUP end
+	if o == "UIConfig_raidframeraid_groups_vertical" then o = L_GUI_UF_RAID_VERTICAL_GROUP end
+	if o == "UIConfig_raidframeicons_leader" then o = L_GUI_UF_ICONS_LEADER end
+	if o == "UIConfig_raidframeicons_role" then o = L_GUI_UF_ICONS_ROLE end
+	if o == "UIConfig_raidframeicons_raid_mark" then o = L_GUI_UF_ICONS_RAID_MARK end
+	if o == "UIConfig_raidframeicons_ready_check" then o = L_GUI_UF_ICONS_READY_CHECK end
+	if o == "UIConfig_raidframeplugins_debuffhighlight_icon" then o = L_GUI_UF_PLUGINS_DEBUFFHIGHLIGHT_ICON end
+	if o == "UIConfig_raidframeplugins_aura_watch" then o = L_GUI_UF_PLUGINS_AURA_WATCH end
+	if o == "UIConfig_raidframeplugins_aura_watch_timer" then o = L_GUI_UF_PLUGINS_AURA_WATCH_TIMER end
+	if o == "UIConfig_raidframeplugins_pvp_debuffs" then o = L_GUI_UF_PLUGINS_PVP_DEBUFFS end
+	if o == "UIConfig_raidframeplugins_healcomm" then o = L_GUI_UF_PLUGINS_HEALCOMM end
+	if o == "UIConfig_raidframeplugins_auto_resurrection" then o = L_GUI_UF_PLUGINS_AUTO_RESURRECTION end
 
 	-- Panel options
-	if o == "UIConfigtoppanel" then o = L_GUI_TOP_PANEL end
-	if o == "UIConfigtoppanelenable" then o = L_GUI_TOP_PANEL_ENABLE end
-	if o == "UIConfigtoppanelmouseover" then o = L_GUI_TOP_PANEL_MOUSE end
-	if o == "UIConfigtoppanelheight" then o = L_GUI_TOP_PANEL_HEIGHT end
-	if o == "UIConfigtoppanelwidth" then o = L_GUI_TOP_PANEL_WIDTH end
+	if o == "UIConfig_toppanel" then o = L_GUI_TOP_PANEL end
+	if o == "UIConfig_toppanelenable" then o = L_GUI_TOP_PANEL_ENABLE end
+	if o == "UIConfig_toppanelmouseover" then o = L_GUI_TOP_PANEL_MOUSE end
+	if o == "UIConfig_toppanelheight" then o = L_GUI_TOP_PANEL_HEIGHT end
+	if o == "UIConfig_toppanelwidth" then o = L_GUI_TOP_PANEL_WIDTH end
 
 	-- Stats options
-	if o == "UIConfigstats" then o = L_GUI_STATS end
-	if o == "UIConfigstatsbattleground" then o = L_GUI_STATS_BG end
-	if o == "UIConfigstatsclock" then o = L_GUI_STATS_CLOCK end
-	if o == "UIConfigstatslatency" then o = L_GUI_STATS_LATENCY end
-	if o == "UIConfigstatsmemory" then o = L_GUI_STATS_MEMORY end
-	if o == "UIConfigstatsfps" then o = L_GUI_STATS_FPS end
-	if o == "UIConfigstatsfriend" then o = FRIENDS end
-	if o == "UIConfigstatsguild" then o = GUILD end
-	if o == "UIConfigstatsdurability" then o = DURABILITY end
-	if o == "UIConfigstatsexperience" then o = L_GUI_STATS_EXPERIENCE end
-	if o == "UIConfigstatscoords" then o = L_GUI_STATS_COORDS end
-	if o == "UIConfigstatslocation" then o = L_GUI_STATS_LOCATION end
-	if o == "UIConfigstatscurrency_archaeology" then o = L_GUI_STATS_CURRENCY_ARCHAEOLOGY end
-	if o == "UIConfigstatscurrency_cooking" then o = L_GUI_STATS_CURRENCY_COOKING end
-	if o == "UIConfigstatscurrency_professions" then o = L_GUI_STATS_CURRENCY_PROFESSIONS end
-	if o == "UIConfigstatscurrency_raid" then o = L_GUI_STATS_CURRENCY_RAID end
-	if o == "UIConfigstatscurrency_pvp" then o = L_GUI_STATS_CURRENCY_PVP end
-	if o == "UIConfigstatscurrency_misc" then o = L_GUI_STATS_CURRENCY_MISCELLANEOUS end
+	if o == "UIConfig_stats" then o = L_GUI_STATS end
+	if o == "UIConfig_statsbattleground" then o = L_GUI_STATS_BG end
+	if o == "UIConfig_statsclock" then o = L_GUI_STATS_CLOCK end
+	if o == "UIConfig_statslatency" then o = L_GUI_STATS_LATENCY end
+	if o == "UIConfig_statsmemory" then o = L_GUI_STATS_MEMORY end
+	if o == "UIConfig_statsfps" then o = L_GUI_STATS_FPS end
+	if o == "UIConfig_statsfriend" then o = FRIENDS end
+	if o == "UIConfig_statsguild" then o = GUILD end
+	if o == "UIConfig_statsdurability" then o = L_COMPATIBILITY_DURABILITY end
+	if o == "UIConfig_statsexperience" then o = L_GUI_STATS_EXPERIENCE end
+	if o == "UIConfig_statscoords" then o = L_GUI_STATS_COORDS end
+	if o == "UIConfig_statslocation" then o = L_GUI_STATS_LOCATION end
+	if o == "UIConfig_statscurrency_raid" then o = L_GUI_STATS_CURRENCY_RAID end
+	if o == "UIConfig_statscurrency_pvp" then o = L_GUI_STATS_CURRENCY_PVP end
+	if o == "UIConfig_statscurrency_misc" then o = L_GUI_STATS_CURRENCY_MISCELLANEOUS end
 
 	-- Error options
-	if o == "UIConfigerror" then o = L_GUI_ERROR end
-	if o == "UIConfigerrorblack" then o = L_GUI_ERROR_BLACK end
-	if o == "UIConfigerrorwhite" then o = L_GUI_ERROR_WHITE end
-	if o == "UIConfigerrorcombat" then o = L_GUI_ERROR_HIDE_COMBAT end
+	if o == "UIConfig_error" then o = L_GUI_ERROR end
+	if o == "UIConfig_errorblack" then o = L_GUI_ERROR_BLACK end
+	if o == "UIConfig_errorwhite" then o = L_GUI_ERROR_WHITE end
+	if o == "UIConfig_errorcombat" then o = L_GUI_ERROR_HIDE_COMBAT end
 
 	T.option = o
 end
 
 local NewButton = function(text, parent)
-	local T, C, L = unpack(ShestakUI)
+	local T, C, L, _ = unpack(ShestakUI)
 
 	local result = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	local label = result:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	label:SetText(text)
+	label:SetPoint("LEFT", result, "LEFT", 2, 0)
+	label:SetPoint("RIGHT", result, "RIGHT", -2, 0)
+	label:SetJustifyH("LEFT")
 	result:SetWidth(label:GetWidth())
 	result:SetHeight(label:GetHeight())
 	result:SetFontString(label)
 	result:SetNormalTexture("")
 	result:SetHighlightTexture("")
 	result:SetPushedTexture("")
-	result.Left:SetAlpha(0)
-	result.Right:SetAlpha(0)
-	result.Middle:SetAlpha(0)
 
 	return result
 end
 
 local NormalButton = function(text, parent)
-	local T, C, L = unpack(ShestakUI)
+	local T, C, L, _ = unpack(ShestakUI)
 
 	local result = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
 	local label = result:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -617,33 +579,33 @@ end
 local VISIBLE_GROUP = nil
 local lastbutton = nil
 local function ShowGroup(group, button)
-	local T, C, L = unpack(ShestakUI)
+	local T, C, L, _ = unpack(ShestakUI)
 
 	if lastbutton then
 		lastbutton:SetText(lastbutton:GetText().sub(lastbutton:GetText(), 11, -3))
 	end
 	if VISIBLE_GROUP then
-		_G["UIConfig"..VISIBLE_GROUP]:Hide()
+		_G["UIConfig_"..VISIBLE_GROUP]:Hide()
 	end
-	if _G["UIConfig"..group] then
-		local o = "UIConfig"..group
+	if _G["UIConfig_"..group] then
+		local o = "UIConfig_"..group
 		Local(o)
 		_G["UIConfigTitle"]:SetText(T.option)
-		local height = _G["UIConfig"..group]:GetHeight()
-		_G["UIConfig"..group]:Show()
-		local scrollamntmax = 400
-		local scrollamntmin = scrollamntmax - 10
-		local max = height > scrollamntmax and height-scrollamntmin or 1
+		_G["UIConfig_"..group]:Show()
+		local height = _G["UIConfig_"..group]:GetHeight()
+		local scrollMax = GlobalHeight
+		local scrollMin = scrollMax - 10
+		local max = height > scrollMax and height - scrollMin or 1
 
 		if max == 1 then
-			_G["UIConfigGroupSlider"]:SetValue(1)
+			_G["UIConfigGroupSlider"]:SetValue(0)
 			_G["UIConfigGroupSlider"]:Hide()
 		else
 			_G["UIConfigGroupSlider"]:SetMinMaxValues(0, max)
-			_G["UIConfigGroupSlider"]:Show()
 			_G["UIConfigGroupSlider"]:SetValue(1)
+			_G["UIConfigGroupSlider"]:Show()
 		end
-		_G["UIConfigGroup"]:SetScrollChild(_G["UIConfig"..group])
+		_G["UIConfigGroup"]:SetScrollChild(_G["UIConfig_"..group])
 
 		local x
 		if UIConfigGroupSlider:IsShown() then
@@ -671,7 +633,7 @@ end
 local loaded
 function CreateUIConfig()
 	if InCombatLockdown() and not loaded then print("|cffffff00"..ERR_NOT_IN_COMBAT.."|r") return end
-	local T, C, L = unpack(ShestakUI)
+	local T, C, L, _ = unpack(ShestakUI)
 
 	if UIConfigMain then
 		ShowGroup("general")
@@ -683,7 +645,7 @@ function CreateUIConfig()
 	local UIConfigMain = CreateFrame("Frame", "UIConfigMain", UIParent)
 	UIConfigMain:SetPoint("BOTTOM", UIParent, "BOTTOM", 0, 200)
 	UIConfigMain:SetWidth(780)
-	UIConfigMain:SetHeight(520)
+	UIConfigMain:SetHeight(GlobalHeight + 120)
 	if IsAddOnLoaded("Aurora") then
 		local F = unpack(Aurora)
 		F.CreateBD(UIConfigMain)
@@ -692,6 +654,7 @@ function CreateUIConfig()
 	end
 	UIConfigMain:SetFrameStrata("DIALOG")
 	UIConfigMain:SetFrameLevel(20)
+	UIConfigMain:SetClampedToScreen(true)
 	tinsert(UISpecialFrames, "UIConfigMain")
 
 	-- Version Title
@@ -717,7 +680,7 @@ function CreateUIConfig()
 	local UIConfig = CreateFrame("Frame", "UIConfig", UIConfigMain)
 	UIConfig:SetPoint("TOPLEFT", TitleBox, "BOTTOMLEFT", 10, -15)
 	UIConfig:SetWidth(520)
-	UIConfig:SetHeight(400)
+	UIConfig:SetHeight(GlobalHeight)
 
 	local UIConfigBG = CreateFrame("Frame", "UIConfigBG", UIConfig)
 	UIConfigBG:SetPoint("TOPLEFT", -10, 10)
@@ -727,7 +690,7 @@ function CreateUIConfig()
 	local groups = CreateFrame("ScrollFrame", "UIConfigCategoryGroup", UIConfig)
 	groups:SetPoint("TOPLEFT", TitleBoxVer, "BOTTOMLEFT", 10, -15)
 	groups:SetWidth(160)
-	groups:SetHeight(400)
+	groups:SetHeight(GlobalHeight)
 
 	local groupsBG = CreateFrame("Frame", "groupsBG", UIConfig)
 	groupsBG:SetPoint("TOPLEFT", groups, -10, 10)
@@ -745,7 +708,7 @@ function CreateUIConfig()
 	local slider = CreateFrame("Slider", "UIConfigCategorySlider", groups)
 	slider:SetPoint("TOPRIGHT", 0, 0)
 	slider:SetWidth(20)
-	slider:SetHeight(400)
+	slider:SetHeight(GlobalHeight)
 	slider:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
 	slider:SetOrientation("VERTICAL")
 	slider:SetValueStep(20)
@@ -809,19 +772,30 @@ function CreateUIConfig()
 	child:SetPoint("TOPLEFT")
 	local offset = 5
 	for i in pairsByKey(ALLOWED_GROUPS) do
-		local o = "UIConfig"..i
+		local o = "UIConfig_"..i
 		Local(o)
 		local button = NewButton(T.option, child)
-		button:SetHeight(16)
-		button:SetWidth(125)
+		button:SetHeight(20)
+		button:SetWidth(150)
 		button:SetPoint("TOPLEFT", 5, -offset)
 		button:SetScript("OnClick", function(self) ShowGroup(i, button) self:SetText("|cff00ff00"..T.option.."|r") end)
 		offset = offset + 20
 	end
-	child:SetWidth(125)
+	child:SetWidth(150)
 	child:SetHeight(offset)
-	slider:SetMinMaxValues(0, (offset == 0 and 1 or offset - 12 * 33))
-	slider:SetValue(1)
+
+	local height = offset
+	local scrollMax = GlobalHeight
+	local scrollMin = scrollMax - 3
+	local max = height > scrollMax and height - scrollMin or 1
+	if max == 1 then
+		slider:SetValue(0)
+		slider:Hide()
+	else
+		slider:SetMinMaxValues(0, max)
+		slider:SetValue(1)
+		slider:Show()
+	end
 	groups:SetScrollChild(child)
 
 	local x
@@ -841,13 +815,13 @@ function CreateUIConfig()
 	local group = CreateFrame("ScrollFrame", "UIConfigGroup", UIConfig)
 	group:SetPoint("TOPLEFT", 0, 5)
 	group:SetWidth(520)
-	group:SetHeight(400)
+	group:SetHeight(GlobalHeight)
 
 	-- Options Scroll
 	local slider = CreateFrame("Slider", "UIConfigGroupSlider", group)
 	slider:SetPoint("TOPRIGHT", 0, 0)
 	slider:SetWidth(20)
-	slider:SetHeight(400)
+	slider:SetHeight(GlobalHeight)
 	slider:SetThumbTexture("Interface\\Buttons\\UI-ScrollBar-Knob")
 	slider:SetOrientation("VERTICAL")
 	slider:SetValueStep(20)
@@ -862,7 +836,7 @@ function CreateUIConfig()
 	end
 
 	for i in pairs(ALLOWED_GROUPS) do
-		local frame = CreateFrame("Frame", "UIConfig"..i, UIConfigGroup)
+		local frame = CreateFrame("Frame", "UIConfig_"..i, UIConfigGroup)
 		frame:SetPoint("TOPLEFT")
 		frame:SetWidth(225)
 
@@ -871,26 +845,26 @@ function CreateUIConfig()
 		if type(C[i]) ~= "table" then error(i.." GroupName not found in config table.") return end
 		for j, value in PairsByKeys(C[i]) do
 			if type(value) == "boolean" then
-				local button = CreateFrame("CheckButton", "UIConfig"..i..j, frame, "InterfaceOptionsCheckButtonTemplate")
+				local button = CreateFrame("CheckButton", "UIConfig_"..i..j, frame, "InterfaceOptionsCheckButtonTemplate")
 				if IsAddOnLoaded("Aurora") then
 					local F = unpack(Aurora)
 					F.ReskinCheck(button)
 				else
-					T.SkinCheckBox(button)
+					-- T.SkinCheckBox(button)
 				end
-				local o = "UIConfig"..i..j
+				local o = "UIConfig_"..i..j
 				Local(o)
-				_G["UIConfig"..i..j.."Text"]:SetText(T.option)
-				_G["UIConfig"..i..j.."Text"]:SetFontObject(GameFontHighlight)
-				_G["UIConfig"..i..j.."Text"]:SetWidth(460)
-				_G["UIConfig"..i..j.."Text"]:SetJustifyH("LEFT")
+				_G["UIConfig_"..i..j.."Text"]:SetText(T.option)
+				_G["UIConfig_"..i..j.."Text"]:SetFontObject(GameFontHighlight)
+				_G["UIConfig_"..i..j.."Text"]:SetWidth(460)
+				_G["UIConfig_"..i..j.."Text"]:SetJustifyH("LEFT")
 				button:SetChecked(value)
 				button:SetScript("OnClick", function(self) SetValue(i, j, (self:GetChecked() and true or false)) end)
 				button:SetPoint("TOPLEFT", 5, -offset)
 				offset = offset + 25
 			elseif type(value) == "number" or type(value) == "string" then
 				local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-				local o = "UIConfig"..i..j
+				local o = "UIConfig_"..i..j
 				Local(o)
 				label:SetText(T.option)
 				label:SetWidth(460)
@@ -941,7 +915,7 @@ function CreateUIConfig()
 				offset = offset + 45
 			elseif type(value) == "table" then
 				local label = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-				local o = "UIConfig"..i..j
+				local o = "UIConfig_"..i..j
 				Local(o)
 				label:SetText(T.option)
 				label:SetWidth(440)
@@ -1028,9 +1002,9 @@ function CreateUIConfig()
 
 	local close = NormalButton(CLOSE, UIConfigMain)
 	close:SetPoint("TOPRIGHT", UIConfig, "BOTTOMRIGHT", 10, -25)
-	close:SetScript("OnClick", function(self) PlaySound(SOUNDKIT.IG_MAINMENU_OPTION) UIConfigMain:Hide() end)
+	close:SetScript("OnClick", function(self) PlaySound("igMainMenuOption") UIConfigMain:Hide() end)
 
-	local load = NormalButton(APPLY, UIConfigMain)
+	local load = NormalButton(L_COMPATIBILITY_APPLY, UIConfigMain)
 	load:SetPoint("RIGHT", close, "LEFT", -4, 0)
 	load:SetScript("OnClick", function(self) ReloadUI() end)
 
@@ -1086,11 +1060,11 @@ end
 do
 	function SlashCmdList.CONFIG()
 		if not UIConfigMain or not UIConfigMain:IsShown() then
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+			PlaySound("igMainMenuOption")
 			CreateUIConfig()
 			HideUIPanel(GameMenuFrame)
 		else
-			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
+			PlaySound("igMainMenuOption")
 			UIConfigMain:Hide()
 		end
 	end
@@ -1117,49 +1091,49 @@ do
 	frame.name = "ShestakUI"
 	frame:SetScript("OnShow", function(self)
 		if self.show then return end
-		local T, C, L = unpack(ShestakUI)
-		local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		title:SetPoint("TOPLEFT", 16, -16)
+		local T, C, L, _ = unpack(ShestakUI)
+		local title = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		title:SetPoint("TOPLEFT", 8, -8)
 		title:SetText("Info:")
 
 		local subtitle = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-		subtitle:SetWidth(580)
-		subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -8)
+		subtitle:SetWidth(370)
+		subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -4)
 		subtitle:SetJustifyH("LEFT")
 		subtitle:SetText("UI Site: |cff298F00http//shestak.org|r\nGitHub: |cff298F00https://github.com/Shestak/ShestakUI|r\nCurse: |cff298F00http://wow.curseforge.com/addons/shestakui/|r\nWoWInterface: |cff298F00http://www.wowinterface.com/downloads/info19033-ShestakUI.html|r\nChange Log: |cff298F00https://github.com/Shestak/ShestakUI/commits/master/|r")
 
-		local title2 = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		title2:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -16)
+		local title2 = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		title2:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", 0, -8)
 		title2:SetText("Credits:")
 
 		local subtitle2 = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-		subtitle2:SetWidth(580)
-		subtitle2:SetPoint("TOPLEFT", title2, "BOTTOMLEFT", 0, -8)
+		subtitle2:SetWidth(370)
+		subtitle2:SetPoint("TOPLEFT", title2, "BOTTOMLEFT", 0, -4)
 		subtitle2:SetJustifyH("LEFT")
 		subtitle2:SetText("AcidWeb, Aezay, Affli, Ailae, Allez, ALZA, Ammo, Astromech, Beoko, Bitbyte, Blamdarot, Bozo, Caellian, Califpornia, Camealion, Cloudyfa, Chiril, CrusaderHeimdall, Cybey, Dawn, Don Kaban, Dridzt, Duffed, Durcyn, Eclipse, Egingell, Elv22, Evilpaul, Evl, Favorit, Fernir, Foof, Freebaser, g0st, gi2k15, Gethe, Gorlasch, Gsuz, Haleth, Haste, Hoochie, Hungtar, HyPeRnIcS, Hydra, Ildyria, iSpawnAtHome, Jaslm, Karl_w_w, Karudon, Katae, Kellett, Kemayo, Killakhan, Kraftman, Leatrix, m2jest1c, Magdain, Meurtcriss, Monolit, MrRuben5, Myrilandell of Lothar, Nathanyel, Nefarion, Nightcracker, Nils Ruesch, p3lim, Partha, Phanx, Renstrom, RustamIrzaev, Safturento, Sanex, Sara.Festung, SDPhantom, Sildor, Silverwind, SinaC, Slakah, Soeters, Starlon, Suicidal Katt, Syzgyn, Tekkub, Telroth, Thalyra, Thizzelle, Tia Lynn, Tohveli, Tukz, Tuller, Veev, Villiv, Wetxius, Woffle of Dark Iron, Wrug, Xuerian, Yleaf, Zork.")
 
-		local title3 = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		title3:SetPoint("TOPLEFT", subtitle2, "BOTTOMLEFT", 0, -16)
+		local title3 = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		title3:SetPoint("TOPLEFT", subtitle2, "BOTTOMLEFT", 0, -8)
 		title3:SetText("Translation:")
 
 		local subtitle3 = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-		subtitle3:SetWidth(580)
-		subtitle3:SetPoint("TOPLEFT", title3, "BOTTOMLEFT", 0, -8)
+		subtitle3:SetWidth(370)
+		subtitle3:SetPoint("TOPLEFT", title3, "BOTTOMLEFT", 0, -4)
 		subtitle3:SetJustifyH("LEFT")
 		subtitle3:SetText("Aelb, Alwa, Baine, Chubidu, Cranan, eXecrate, F5Hellbound, Ianchan, Leg883, Mania, Nanjiqq, Oz, Puree, Sakaras, Seal, Sinaris, Spacedragon, Tat2dawn, Tibles, Vienchen, Wetxius.")
 
-		local title4 = self:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
-		title4:SetPoint("TOPLEFT", subtitle3, "BOTTOMLEFT", 0, -16)
+		local title4 = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+		title4:SetPoint("TOPLEFT", subtitle3, "BOTTOMLEFT", 0, -8)
 		title4:SetText("Thanks:")
 
 		local subtitle4 = self:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-		subtitle4:SetWidth(580)
-		subtitle4:SetPoint("TOPLEFT", title4, "BOTTOMLEFT", 0, -8)
+		subtitle4:SetWidth(370)
+		subtitle4:SetPoint("TOPLEFT", title4, "BOTTOMLEFT", 0, -4)
 		subtitle4:SetJustifyH("LEFT")
 		subtitle4:SetText("Akimba, Antthemage, Crunching, Dandruff, DesFolk, Elfrey, Ente, Erratic, Falchior, Gromcha, Halogen, Homicidal Retribution, ILF7, Illusion, Ipton, k07n, Kazarl, Lanseb, Leots, m2jest1c, MoLLIa, Nefrit, Noobolov, Obakol, Oz, PterOs, Sart, Scorpions, Sitatunga, Sw2rT1, Tryllemann, Wetxius, Yakodzuna, UI Users and Russian Community.")
 
 		local version = self:CreateFontString(nil, "ARTWORK", "GameFontNormal")
-		version:SetPoint("BOTTOMRIGHT", -16, 16)
+		version:SetPoint("TOPRIGHT", -8, -8)
 		version:SetText("Version: "..T.version)
 
 		self.show = true
@@ -1167,25 +1141,3 @@ do
 
 	InterfaceOptions_AddCategory(frame)
 end
-
-----------------------------------------------------------------------------------------
---	Button in GameMenuButton frame
-----------------------------------------------------------------------------------------
-local button = CreateFrame("Button", "GameMenuButtonSettingsUI", GameMenuFrame, "GameMenuButtonTemplate")
-button:SetText("ShestakUI")
-button:SetPoint("TOP", "GameMenuButtonAddons", "BOTTOM", 0, -1)
-
-GameMenuFrame:HookScript("OnShow", function()
-	GameMenuFrame:SetHeight(GameMenuFrame:GetHeight() + button:GetHeight())
-	GameMenuButtonLogout:SetPoint("TOP", button, "BOTTOM", 0, -16)
-end)
-
-button:SetScript("OnClick", function()
-	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION)
-	HideUIPanel(GameMenuFrame)
-	if not UIConfigMain or not UIConfigMain:IsShown() then
-		CreateUIConfig()
-	else
-		UIConfigMain:Hide()
-	end
-end)

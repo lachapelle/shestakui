@@ -1,10 +1,10 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.actionbar.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	ActionBar(by Tukz)
 ----------------------------------------------------------------------------------------
-local bar = CreateFrame("Frame", "Bar1Holder", ActionBarAnchor, "SecureHandlerStateTemplate")
+local bar = CreateFrame("Frame", "Bar1Holder", ActionBarAnchor, "SecureStateHeaderTemplate")
 bar:SetAllPoints(ActionBarAnchor)
 
 for i = 1, 12 do
@@ -20,56 +20,42 @@ for i = 1, 12 do
 	end
 end
 
-local Page = {
-	["DRUID"] = "[bonusbar:1,nostealth] 7; [bonusbar:1,stealth] 8; [bonusbar:2] 8; [bonusbar:3] 9; [bonusbar:4] 10;",
-	["ROGUE"] = "[bonusbar:1] 7;",
-	["DEFAULT"] = "[vehicleui][possessbar] 12; [shapeshift] 13; [overridebar] 14; [bar:2] 2; [bar:3] 3; [bar:4] 4; [bar:5] 5; [bar:6] 6;",
-}
+-- Bonus Bar
+BonusActionBarFrame:SetParent(Bar1Holder)
+BonusActionBarFrame:SetWidth(0.00001)
 
-local function GetBar()
-	local condition = Page["DEFAULT"]
-	local class = T.class
-	local page = Page[class]
-	if page then
-		condition = condition.." "..page
+for i = 1, 12 do
+	local button = _G["BonusActionButton"..i]
+	button:SetSize(C.actionbar.button_size, C.actionbar.button_size)
+	button:ClearAllPoints()
+	if i == 1 then
+		button:SetPoint("BOTTOMLEFT", Bar1Holder, 0, 0)
+	else
+		local previous = _G["BonusActionButton"..i-1]
+		button:SetPoint("LEFT", previous, "RIGHT", C.actionbar.button_space, 0)
 	end
-	condition = condition.." 1"
-	return condition
+end
+
+local function BonusBarUpdate(alpha)
+	for i = 1, 12 do
+		local button = _G["ActionButton"..i]
+		button:SetAlpha(alpha)
+	end
+end
+BonusActionBarFrame:HookScript("OnShow", function(self) BonusBarUpdate(0) end)
+BonusActionBarFrame:HookScript("OnHide", function(self) BonusBarUpdate(1) end)
+if BonusActionBarFrame:IsShown() then
+	BonusBarUpdate(0)
 end
 
 bar:RegisterEvent("PLAYER_LOGIN")
-bar:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
-bar:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR")
-bar:RegisterEvent("CURRENCY_DISPLAY_UPDATE")
+bar:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+bar:RegisterEvent("ACTIONBAR_PAGE_CHANGED")
+bar:RegisterEvent("UPDATE_BINDINGS")
 bar:SetScript("OnEvent", function(self, event, ...)
-	if event == "PLAYER_LOGIN" then
-		for i = 1, NUM_ACTIONBAR_BUTTONS do
-			local button = _G["ActionButton"..i]
-			self:SetFrameRef("ActionButton"..i, button)
-		end
-
-		self:Execute([[
-			buttons = table.new()
-			for i = 1, 12 do
-				table.insert(buttons, self:GetFrameRef("ActionButton"..i))
-			end
-		]])
-
-		self:SetAttribute("_onstate-page", [[
-			for i, button in ipairs(buttons) do
-				button:SetAttribute("actionpage", tonumber(newstate))
-			end
-		]])
-
-		RegisterStateDriver(self, "page", GetBar())
-	elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" then
-		if not InCombatLockdown() and (HasVehicleActionBar() or HasOverrideActionBar()) then
-			for i = 1, NUM_ACTIONBAR_BUTTONS do
-				local button = _G["ActionButton"..i]
-				ActionButton_Update(button)
-			end
-		end
+	if GetBonusBarOffset() ~= 0 then
+		BonusBarUpdate(0)
 	else
-		MainMenuBar_OnEvent(self, event, ...)
+		BonusBarUpdate(1)
 	end
 end)

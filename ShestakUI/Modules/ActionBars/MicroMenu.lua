@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.actionbar.enable ~= true or C.actionbar.micromenu ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -8,24 +8,21 @@ local microbuttons = {
 	"CharacterMicroButton",
 	"SpellbookMicroButton",
 	"TalentMicroButton",
-	"AchievementMicroButton",
 	"QuestLogMicroButton",
-	"GuildMicroButton",
-	"LFDMicroButton",
-	"CollectionsMicroButton",
-	"EJMicroButton",
-	"StoreMicroButton",
-	"MainMenuMicroButton"
+	"MainMenuMicroButton",
+	"SocialsMicroButton",
+	"LFGMicroButton",
+	"HelpMicroButton"
 }
 
-local frame = CreateFrame("Frame", "MicroAnchor", oUF_PetBattleFrameHider)
+local frame = CreateFrame("Frame", "MicroAnchor", UIParent, "SecureStateHeaderTemplate")
 frame:SetPoint(unpack(C.position.micro_menu))
 frame:SetWidth(((CharacterMicroButton:GetWidth() + 4) * 9) + 12)
 frame:SetHeight(CharacterMicroButton:GetHeight() - 28)
 frame.shown = false
 if C.actionbar.micromenu_mouseover == true then frame:SetAlpha(0) end
 
-UpdateMicroButtonsParent(frame)
+UpdateMicroButtons(frame)
 
 local function CheckFade(self, elapsed)
 	local mouseactive
@@ -67,7 +64,7 @@ for i, button in pairs(microbuttons) do
 
 	m:SetParent(frame)
 	m.SetParent = T.dummy
-	_G[button.."Flash"]:SetTexture("")
+	-- _G[button.."Flash"]:SetTexture("")
 	m:SetHighlightTexture("")
 	m.SetHighlightTexture = T.dummy
 
@@ -115,9 +112,6 @@ hooksecurefunc("UpdateMicroButtons", function()
 
 	CharacterMicroButton:ClearAllPoints()
 	CharacterMicroButton:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", -2, 0)
-
-	GuildMicroButtonTabard:ClearAllPoints()
-	GuildMicroButtonTabard:SetPoint("TOP", GuildMicroButton.frame, "TOP", 0, 25)
 
 	MainMenuBarPerformanceBar:SetPoint("BOTTOM", MainMenuMicroButton, "BOTTOM", 0, 0)
 end)

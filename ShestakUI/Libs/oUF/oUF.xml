@@ -10,71 +10,61 @@
 	<Script file="Finalize.lua"/>
 
 	<Script file="Elements\Power.lua"/>
-	<Script file="Elements\Aura.lua"/>
+	<Script file="Elements\Auras.lua"/>
 	<Script file="Elements\Health.lua"/>
-	<Script file="Elements\CPoints.lua"/>
-	<Script file="Elements\RIcons.lua"/>
-	<Script file="Elements\Leader.lua"/>
-	<Script file="Elements\Combat.lua"/>
-	<Script file="Elements\Resting.lua"/>
-	<Script file="Elements\PvP.lua"/>
-	<Script file="Elements\Portraits.lua"/>
+	<Script file="Elements\ComboPoints.lua"/>
+	<Script file="Elements\RaidTargetIndicator.lua"/>
+	<Script file="Elements\LeaderIndicator.lua"/>
+	<Script file="Elements\CombatIndicator.lua"/>
+	<Script file="Elements\RestingIndicator.lua"/>
+	<Script file="Elements\PvPIndicator.lua"/>
+	<Script file="Elements\Portrait.lua"/>
 	<Script file="Elements\Range.lua"/>
 	<Script file="Elements\CastBar.lua"/>
-	<Script file="Elements\Threat.lua"/>
+	<!-- <Script file="Elements\ThreatIndicator.lua"/> -->
 	<Script file="Elements\Tags.lua"/>
-	<Script file="Elements\MasterLooter.lua"/>
-	<Script file="Elements\Assistant.lua"/>
-	<Script file="Elements\RuneBar.lua"/>
-	<Script file="Elements\LFDRole.lua"/>
-	<Script file="Elements\HealPrediction.lua"/>
-	<Script file="Elements\ReadyCheck.lua"/>
-	<Script file="Elements\QIcon.lua"/>
-	<Script file="Elements\AltPowerBar.lua"/>
-	<Script file="Elements\Resurrect.lua"/>
-	<Script file="Elements\Stagger.lua"/>
+	<Script file="Elements\MasterLooterIndicator.lua"/>
+	<Script file="Elements\AssistantIndicator.lua"/>
+	<!-- <Script file="Elements\HealthPrediction.lua"/> -->
+	<Script file="Elements\ReadyCheckIndicator.lua"/>
+	<Script file="Elements\Totems.lua"/>
+	<!-- <Script file="Elements\ResurrectIndicator.lua"/> -->
+	<!-- <Script file="Elements\RaidRoleIndicator.lua"/> -->
+	<Script file="elements\HappinessIndicator.lua"/>
 
-	<Script file="Modules\ArcaneCharge.lua"/>
-	<Script file="Modules\ArtifactPower.lua"/>
 	<Script file="Modules\AuraTracker.lua"/>
 	<Script file="Modules\AuraWatch.lua"/>
 	<Script file="Modules\AutoResurrect.lua"/>
 	<Script file="Modules\CombatFeedback.lua"/>
-	<Script file="Modules\CounterBar.lua"/>
 	<Script file="Modules\DebuffHighlight.lua"/>
-	<Script file="Modules\EnemySpec.lua"/>
+	<!-- <Script file="Modules\EnemySpec.lua"/> -->
 	<Script file="Modules\Experience.lua"/>
 	<Script file="Modules\FactionIcon.lua"/>
 	<Script file="Modules\Fader.lua"/>
 	<Script file="Modules\GCD.lua"/>
-	<Script file="Modules\HarmonyOrbs.lua"/>
-	<Script file="Modules\HolyPower.lua"/>
 	<Script file="Modules\MovableFrames.lua"/>
 	<Script file="Modules\RaidDebuffs.lua"/>
 	<Script file="Modules\RangeBar.lua"/>
 	<Script file="Modules\Reputation.lua"/>
 	<Script file="Modules\Smooth.lua"/>
-	<Script file="Modules\SoulShards.lua"/>
 	<Script file="Modules\Swing.lua"/>
 	<Script file="Modules\TotemBar.lua"/>
-	<Script file="Modules\Trinkets.lua"/>
+	<!-- <Script file="Modules\Trinkets.lua"/> -->
+	<!-- <Script file="Modules\WeaponEnchant.lua"/> -->
+	<Include file="Modules\oUF_HealComm3\oUF_HealComm3.xml"/>
+	<Include file="Modules\oUF_ResComm\oUF_ResComm.xml"/>
+
+	<Cooldown name="oUF_CooldownFrameTemplate" inherits="CooldownFrameTemplate" drawEdge="true" virtual="true"/>
 
 	<!-- Clique Support -->
+	<!--
 	<Button name="oUF_ClickCastUnitTemplate" virtual="true" inherits="SecureUnitButtonTemplate,SecureHandlerEnterLeaveTemplate">
 		<Attributes>
 			<Attribute name="_onenter" type="string" value="local snippet = self:GetAttribute('clickcast_onenter'); if snippet then self:Run(snippet) end"/>
 			<Attribute name="_onleave" type="string" value="local snippet = self:GetAttribute('clickcast_onleave'); if snippet then self:Run(snippet) end"/>
 		</Attributes>
 	</Button>
-
-	<!-- Pet Battle Hider Frame -->
-	<Frame name="oUF_PetBattleFrameHider" inherits="SecureHandlerStateTemplate" parent="UIParent">
-		<Scripts>
-			<OnLoad>
-				RegisterStateDriver(self, "visibility", "[petbattle] hide; show")
-			</OnLoad>
-		</Scripts>
-	</Frame>
+	-->
 
 	<!-- MT/MTT/MTTT Template -->
 	<Button name="oUF_MainTank" inherits="SecureUnitButtonTemplate" virtual="true">
@@ -130,4 +120,47 @@
 			</Button>
 		</Frames>
 	</Button>
+
+	<!--
+		Sub-object as a child of the parent unit frame:
+	<Button name="oUF_HeaderTargetTemplate" inherits="SecureUnitButtonTemplate" virtual="true">
+		<Frames>
+			<Button name="$parentTarget" inherits="SecureUnitButtonTemplate">
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="target"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+		</Frames>
+	</Button>
+
+		Separate unit template example:
+	<Button name="oUF_HeaderSeparateSubOjectsTemplate" inherits="SecureUnitButtonTemplate" virtual="true">
+		<Attributes>
+			<Attribute name="oUF-onlyProcessChildren" type="boolean" value="true"/>
+		</Attributes>
+
+		<Frames>
+			<Button name="$parentUnit" inherits="SecureUnitButtonTemplate">
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+
+			<Button name="$parentPet" inherits="SecureUnitButtonTemplate">
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="pet"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+
+			<Button name="$parentTarget" inherits="SecureUnitButtonTemplate">
+				<Attributes>
+					<Attribute name="unitsuffix" type="string" value="target"/>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+		</Frames>
+	</Button>
+	-->
 </Ui>

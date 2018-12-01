@@ -1,57 +1,54 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true then return end
 
-----------------------------------------------------------------------------------------
---	Copy url from chat(module from Gibberish by p3lim)
-----------------------------------------------------------------------------------------
-local patterns = {
-	"(https://%S+%.%S+)",
-	"(http://%S+%.%S+)",
-	"(www%.%S+%.%S+)",
-	"(%d+%.%d+%.%d+%.%d+:?%d*/?%S*)"
-}
-
-for _, event in next, {
-	"CHAT_MSG_SAY",
-	"CHAT_MSG_YELL",
-	"CHAT_MSG_WHISPER",
-	"CHAT_MSG_WHISPER_INFORM",
-	"CHAT_MSG_GUILD",
-	"CHAT_MSG_OFFICER",
-	"CHAT_MSG_PARTY",
-	"CHAT_MSG_PARTY_LEADER",
-	"CHAT_MSG_RAID",
-	"CHAT_MSG_RAID_LEADER",
-	"CHAT_MSG_RAID_WARNING",
-	"CHAT_MSG_INSTANCE_CHAT",
-	"CHAT_MSG_INSTANCE_CHAT_LEADER",
-	"CHAT_MSG_BATTLEGROUND",
-	"CHAT_MSG_BATTLEGROUND_LEADER",
-	"CHAT_MSG_BN_WHISPER",
-	"CHAT_MSG_BN_WHISPER_INFORM",
-	"CHAT_MSG_BN_CONVERSATION",
-	"CHAT_MSG_CHANNEL",
-	"CHAT_MSG_SYSTEM"
-} do
-	ChatFrame_AddMessageEventFilter(event, function(self, event, str, ...)
-		for _, pattern in pairs(patterns) do
-			local result, match = string.gsub(str, pattern, "|cff00FF00|Hurl:%1|h[%1]|h|r")
-			if match > 0 then
-				return false, result, ...
-			end
+local SetItemRef_orig = SetItemRef
+function ReURL_SetItemRef(link, text, button, chatFrame)
+	if strsub(link, 1, 3) == "url" then
+		local editBoxText = ChatFrameEditBox:GetText()
+		local url = strsub(link, 5)
+		if not ChatFrameEditBox:IsShown() then
+			ChatFrameEditBox:Show()
+			ChatEdit_UpdateHeader(ChatFrameEditBox)
 		end
-	end)
+		if editBoxText and editBoxText ~= "" then
+			ChatFrameEditBox:SetText("")
+		end
+		ChatFrameEditBox:Insert(url)
+		ChatFrameEditBox:HighlightText()
+
+	else
+		SetItemRef_orig(link, text, button, chatFrame)
+	end
+end
+SetItemRef = ReURL_SetItemRef
+
+function ReURL_AddLinkSyntax(chatstring)
+	if type(chatstring) == "string" then
+		local extraspace
+		if not strfind(chatstring, "^ ") then
+			extraspace = true
+			chatstring = " "..chatstring
+		end
+		chatstring = gsub(chatstring, " www%.([_A-Za-z0-9-]+)%.(%S+)%s?", ReURL_Link("www.%1.%2"))
+		chatstring = gsub(chatstring, " (%a+)://(%S+)%s?", ReURL_Link("%1://%2"))
+		chatstring = gsub(chatstring, " ([_A-Za-z0-9-%.]+)@([_A-Za-z0-9-]+)(%.+)([_A-Za-z0-9-%.]+)%s?", ReURL_Link("%1@%2%3%4"))
+		chatstring = gsub(chatstring, " (%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?):(%d%d?%d?%d?%d?)%s?", ReURL_Link("%1.%2.%3.%4:%5"))
+		chatstring = gsub(chatstring, " (%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%.(%d%d?%d?)%s?", ReURL_Link("%1.%2.%3.%4"))
+		if extraspace then
+			chatstring = strsub(chatstring, 2)
+		end
+	end
+	return chatstring
 end
 
-local SetHyperlink = _G.ItemRefTooltip.SetHyperlink
-function _G.ItemRefTooltip:SetHyperlink(link, ...)
-	if link and (strsub(link, 1, 3) == "url") then
-		local editbox = ChatEdit_ChooseBoxForSend()
-		ChatEdit_ActivateChat(editbox)
-		editbox:Insert(string.sub(link, 5))
-		editbox:HighlightText()
-		return
-	end
+function ReURL_Link(url)
+	url = " |cff00FF00|Hurl:"..url.."|h["..url.."]|h|r "
+	return url
+end
 
-	SetHyperlink(self, link, ...)
+-- Hook all the AddMessage funcs
+for i = 1, NUM_CHAT_WINDOWS do
+	local frame = _G["ChatFrame"..i]
+	local addmessage = frame.AddMessage
+	frame.AddMessage = function(self, text, ...) addmessage(self, ReURL_AddLinkSyntax(text), ...) end
 end

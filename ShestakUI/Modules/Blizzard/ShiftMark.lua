@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.shift_marking ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -29,7 +29,9 @@ local menuList = {
 
 WorldFrame:HookScript("OnMouseDown", function(self, button)
 	if button == "LeftButton" and IsShiftKeyDown() and UnitExists("mouseover") then
-		if (GetNumGroupMembers() > 0 and not UnitInRaid("player")) or UnitIsGroupLeader("player") or UnitIsGroupAssistant("player") then
+		local inParty = GetNumPartyMembers() > 0
+		local inRaid = GetNumRaidMembers() > 0
+		if inRaid and (IsRaidLeader() or IsRaidOfficer()) or (inParty and not inRaid) then
 			EasyMenu(menuList, menuFrame, "cursor", 0, 0, "MENU")
 		end
 	end

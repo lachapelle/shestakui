@@ -1,10 +1,10 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.raidframe.plugins_aura_watch ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_RaidDebuffs(by Yleaf)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local bossDebuffPrio = 9999999
@@ -36,69 +36,28 @@ local DispellFilter
 do
 	local dispellClasses = {
 		["DRUID"] = {
-			["Magic"] = false,
 			["Curse"] = true,
 			["Poison"] = true,
 		},
-		["MONK"] = {
-			["Magic"] = false,
-			["Poison"] = true,
-			["Disease"] = true,
+		['MAGE'] = {
+			['Curse'] = true,
 		},
 		["PALADIN"] = {
-			["Magic"] = false,
-			["Poison"] = true,
+			["Magic"] = true,
 			["Disease"] = true,
+			["Poison"] = true,
 		},
 		["PRIEST"] = {
-			["Magic"] = false,
-			["Disease"] = false,
+			["Magic"] = true,
+			["Disease"] = true,
 		},
 		["SHAMAN"] = {
-			["Magic"] = false,
-			["Curse"] = true,
+			["Disease"] = true,
+			["Poison"] = true,
 		},
 	}
 
-	DispellFilter = dispellClasses[T.class] or {}
-end
-
-local function CheckSpec()
-	local spec = GetSpecialization()
-
-	if T.class == "DRUID" then
-		if spec == 4 then
-			DispellFilter.Magic = true
-		else
-			DispellFilter.Magic = false
-		end
-	elseif T.class == "MONK" then
-		if spec == 2 then
-			DispellFilter.Magic = true
-		else
-			DispellFilter.Magic = false
-		end
-	elseif T.class == "PALADIN" then
-		if spec == 1 then
-			DispellFilter.Magic = true
-		else
-			DispellFilter.Magic = false
-		end
-	elseif T.class == "PRIEST" then
-		if spec == 3 then
-			DispellFilter.Magic = false
-			DispellFilter.Disease = false
-		else
-			DispellFilter.Magic = true
-			DispellFilter.Disease = true
-		end
-	elseif T.class == "SHAMAN" then
-		if spec == 3 then
-			DispellFilter.Magic = true
-		else
-			DispellFilter.Magic = false
-		end
-	end
+	DispellFilter = dispellClasses[select(2, UnitClass('player'))] or {}
 end
 
 local function formatTime(s)
@@ -128,7 +87,7 @@ end
 
 local UpdateDebuffFrame = function(rd)
 	if rd.index and rd.type and rd.filter then
-		local name, rank, icon, count, debuffType, duration, expirationTime, _, _, _, spellId, _, isBossDebuff = UnitAura(rd.__owner.unit, rd.index, rd.filter)
+		local name, rank, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = UnitAura(rd.__owner.unit, rd.index, rd.filter)
 
 		if rd.icon then
 			rd.icon:SetTexture(icon)
@@ -196,10 +155,10 @@ local Update = function(self, event, unit)
 		local i = 0
 		while(true) do
 			i = i + 1
-			local name, rank, icon, count, debuffType, duration, expirationTime, _, _, _, spellId, _, isBossDebuff = UnitAura(unit, i, filter)
+			local name, rank, icon, count, debuffType, duration, expirationTime, _, _, _, spellId = UnitAura(unit, i, filter)
 			if not name then break end
 
-			if rd.ShowBossDebuff and isBossDebuff then
+			if rd.ShowBossDebuff then
 				local prio = rd.BossDebuffPriority or bossDebuffPrio
 				if prio and prio > rd.priority then
 					rd.priority = prio
@@ -271,8 +230,6 @@ local Enable = function(self)
 		rd.__owner = self
 		return true
 	end
-	self:RegisterEvent("PLAYER_TALENT_UPDATE", CheckSpec)
-	CheckSpec()
 end
 
 local Disable = function(self)
@@ -281,7 +238,6 @@ local Disable = function(self)
 		self.RaidDebuffs:Hide()
 		self.RaidDebuffs.__owner = nil
 	end
-	self:UnregisterEvent("PLAYER_TALENT_UPDATE", CheckSpec)
 end
 
 oUF:AddElement("RaidDebuffs", Update, Enable, Disable)

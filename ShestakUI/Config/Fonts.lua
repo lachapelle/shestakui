@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	ShestakUI fonts configuration file
@@ -18,17 +18,24 @@
 ----------------------------------------------------------------------------------------
 --	Fonts options
 ----------------------------------------------------------------------------------------
+local UIFont, UIFontSize, UIFontStyle = C.media.pixel_font, 8, "OUTLINEMONOCHROME"
+if C.general.normal_font then
+	UIFont = C.media.normal_font
+	UIFontSize = 11
+	UIFontStyle = "THINOUTLINE"
+end
+
 C["font"] = {
 	-- Stats font
-	["stats_font"] = C.media.pixel_font,
-	["stats_font_size"] = 8,
-	["stats_font_style"] = "OUTLINEMONOCHROME",
+	["stats_font"] = UIFont,
+	["stats_font_size"] = UIFontSize,
+	["stats_font_style"] = UIFontStyle,
 	["stats_font_shadow"] = false,
 
 	-- Combat text font
-	["combat_text_font"] = C.media.pixel_font,
+	["combat_text_font"] = UIFont,
 	["combat_text_font_size"] = 16,
-	["combat_text_font_style"] = "OUTLINEMONOCHROME",
+	["combat_text_font_style"] = UIFontStyle,
 	["combat_text_font_shadow"] = false,
 
 	-- Chat font
@@ -37,75 +44,75 @@ C["font"] = {
 	["chat_font_shadow"] = true,
 
 	-- Chat tabs font
-	["chat_tabs_font"] = C.media.pixel_font,
-	["chat_tabs_font_size"] = 8,
-	["chat_tabs_font_style"] = "OUTLINEMONOCHROME",
+	["chat_tabs_font"] = UIFont,
+	["chat_tabs_font_size"] = UIFontSize,
+	["chat_tabs_font_style"] = UIFontStyle,
 	["chat_tabs_font_shadow"] = false,
 
 	-- Action bars font
-	["action_bars_font"] = C.media.pixel_font,
-	["action_bars_font_size"] = 8,
-	["action_bars_font_style"] = "OUTLINEMONOCHROME",
+	["action_bars_font"] = UIFont,
+	["action_bars_font_size"] = UIFontSize,
+	["action_bars_font_style"] = UIFontStyle,
 	["action_bars_font_shadow"] = false,
 
 	-- Threat meter font
-	["threat_meter_font"] = C.media.pixel_font,
-	["threat_meter_font_size"] = 8,
-	["threat_meter_font_style"] = "OUTLINEMONOCHROME",
+	["threat_meter_font"] = UIFont,
+	["threat_meter_font_size"] = UIFontSize,
+	["threat_meter_font_style"] = UIFontStyle,
 	["threat_meter_font_shadow"] = false,
 
 	-- Raid cooldowns font
-	["raid_cooldowns_font"] = C.media.pixel_font,
-	["raid_cooldowns_font_size"] = 8,
-	["raid_cooldowns_font_style"] = "OUTLINEMONOCHROME",
+	["raid_cooldowns_font"] = UIFont,
+	["raid_cooldowns_font_size"] = UIFontSize,
+	["raid_cooldowns_font_style"] = UIFontStyle,
 	["raid_cooldowns_font_shadow"] = false,
 
 	-- Cooldowns timer font
-	["cooldown_timers_font"] = C.media.pixel_font,
+	["cooldown_timers_font"] = UIFont,
 	["cooldown_timers_font_size"] = 16,
-	["cooldown_timers_font_style"] = "OUTLINEMONOCHROME",
+	["cooldown_timers_font_style"] = UIFontStyle,
 	["cooldown_timers_font_shadow"] = false,
 
 	-- Loot font
-	["loot_font"] = C.media.pixel_font,
-	["loot_font_size"] = 8,
-	["loot_font_style"] = "OUTLINEMONOCHROME",
+	["loot_font"] = UIFont,
+	["loot_font_size"] = UIFontSize,
+	["loot_font_style"] = UIFontStyle,
 	["loot_font_shadow"] = false,
 
 	-- Nameplates font
-	["nameplates_font"] = C.media.pixel_font,
-	["nameplates_font_size"] = 8,
-	["nameplates_font_style"] = "OUTLINEMONOCHROME",
+	["nameplates_font"] = UIFont,
+	["nameplates_font_size"] = UIFontSize,
+	["nameplates_font_style"] = UIFontStyle,
 	["nameplates_font_shadow"] = false,
 
 	-- Unit frames font
-	["unit_frames_font"] = C.media.pixel_font,
-	["unit_frames_font_size"] = 8,
-	["unit_frames_font_style"] = "OUTLINEMONOCHROME",
+	["unit_frames_font"] = UIFont,
+	["unit_frames_font_size"] = C.general.normal_font and UIFontSize + 1 or UIFontSize,
+	["unit_frames_font_style"] = UIFontStyle,
 	["unit_frames_font_shadow"] = false,
 
 	-- Auras font
-	["auras_font"] = C.media.pixel_font,
-	["auras_font_size"] = 8,
-	["auras_font_style"] = "OUTLINEMONOCHROME",
+	["auras_font"] = UIFont,
+	["auras_font_size"] = UIFontSize,
+	["auras_font_style"] = UIFontStyle,
 	["auras_font_shadow"] = false,
 
 	-- Filger font
-	["filger_font"] = C.media.pixel_font,
-	["filger_font_size"] = 8,
-	["filger_font_style"] = "OUTLINEMONOCHROME",
+	["filger_font"] = UIFont,
+	["filger_font_size"] = UIFontSize,
+	["filger_font_style"] = UIFontStyle,
 	["filger_font_shadow"] = false,
 
 	-- Stylization font
 	["stylization_font"] = C.media.pixel_font,
 	["stylization_font_size"] = 8,
-	["stylization_font_style"] = "OUTLINEMONOCHROME",
+	["stylization_font_style"] = UIFontStyle,
 	["stylization_font_shadow"] = false,
 
 	-- Bags font
-	["bags_font"] = C.media.pixel_font,
-	["bags_font_size"] = 8,
-	["bags_font_style"] = "OUTLINEMONOCHROME",
+	["bags_font"] = UIFont,
+	["bags_font_size"] = UIFontSize,
+	["bags_font_style"] = UIFontStyle,
 	["bags_font_shadow"] = false,
 }
 

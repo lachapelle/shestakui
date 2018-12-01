@@ -1,107 +1,131 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.show_arena ~= true or C.unitframe.plugins_diminishing ~= true then return end
+
+local GetSpellInfo = GetSpellInfo
 
 ----------------------------------------------------------------------------------------
 --	The best way to add or delete spell is to go at www.wowhead.com, search for a spell.
 --	Example: Sap -> http://www.wowhead.com/spell=6770
 --	Take the number ID at the end of the URL, and add it to the list
 ----------------------------------------------------------------------------------------
+
+-- http://wowwiki.wikia.com/wiki/Diminishing_returns?oldid=1613290
+-- https://github.com/Schaka/gladdy/blob/master/Modules/Diminishings.lua
+
 T.DiminishingSpells = {
 	-- Stuns
-	[108194] = {"stun"},			-- Asphyxiate
-	[91800] = {"stun"},				-- Gnaw (Ghoul)
-	[91797] = {"stun"},				-- Monstrous Blow (Mutated Ghoul)
-	[22570] = {"stun"},				-- Maim
-	[163505] = {"stun"},			-- Rake
-	[5211] = {"stun"},				-- Mighty Bash
-	[19577] = {"stun"},				-- Intimidation
-	[117526] = {"stun"},			-- Binding Shot
-	[119381] = {"stun"},			-- Leg Sweep
-	[120086] = {"stun"},			-- Fists of Fury
+	[5211] = {"stun"},				-- Bash
+	[9005] = {"stun"},				-- Pounce
+	[24394] = {"stun"},				-- Intimidation
 	[853] = {"stun"},				-- Hammer of Justice
 	[1833] = {"stun"},				-- Cheap Shot
-	[408] = {"stun"},				-- Kidney Shot
-	[118905] = {"stun"},			-- Static Charge
-	[118345] = {"stun"},			-- Pulverize (Primal Earth Elemental)
 	[30283] = {"stun"},				-- Shadowfury
-	[89766] = {"stun"},				-- Axe Toss (Felguard)
-	[22703] = {"stun"},				-- Infernal Awakening
-	[132168] = {"stun"},			-- Shockwave
-	[132169] = {"stun"},			-- Storm Bolt
+	[7922] = {"stun"},				-- Charge Stun
+	[12809] = {"stun"},				-- Concussion Blow
+	[20253] = {"stun"},				-- Intercept Stun
 	[20549] = {"stun"},				-- War Stomp (Racial)
 
-	-- Roots
-	[96294] = {"root"},				-- Chains of Ice
-	[339] = {"root"},				-- Entangling Roots
-	[170855] = {"root"},			-- Entangling Roots (Nature's Grasp)
-	[135373] = {"root"},			-- Entrapment
-	[102359] = {"root"},			-- Mass Entanglement
-	[136634] = {"root"},			-- Narrow Escape
-	[45334] = {"root"},				-- Immobilized
-	[122] = {"root"},				-- Frost Nova
-	[33395] = {"root"},				-- Freeze (Water Elemental)
-	[116706] = {"root"},			-- Disable
-	[114404] = {"root"},			-- Void Tendril's Grasp
-	[64695] = {"root"},				-- Earthgrab
-	[170996] = {"root"},			-- Debilitate (Terrorguard)
-	[107566] = {"root"},			-- Staggering Shout
-
-	-- Incapacitates
-	[99] = {"incapacitate"},		-- Incapacitating Roar
-	[3355] = {"incapacitate"},		-- Freezing Trap
-	[19386] = {"incapacitate"},		-- Wyvern Sting
-	[118] = {"incapacitate"},		-- Polymorph
-	[28272] = {"incapacitate"},		-- Polymorph (Pig)
-	[28271] = {"incapacitate"},		-- Polymorph (Turtle)
-	[61305] = {"incapacitate"},		-- Polymorph (Black Cat)
-	[61721] = {"incapacitate"},		-- Polymorph (Rabbit)
-	[61780] = {"incapacitate"},		-- Polymorph (Turkey)
-	[161355] = {"incapacitate"},	-- Polymorph (Penguin)
-	[161354] = {"incapacitate"},	-- Polymorph (Monkey)
-	[126819] = {"incapacitate"},	-- Polymorph (Porcupine)
-	[161353] = {"incapacitate"},	-- Polymorph (Polar Bear Cub)
-	[161372] = {"incapacitate"},	-- Polymorph (Peacock)
-	[82691] = {"incapacitate"},		-- Ring of Frost
-	[115078] = {"incapacitate"},	-- Paralysis
-	[202272] = {"incapacitate"},	-- Incendiary Brew
-	[20066] = {"incapacitate"},		-- Repentance
-	[9484] = {"incapacitate"},		-- Shackle Undead
-	[88625] = {"incapacitate"},		-- Holy Word: Chastise
-	[605] = {"incapacitate"},		-- Dominate Mind
-	[64044] = {"incapacitate"},		-- Psychic Horror
-	[87204] = {"incapacitate"},		-- Sin and Punishment
-	[1776] = {"incapacitate"},		-- Gouge
-	[6770] = {"incapacitate"},		-- Sap
-	[51514] = {"incapacitate"},		-- Hex
-	[6789] = {"incapacitate"},		-- Mortal Coil
-	[107079] = {"incapacitate"},	-- Quaking Palm (Racial)
+	--[[
+	-- Stun Procs
+	[16922] = {"stunproc"},			-- Celestial Focus
+	[19410] = {"stunproc"},			-- Improved Concussive Shot
+	[12355] = {"stunproc"},			-- Impact
+	[15269] = {"stunproc"},			-- Blackout
+	[20170] = {"stunproc"},			-- Seal of Justice
+	[39796] = {"stunproc"},			-- Stoneclaw Totem
+	-- [18093] = {"stunproc"},			-- Pyroclasm
+	[5530] = {"stunproc"},			-- Mace Specialization
+	--]]
 
 	-- Disorients
-	[33786] = {"disorient"},		-- Cyclone
-	[31661] = {"disorient"},		-- Dragon's Breath
-	[105421] = {"disorient"},		-- Blinding Light
-	[8122] = {"disorient"},			-- Psychic Scream
-	[2094] = {"disorient"},			-- Blind
-	[118699] = {"disorient"},		-- Fear
-	[130616] = {"disorient"},		-- Fear (Glyph)
-	[5484] = {"disorient"},			-- Howl of Terror
-	[6358] = {"disorient"},			-- Seduction (Succubus)
-	[115268] = {"disorient"},		-- Mesmerize (Shivarra)
-	[5246] = {"disorient"},			-- Intimidating Shout
+	[22570] = {"disorient"},		-- Maim
+	[118] = {"disorient"},			-- Polymorph
+	-- [28272] = {"disorient"},		-- Polymorph (Pig)
+	-- [28271] = {"disorient"},		-- Polymorph (Turtle)
+	[1776] = {"disorient"},			-- Gouge
+	[6770] = {"disorient"},			-- Sap
 
+	-- Sleeps
+	[2637] = {"sleep"},				-- Hibernate
+	[19386] = {"sleep"},			-- Wyvern Sting
+
+	-- Charms
+	[605] = {"charm"},				-- Mind Control
+
+	-- Fears
+	[8122] = {"fear"},				-- Psychic Scream
+	[5782] = {"fear"},				-- Fear
+	[5484] = {"fear"},				-- Howl of Terror
+	[6358] = {"fear"},				-- Seduction (Succubus)
+	[5246] = {"fear"},				-- Intimidating Shout
+
+	-- Horrors
+	[6789] = {"horror"},			-- Death Coil
+
+	-- Roots
+	-- [45334] = {"root"},				-- Feral Charge Effect
+	[339] = {"root"},				-- Entangling Roots
+	[19975] = {"root"},				-- Entangling Roots (Nature's Grasp)
+	-- [19306] = {"root"},				-- Counterattack
+	[19185] = {"root"},				-- Entrapment
+	-- [19229] = {"root"},				-- Improved Wing Clip
+	[33395] = {"root"},				-- Freeze (Water Elemental)
+	[122] = {"root"},				-- Frost Nova
+	-- [12494] = {"root"},				-- Frostbite
+	[44041] = {"root"},				-- Chastise
+	-- [23694] = {"root"},				-- Improved Hamstring
+
+	--[[
+	-- Disarms
+	[14251] = {"disarm"},			-- Riposte
+	[676] = {"disarm"},				-- Disarm
+	--]]
+
+	--[[
 	-- Silences
-	[47476] = {"silence"},			-- Strangulate
-	[81261] = {"silence"},			-- Solar Beam
-	[31935] = {"silence"},			-- Avenger's Shield
+	[34490] = {"silence"},			-- Silencing Shot
+	[18469] = {"silence"},			-- Counterspell - Silenced
 	[15487] = {"silence"},			-- Silence
-	[1330] = {"silence"},			-- Garrote
-	[25046] = {"silence"},			-- Arcane Torrent (Energy)
+	[1330] = {"silence"},			-- Garrote - Silence
+	[18425] = {"silence"},			-- Kick - Silenced
+	[24259] = {"silence"},			-- Spell Lock (Felhunter)
+	-- [31117] = {"silence"},			-- Unstable Affliction (Silence)
+	[18498] = {"silence"},			-- Shield Bash - Silenced
 	[28730] = {"silence"},			-- Arcane Torrent (Mana)
-	[50613] = {"silence"},			-- Arcane Torrent (Runic Power)
-	[69179] = {"silence"},			-- Arcane Torrent (Rage)
-	[80483] = {"silence"},			-- Arcane Torrent (Focus)
-	[129597] = {"silence"},			-- Arcane Torrent (Chi)
-	[155145] = {"silence"},			-- Arcane Torrent (Holy Power)
+	[25046] = {"silence"},			-- Arcane Torrent (Energy)
+	-- [44835] = {"silence"},			-- Maim Interrupt (incorrect spellID)
+	[32747] = {"silence"},			-- Deadly Throw Interrupt
+	--]]
+
+	-- Cyclone / Blind
+	[33786] = {"cycloneblind"},		-- Cyclone
+	[2094] = {"cycloneblind"},		-- Blind
+
+	-- Freezing Trap
+	[3355] = {"freezingtrap"},		-- Freezing Trap
+
+	-- Scatter Shot
+	[19503] = {"scattershot"},		-- Scatter Shot
+
+	-- Dragon's Breath
+	[31661] = {"dragonsbreath"},	-- Dragon's Breath
+
+	-- Repentence
+	[20066] = {"repentance"},		-- Repentance
+
+	--[[
+	-- Turn Evil / Turn Undead
+	[10326] = {"turned"},			-- Turn Evil
+	[19725] = {"turned"},			-- Turn Undead
+	--]]
+
+	--[[
+	-- Shackle Undead
+	[9484] = {"shackle"},			-- Shackle Undead
+	--]]
+
+	-- Kidney Shot
+	[408] = {"kidneyshot"},			-- Kidney Shot
 }
 
 local function GetIcon(id)
@@ -110,9 +134,22 @@ local function GetIcon(id)
 end
 
 T.DiminishingIcons = {
-	["stun"] = GetIcon(408),
-	["root"] = GetIcon(122),
-	["incapacitate"] = GetIcon(118),
-	["disorient"] = GetIcon(8122),
-	["silence"] = GetIcon(15487),
+	["stun"] = GetIcon(853),
+	-- ["stunproc"] = GetIcon(5530),
+	["disorient"] = GetIcon(118),
+	["sleep"] = GetIcon(19386),
+	["charm"] = GetIcon(605),
+	["fear"] = GetIcon(8122),
+	["horror"] = GetIcon(5782),
+	["root"] = GetIcon(339),
+	-- ["disarm"] = GetIcon(676),
+	-- ["silence"] = GetIcon(15487),
+	["cycloneblind"] = GetIcon(33786),
+	["freezingtrap"] = GetIcon(3355),
+	["scattershot"] = GetIcon(19503),
+	["dragonsbreath"] = GetIcon(31661),
+	["repentance"] = GetIcon(20066),
+	-- ["turned"] = GetIcon(10326),
+	-- ["shackle"] = GetIcon(9484),
+	["kidneyshot"] = GetIcon(408),
 }

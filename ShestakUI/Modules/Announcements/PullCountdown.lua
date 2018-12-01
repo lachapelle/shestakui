@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.announcements.pull_countdown ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ local function pull(self, elapsed)
 		target = ""
 	end
 	if not firstdone then
-		SendChatMessage(string.format(L_ANNOUNCE_PC_MSG, target, tostring(delay)), T.CheckChat(true))
+		SendChatMessage(format(L_ANNOUNCE_PC_MSG, target, tostring(delay)), T.CheckChat(true))
 		firstdone = true
 		delay = delay - 1
 	end
@@ -52,10 +52,14 @@ function frame.Pull(timer)
 end
 
 SlashCmdList.PULLCOUNTDOWN = function(msg)
-	if tonumber(msg) ~= nil then
-		frame.Pull(msg)
+	if (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0) then
+		if tonumber(msg) ~= nil then
+			frame.Pull(msg)
+		else
+			frame.Pull()
+		end
 	else
-		frame.Pull()
+		print("|cffffff00"..ERR_NOT_IN_GROUP..".|r")
 	end
 end
 SLASH_PULLCOUNTDOWN1 = "/pc"

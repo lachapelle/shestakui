@@ -1,20 +1,15 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true or C.tooltip.enable ~= true or IsAddOnLoaded("tekKompare") then return end
 
 ----------------------------------------------------------------------------------------
---	Based on tekKompare(by Tekkub)
+--	Based on tekKompare (by Tekkub)
 ----------------------------------------------------------------------------------------
 local orig1, orig2, GameTooltip = {}, {}, GameTooltip
-local linktypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
+local linktypes = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, currency = true}
 
 local function OnHyperlinkEnter(frame, link, ...)
 	local linktype = link:match("^([^:]+)")
-	if linktype and linktype == "battlepet" then
-		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 0)
-		GameTooltip:Show()
-		local _, speciesID, level, breedQuality, maxHealth, power, speed = strsplit(":", link)
-		BattlePetToolTip_Show(tonumber(speciesID), tonumber(level), tonumber(breedQuality), tonumber(maxHealth), tonumber(power), tonumber(speed))
-	elseif linktype and linktypes[linktype] then
+	if linktype and linktypes[linktype] then
 		GameTooltip:SetOwner(frame, "ANCHOR_TOPLEFT", -3, 0)
 		GameTooltip:SetHyperlink(link)
 		GameTooltip:Show()
@@ -24,11 +19,7 @@ local function OnHyperlinkEnter(frame, link, ...)
 end
 
 local function OnHyperlinkLeave(frame, link, ...)
-	if BattlePetTooltip:IsShown() then
-		BattlePetTooltip:Hide()
-	else
-		GameTooltip:Hide()
-	end
+	GameTooltip:Hide()
 
 	if orig1[frame] then return orig1[frame](frame, link, ...) end
 end

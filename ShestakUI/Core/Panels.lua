@@ -1,9 +1,9 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Bottom bars anchor
 ----------------------------------------------------------------------------------------
-local bottombaranchor = CreateFrame("Frame", "ActionBarAnchor", oUF_PetBattleFrameHider)
+local bottombaranchor = CreateFrame("Frame", "ActionBarAnchor", UIParent)
 bottombaranchor:CreatePanel("Invisible", 1, 1, unpack(C.position.bottom_bars))
 bottombaranchor:SetWidth((C.actionbar.button_size * 12) + (C.actionbar.button_space * 11))
 if C.actionbar.bottombars == 2 then
@@ -22,7 +22,7 @@ bottombaranchor:SetFrameStrata("LOW")
 ----------------------------------------------------------------------------------------
 --	Right bars anchor
 ----------------------------------------------------------------------------------------
-local rightbaranchor = CreateFrame("Frame", "RightActionBarAnchor", oUF_PetBattleFrameHider)
+local rightbaranchor = CreateFrame("Frame", "RightActionBarAnchor", UIParent)
 rightbaranchor:CreatePanel("Invisible", 1, 1, unpack(C.position.right_bars))
 rightbaranchor:SetHeight((C.actionbar.button_size * 12) + (C.actionbar.button_space * 11))
 if C.actionbar.rightbars == 1 then
@@ -40,11 +40,11 @@ rightbaranchor:SetFrameStrata("LOW")
 --	Split bar anchor
 ----------------------------------------------------------------------------------------
 if C.actionbar.split_bars == true then
-	local SplitBarLeft = CreateFrame("Frame", "SplitBarLeft", oUF_PetBattleFrameHider)
+	local SplitBarLeft = CreateFrame("Frame", "SplitBarLeft", UIParent)
 	SplitBarLeft:CreatePanel("Invisible", (C.actionbar.button_size * 3) + (C.actionbar.button_space * 2), (C.actionbar.button_size * 2) + C.actionbar.button_space, "BOTTOMRIGHT", ActionBarAnchor, "BOTTOMLEFT", -C.actionbar.button_space, 0)
 	SplitBarLeft:SetFrameStrata("LOW")
 
-	local SplitBarRight = CreateFrame("Frame", "SplitBarRight", oUF_PetBattleFrameHider)
+	local SplitBarRight = CreateFrame("Frame", "SplitBarRight", UIParent)
 	SplitBarRight:CreatePanel("Invisible", (C.actionbar.button_size * 3) + (C.actionbar.button_space * 2), (C.actionbar.button_size * 2) + C.actionbar.button_space, "BOTTOMLEFT", ActionBarAnchor, "BOTTOMRIGHT", C.actionbar.button_space, 0)
 	SplitBarRight:SetFrameStrata("LOW")
 end
@@ -52,7 +52,7 @@ end
 ----------------------------------------------------------------------------------------
 --	Pet bar anchor
 ----------------------------------------------------------------------------------------
-local petbaranchor = CreateFrame("Frame", "PetActionBarAnchor", oUF_PetBattleFrameHider)
+local petbaranchor = CreateFrame("Frame", "PetActionBarAnchor", UIParent)
 if C.actionbar.petbar_horizontal == true then
 	petbaranchor:CreatePanel("Invisible", (C.actionbar.button_size * 10) + (C.actionbar.button_space * 9), (C.actionbar.button_size + C.actionbar.button_space), unpack(C.position.pet_horizontal))
 elseif C.actionbar.rightbars > 0 then
@@ -61,12 +61,12 @@ else
 	petbaranchor:CreatePanel("Invisible", (C.actionbar.button_size + C.actionbar.button_space), (C.actionbar.button_size * 10) + (C.actionbar.button_space * 9), unpack(C.position.right_bars))
 end
 petbaranchor:SetFrameStrata("LOW")
-RegisterStateDriver(petbaranchor, "visibility", "[pet,novehicleui,nopossessbar,nopetbattle] show; hide")
+RegisterStateDriver(petbaranchor, "visibility", "[pet] show; hide")
 
 ----------------------------------------------------------------------------------------
 --	Stance bar anchor
 ----------------------------------------------------------------------------------------
-local shiftanchor = CreateFrame("Frame", "ShapeShiftBarAnchor", oUF_PetBattleFrameHider)
+local shiftanchor = CreateFrame("Frame", "ShapeShiftBarAnchor", UIParent)
 shiftanchor:RegisterEvent("PLAYER_LOGIN")
 shiftanchor:RegisterEvent("PLAYER_ENTERING_WORLD")
 shiftanchor:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
@@ -75,13 +75,11 @@ shiftanchor:SetScript("OnEvent", function(self, event, ...)
 	local forms = GetNumShapeshiftForms()
 	if forms > 0 then
 		if C.actionbar.stancebar_horizontal ~= true then
-			shiftanchor:SetWidth(C.actionbar.button_size + 3)
-			shiftanchor:SetHeight((C.actionbar.button_size * forms) + ((C.actionbar.button_space * forms) - 3))
-			shiftanchor:SetPoint("TOPLEFT", _G["StanceButton1"], "TOPLEFT")
+			shiftanchor:SetSize(C.actionbar.button_size + 3, (C.actionbar.button_size * forms) + ((C.actionbar.button_space * forms) - 3))
+			shiftanchor:SetPoint("TOPLEFT", _G["ShapeshiftButton1"], "TOPLEFT")
 		else
-			shiftanchor:SetWidth((C.actionbar.button_size * forms) + ((C.actionbar.button_space * forms) - 3))
-			shiftanchor:SetHeight(C.actionbar.button_size)
-			shiftanchor:SetPoint("TOPLEFT", _G["StanceButton1"], "TOPLEFT")
+			shiftanchor:SetSize((C.actionbar.button_size * forms) + ((C.actionbar.button_space * forms) - 3), C.actionbar.button_size)
+			shiftanchor:SetPoint("TOPLEFT", _G["ShapeshiftButton1"], "TOPLEFT")
 		end
 	end
 end)
@@ -119,15 +117,16 @@ end
 ----------------------------------------------------------------------------------------
 if C.toppanel.enable ~= true then return end
 
-local toppanelanchor = CreateFrame("Frame", "TopPanelAnchor", oUF_PetBattleFrameHider)
+local toppanelanchor = CreateFrame("Frame", "TopPanelAnchor", UIParent)
 toppanelanchor:SetPoint(unpack(C.position.top_panel))
 toppanelanchor:SetSize(C.toppanel.width, C.toppanel.height / 2)
 
-local toppanel = CreateFrame("Frame", "TopPanel", oUF_PetBattleFrameHider)
+local toppanel = CreateFrame("Frame", "TopPanel", UIParent)
 toppanel:SetPoint("CENTER", toppanelanchor, "CENTER", 0, 0)
 toppanel:SetSize(C.toppanel.width, C.toppanel.height / 2)
 if C.toppanel.mouseover == true then
 	toppanel:SetAlpha(0)
+	toppanel:EnableMouse(true)
 	toppanel:SetScript("OnEnter", function()
 		if InCombatLockdown() then return end
 		toppanel:SetAlpha(1)

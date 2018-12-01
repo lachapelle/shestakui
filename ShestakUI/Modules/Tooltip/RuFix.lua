@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Clean ruRU tooltip(snt_rufix by Don Kaban, edited by ALZA)
+--	Clean ruRU tooltip (snt_rufix by Don Kaban, edited by ALZA)
 ----------------------------------------------------------------------------------------
 ITEM_CREATED_BY = ""	-- No creator name
 ITEM_SOCKETABLE = ""	-- No gem info line
@@ -11,8 +11,6 @@ EMPTY_SOCKET_YELLOW = "|cffffff40"..EMPTY_SOCKET_YELLOW.."|r"
 EMPTY_SOCKET_BLUE = "|cff6060ff"..EMPTY_SOCKET_BLUE.."|r"
 
 if T.client ~= "ruRU" then return end
-
-GUILD_ACHIEVEMENT = "Уведомл. для гильдии"
 
 local ttext
 local replace = {

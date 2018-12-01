@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.automation.currency_cap ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Auto popup for currency cap(EnoughPoints by gi2k15)
+--	Auto popup for currency cap (EnoughPoints by gi2k15)
 ----------------------------------------------------------------------------------------
 StaticPopupDialogs.EnoughPoints = {
 	button1 = OKAY,

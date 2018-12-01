@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -57,7 +57,8 @@ local function LoadSkin()
 			end
 
 			if _G["SpellButton"..i.."Highlight"] then
-				_G["SpellButton"..i.."Highlight"]:SetColorTexture(1, 1, 1, 0.3)
+				-- _G["SpellButton"..i.."Highlight"]:SetColorTexture(1, 1, 1, 0.3)
+				_G["SpellButton"..i.."Highlight"]:SetTexture(1, 1, 1, 0.3)
 				_G["SpellButton"..i.."Highlight"]:ClearAllPoints()
 				_G["SpellButton"..i.."Highlight"]:SetAllPoints(icon)
 			end
@@ -169,7 +170,8 @@ local function LoadSkin()
 			rank:SetTextColor(1, 1, 1)
 		end
 
-		button:GetCheckedTexture():SetColorTexture(0, 1, 0, 0.3)
+		-- button:GetCheckedTexture():SetColorTexture(0, 1, 0, 0.3)
+		button:GetCheckedTexture():SetTexture(0, 1, 0, 0.3)
 		button:GetCheckedTexture():SetPoint("TOPLEFT", button, 4, -4)
 		button:GetCheckedTexture():SetPoint("BOTTOMRIGHT", button, -4, 4)
 
@@ -194,7 +196,8 @@ local function LoadSkin()
 	hooksecurefunc("UpdateProfessionButton", function(self)
 		for _, button in pairs(professionbuttons) do
 			local button = _G[button]
-			button:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+			-- button:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+			button:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 			button:GetHighlightTexture():SetPoint("TOPLEFT", button, 4, -4)
 			button:GetHighlightTexture():SetPoint("BOTTOMRIGHT", button, -4, 4)
 		end
@@ -228,4 +231,4 @@ local function LoadSkin()
 	_G["SpellBookFrameTabButton1"]:SetPoint("TOPLEFT", _G["SpellBookFrame"], "BOTTOMLEFT", -5, 1)
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

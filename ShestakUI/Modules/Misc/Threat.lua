@@ -1,8 +1,10 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.threat.enable ~= true then return end
 
+local ThreatLib = LibStub("Threat-2.0", true)
+
 ----------------------------------------------------------------------------------------
---	Based on alThreatMeter(by Allez)
+--	Based on alThreatMeter (by Allez)
 ----------------------------------------------------------------------------------------
 local spacing = 7
 
@@ -19,7 +21,7 @@ local max = math.max
 local timer = 0
 local targeted = false
 
-RAID_CLASS_COLORS["PET"] = {r = 0, g = 0.7, b = 0, colorStr = "ff00b200"}
+RAID_CLASS_COLORS["PET"] = {r = 0, g = 0.7, b = 0,}
 
 local CreateFS = function(frame, fsize, fstyle)
 	local fstring = frame:CreateFontString(nil, "OVERLAY")
@@ -39,13 +41,37 @@ local truncate = function(value)
 end
 
 local AddUnit = function(unit)
-	local threatpct, rawpct, threatval = select(3, UnitDetailedThreatSituation(unit, "target"))
+	local guid, targetguid = UnitGUID(unit), UnitGUID("target")
+	local currentThreat, maxThreat = ThreatLib:GetThreat(guid, targetguid), ThreatLib:GetMaxThreatOnTarget(targetguid)
+	local _, currentTank = ThreatLib:GetMaxThreatOnTarget(targetguid)
+
+	if not maxThreat or maxThreat == 0 then -- prevent negative
+		maxThreat = 0
+		maxThreat = 1
+	end
+
+	local tankAggro, meleeOverAggro, rangedOverAggro = currentThreat, currentThreat*1.1, currentThreat*1.3
+	local threatpct
+
+	if unit == "player" then
+		if ThreatLib:UnitInMeleeRange("target") and guid ~= currentTank then
+			threatpct = (1.1 * currentThreat) / maxThreat * 100
+		elseif not ThreatLib:UnitInMeleeRange("target") and guid ~= currentTank then
+			threatpct = (1.3 * currentThreat) / maxThreat * 100
+		else
+			threatpct = currentThreat / maxThreat * 100
+		end
+	else
+		threatpct = currentThreat / maxThreat * 100
+	end
+
+	local threatval = currentThreat
 	if threatval and threatval < 0 then
 		threatval = threatval + 410065408
 	end
-	local guid = UnitGUID(unit)
+
 	if not tList[guid] then
-		tinsert(barList, guid)
+		table.insert(barList, guid)
 		tList[guid] = {
 			name = UnitName(unit),
 			class = UnitIsPlayer(unit) and select(2, UnitClass(unit)) or "PET",
@@ -76,7 +102,7 @@ local CreateBar = function()
 	bar.bg:SetTexture(C.media.texture)
 
 	bar.left = CreateFS(bar)
-	bar.left:SetPoint("LEFT", 2, 0)
+	bar.left:SetPoint("LEFT", 2, 1)
 	bar.left:SetJustifyH("LEFT")
 
 	bar.right = CreateFS(bar)
@@ -95,6 +121,7 @@ local UpdateBars = function()
 	for i, v in pairs(bar) do
 		v:Hide()
 	end
+
 	table.sort(barList, SortMethod)
 	for i = 1, #barList do
 		cur = tList[barList[i]]
@@ -120,10 +147,13 @@ end
 
 local UpdateThreat = function()
 	if targeted then
-		if GetNumGroupMembers() > 0 then
-			local unit = IsInRaid() and "raid" or "party"
-			for i = 1, GetNumGroupMembers(), 1 do
-				CheckUnit(unit..i)
+		if GetNumRaidMembers() > 0 then
+			for i = 1, GetNumRaidMembers(), 1 do
+				CheckUnit("raid"..i)
+			end
+		elseif GetNumPartyMembers() > 0 then
+			for i = 1, GetNumPartyMembers(), 1 do
+				CheckUnit("party"..i)
 			end
 		end
 		CheckUnit("targettarget")
@@ -132,8 +162,11 @@ local UpdateThreat = function()
 	UpdateBars()
 end
 
+local lastCombatLogUpdate = 0
+
 local OnEvent = function(self, event, ...)
-	if event == "PLAYER_TARGET_CHANGED" or event == "UNIT_THREAT_LIST_UPDATE" then
+	-- if event == "PLAYER_TARGET_CHANGED" or event == "UNIT_THREAT_LIST_UPDATE" then
+	if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_REGEN_DISABLED" then
 		if C.threat.hide_solo == true and GetNumGroupMembers() == 0 then
 			targeted = false
 		else
@@ -147,14 +180,29 @@ local OnEvent = function(self, event, ...)
 	if event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_REGEN_ENABLED" then
 		wipe(tList)
 		wipe(barList)
+		lastCombatLogUpdate = 0
+		if event == "PLAYER_REGEN_ENABLED" then
+			targeted = false
+		end
 	end
 	UpdateThreat()
 end
 
+local UpdateFromCombatLog = CreateFrame("Frame")
+UpdateFromCombatLog:SetScript("OnEvent", function(self, event, ...)
+	if not UnitAffectingCombat("player") then return end
+	if GetTime() - lastCombatLogUpdate > 0.25 then
+		lastCombatLogUpdate = GetTime()
+		OnEvent()
+	end
+end)
+UpdateFromCombatLog:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+
 local addon = CreateFrame("Frame")
 addon:SetScript("OnEvent", OnEvent)
 addon:RegisterEvent("PLAYER_TARGET_CHANGED")
-addon:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
+-- addon:RegisterEvent("UNIT_THREAT_LIST_UPDATE")
+addon:RegisterEvent("PLAYER_REGEN_DISABLED")
 addon:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 SlashCmdList.alThreat = function()
@@ -165,7 +213,7 @@ SlashCmdList.alThreat = function()
 			pct = i / C.threat.bar_rows * 100,
 			val = i * 10000,
 		}
-		tinsert(barList, i)
+		table.insert(barList, i)
 	end
 	UpdateBars()
 	wipe(tList)

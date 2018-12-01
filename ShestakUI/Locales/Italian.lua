@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if T.client ~= "itIT" then return end
 
 ----------------------------------------------------------------------------------------
@@ -56,17 +56,13 @@ L_MISC_BINDER_OPEN = "Assegnazione pulsanti mouse"
 L_MISC_GROCERY_BUY = "Compra"
 L_MISC_GROCERY_DESC = "Compra automaticamente i sacchetti di alimenti"
 L_MISC_SCROLL = "Pergamena"
-L_MISC_COLLAPSE = "The Collapse" -- Need review
+L_MISC_COLLAPSE = "The Collapse" -- Needs review
 
 -- Raid Utility
 L_RAID_UTIL_DISBAND = "Sciogli il gruppo"
 
 -- Zone name
-L_ZONE_TOLBARAD = "Tol Barad"
-L_ZONE_TOLBARADPEN = "Penisola di Tol Barad"
 L_ZONE_ARATHIBASIN = "Bacino d'Arathi"
-L_ZONE_GILNEAS = "Battaglia per Gilneas"
-L_ZONE_ANCIENTDALARAN = "Cratere di Dalaran"
 
 -- WatchFrame Wowhead link
 L_WATCH_WOWHEAD_LINK = "Link a Wowhead"
@@ -97,24 +93,35 @@ L_MINIMAP_CALENDAR = "Calendario"
 L_MINIMAP_HEAL_LAYOUT = "Click-Sinistro - Disposizione da Guaritore"
 L_MINIMAP_DPS_LAYOUT = "Click-Destro - Disposizione d'Assaltatore"
 L_MINIMAP_BLIZZ_LAYOUT = "Click-Centrale - Disposizione Blizzard"
-L_MINIMAP_ARTIFACT = "Right click to use" -- Needs review
+
+-- Addons list
+L_ALOAD_RL = "Ricarica l'interfaccia"
+L_ALOAD_DEP = "Dipendenze: "
+L_ALOAD_OP_DEP = "Dipendenze opzionali: "
+L_ALOAD_AUTHOR = "Autore/Autrice: "
+L_ALOAD_PROFILES = "Profili"
+L_ALOAD_ENABLE_ALL = "Attiva tutti"
+L_ALOAD_DISABLE_ALL = "Disatt. tutti"
+L_ALOAD_PROFILE_NAME = "Nome del profilo"
+L_ALOAD_SET_TO = "Imposta su.."
+L_ALOAD_ADD_TO = "Aggiungi a.."
+L_ALOAD_REMOVE_FROM = "Rimuovi da.."
+L_ALOAD_DELETE_PROFILE = "Cancella il profilo.."
+L_ALOAD_CONFIRM_DELETE = "Vuoi davvero cancellare questo profilo? Allora tieni premuto Shift e clicca di nuovo."
 
 -- Chat
 L_CHAT_WHISPER = "Da"
-L_CHAT_BN_WHISPER = "DA"
 L_CHAT_AFK = "[Assente]"
 L_CHAT_DND = "[Occupato]"
 L_CHAT_GM = "[RG]"
 L_CHAT_GUILD = "G"
 L_CHAT_PARTY = "GR"
-L_CHAT_PARTY_LEADER = "CGR"
 L_CHAT_RAID = "IN"
 L_CHAT_RAID_LEADER = "CIN"
 L_CHAT_RAID_WARNING = "AIN"
-L_CHAT_INSTANCE_CHAT = "IS"
-L_CHAT_INSTANCE_CHAT_LEADER = "CIS"
+L_CHAT_BATTLEGROUND = "CB"
+L_CHAT_BATTLEGROUND_LEADER = "CCB"
 L_CHAT_OFFICER = "UF"
-L_CHAT_PET_BATTLE = "STM"
 L_CHAT_COME_ONLINE = "si è |cff298F00connesso/a|r."
 L_CHAT_GONE_OFFLINE = "si è |cffff0000disconnesso/a|r."
 
@@ -122,10 +129,28 @@ L_CHAT_GONE_OFFLINE = "si è |cffff0000disconnesso/a|r."
 L_ERRORFRAME_L = "Clicca per vedere gli errori."
 
 -- Bags
-L_BAG_SHOW_BAGS = "Mostra le sacche"
-L_BAG_RIGHT_CLICK_SEARCH = "Clicca col destro per cercare"
+-- L_BAG_SHOW_BAGS = "Mostra le sacche"
+-- L_BAG_RIGHT_CLICK_SEARCH = "Clicca col destro per cercare"
+-- L_BAG_STACK_MENU = "Impila oggetti identici"
+-- L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu" -- Needs review
+L_BAG_BANK = "Banca"
+L_BAG_NO_SLOTS = "Non puoi comprare altri spazi!"
+L_BAG_COSTS = "Costo in oro: %.2f"
+L_BAG_BUY_SLOTS = "Compra nuovi spazi con /bags purchase yes"
+L_BAG_OPEN_BANK = "Devi prima aprire la tua banca."
+L_BAG_SORT = "Riordina le tue sacche o la tua banca, se aperta."
+L_BAG_STACK = "Completa le pile parziali di oggetti identici nelle tue sacche o nella tua banca, se è aperta."
+L_BAG_BUY_BANKS_SLOT = "Compra uno spazio in banca (devi avere la tua banca aperta)."
+L_BAG_SORT_MENU = "Riordina"
+L_BAG_SORT_SPECIAL = "Riordino speciale"
 L_BAG_STACK_MENU = "Impila oggetti identici"
-L_BAG_RIGHT_CLICK_CLOSE = "Right-click to open menu" -- Need review
+L_BAG_STACK_SPECIAL = "Impilamento speciale oggetti identici"
+L_BAG_SHOW_BAGS = "Mostra le sacche"
+L_BAG_SORTING_BAGS = "Riordino terminato."
+L_BAG_NOTHING_SORT = "Niente da riordinare."
+L_BAG_BAGS_BIDS = "Sacche utilizzate: "
+L_BAG_STACK_END = "Impilamento terminato."
+L_BAG_RIGHT_CLICK_SEARCH = "Clicca col destro per cercare"
 
 -- Grab mail
 L_MAIL_STOPPED = "Interrotto, l'inventario è pieno."
@@ -143,6 +168,7 @@ L_LOOT_TO_RAID = "  incursione"
 L_LOOT_TO_PARTY = "  gruppo"
 L_LOOT_TO_GUILD = "  gilda"
 L_LOOT_TO_SAY = "  dice"
+L_LOOT_CANNOT = "Non puoi partecipare al tiro per il bottino"
 
 -- LitePanels AFK module
 L_PANELS_AFK = "Sei assente!"
@@ -151,9 +177,6 @@ L_PANELS_AFK_LCLICK = "Click sinistro = non più assente."
 
 -- Cooldowns
 L_COOLDOWNS = "RC: "
-L_COOLDOWNS_COMBATRESS = "CombatRess" -- Needs review
-L_COOLDOWNS_COMBATRESS_REMAINDER = "Combat resurrect: " -- Needs review
-L_COOLDOWNS_NEXTTIME = "Next time: " -- Needs review
 
 -- Autoinvite
 L_INVITE_ENABLE = "Invito automatico attivato: "
@@ -226,7 +249,7 @@ L_COMBATTEXT_TEST_ENABLED = "Modalità 'prova' del testo di combattimento abilit
 L_COMBATTEXT_TEST_USE_UNLOCK = "Digita /xct per sbloccare e quindi poter muovere e ridimensionare i riquadri del testo di combattimento."
 L_COMBATTEXT_TEST_USE_LOCK = "Digita /xct per bloccare i riquadri del testo di combattimento."
 L_COMBATTEXT_TEST_USE_TEST = "Digita /xct test per attivare la modalità 'prova' per il testo di combattimento."
-L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Need review
+L_COMBATTEXT_TEST_USE_RESET = "Type /xct reset to restore default positions." -- Needs review
 L_COMBATTEXT_POPUP = "Per poter salvare la posizione delle finestre del testo di combattimento è necessario riavviare la tua interfaccia utente."
 L_COMBATTEXT_UNSAVED = "La posizione delle finestre del testo di combattimento non è ancora stata salvata: non dimenticare di riavviare l'interfaccia utente."
 L_COMBATTEXT_UNLOCKED = "Testo di combattimento sbloccato."
@@ -308,8 +331,6 @@ L_SLASHCMD_HELP = {
 	"/en ADDON_NAME - Attiva AddOn.",
 	"/rd - Sciogli gruppo o incursione.",
 	"/toraid - Trasforma il gruppo in incursione.",
-	"/teleport - Teletrasporto dalle spedizioni casuali.",
-	"/spec, /ss - Passa da una specializzazione dei talenti all'altra",
 	"/heal - Passa alla configurazione 'guaritori'.",
 	"/dps - Passa alla configurazione 'assaltatori'.",
 	"/frame - La descrizione non è pronta.",
@@ -332,99 +353,26 @@ L_SLASHCMD_HELP = {
 	"/cfg - Apri il pannello impostazioni interfaccia.",
 }
 
--- ExploreMap
-L_EXTRA_EXPLORED = "Esplorato/a: "
-L_EXTRA_ZONEACHID = {
-	-- http://www.wowhead.com/achievement=*
-	-- e(X)plore achievement id, (Q)uest achievement id
-	["Regni Orientali"]					= {X =   42, A =    0, H =    0},
-	["Kalimdor"]						= {X =   43, A =    0, H =    0},
-	["Terre Esterne"]					= {X =   44, A =    0, H =    0},
-	["Nordania"]						= {X =   45, A =    0, H =    0},
-	["Pandaria"]						= {X = 6974, A =    0, H =    0},
-	["Mappa del mondo"]					= {X =  nil, A =    0, H =    0},
-	-- Eastern Kingdoms
-	["Altipiani d'Arathi"]				= {X =  761, A = 4896, H = 4896},
-	["Maleterre"]						= {X =  765, A = 4900, H = 4900},
-	["Terre Devastate"]					= {X =  766, A = 4909, H = 4909},
-	["Steppe Ardenti"]					= {X =  775, A = 4901, H = 4901},
-	["Valico Ventomorto"]				= {X =  777, A =    0, H =    0},
-	["Dun Morogh"]						= {X =  627, A =    0, H =    0},
-	["Boscovespro"]						= {X =  778, A = 4903, H =    0},
-	["Terre Infette Orientali"]			= {X =  771, A = 4892, H = 4892},
-	["Foresta di Elwynn"]				= {X =  776, A =    0, H =    0},
-	["Boschi di Cantoeterno"]			= {X =  859, A =    0, H =    0},
-	["Terre Spettrali"]					= {X =  858, A =    0, H = 4908},
-	["Alture di Colletorto"]			= {X =  772, A =    0, H = 4895},
-	["Loch Modan"]						= {X =  779, A = 4899, H =    0},
-	["Rovotorto Settentrionale"]		= {X =  781, A = 4906, H = 4906},
-	["Montagne Crestarossa"]			= {X =  780, A = 4902, H =    0},
-	["Gorgia Rovente"]					= {X =  774, A = 4910, H = 4910},
-	["Selva Pinargento"]				= {X =  769, A =    0, H = 4894},
-	["Palude del Dolore"]				= {X =  782, A = 4904, H = 4904},
-	["Capo di Rovotorto"]				= {X = 4995, A = 4905, H = 4905},
-	["Entroterre"]						= {X =  773, A = 4897, H = 4897},
-	["Radure di Tirisfal"]				= {X =  768, A =    0, H =    0},
-	["Terre Infette Occidentali"]		= {X =  770, A = 4893, H = 4893},
-	["Marche Occidentali"]				= {X =  802, A = 4903, H =    0},
-	["Paludi Grigie"]					= {X =  841, A = 4899, H =    0},
-	-- Kalimdor
-	["Valtetra"]						= {X =  845, A = 4925, H = 4976},
-	["Azshara"]							= {X =  852, A =    0, H = 4927},
-	["Isola Brumazzurra"]				= {X =  860, A =    0, H =    0},
-	["Isola Brumacremisi"]				= {X =  861, A = 4926, H = 4926},
-	["Rivafosca"]						= {X =  844, A = 4928, H = 4928},
-	["Desolanda"]						= {X =  848, A = 4930, H = 4930},
-	["Durotar"]							= {X =  728, A =    0, H =    0},
-	["Acquemorte"]						= {X =  850, A = 4929, H = 4978},
-	["Vilbosco"]						= {X =  853, A = 4931, H = 4931},
-	["Feralas"]							= {X =  849, A = 4932, H = 4979},
-	["Radaluna"]						= {X =  855, A =    0, H =    0},
-	["Mulgore"]							= {X =  736, A =    0, H =    0},
-	["Savane Settentrionali"]			= {X =  750, A =    0, H = 4933},
-	["Silitus"]							= {X =  856, A = 4934, H = 4934},
-	["Savane Meridionali"]				= {X = 4996, A = 4937, H = 4981},
-	["Valle di Petrartiglio"]			= {X =  847, A = 4936, H = 4980},
-	["Tanaris"]							= {X =  851, A = 4935, H = 4935},
-	["Teldrassil"]						= {X =  842, A =    0, H =    0},
-	["Millepicchi"]						= {X =  846, A = 4938, H = 4938},
-	["Cratere di Un'Goro"]				= {X =  854, A = 4939, H = 4939},
-	["Fontefredda"]						= {X =  857, A = 4940, H = 4940},
-	-- Outland
-	["Montagne Spinaguzza"]				= {X =  865, A = 1193, H = 1193},
-	["Penisola del Fuoco Infernale"]	= {X =  862, A = 1189, H = 1271},
-	["Nagrand"]							= {X =  866, A = 1192, H = 1273},
-	["Landa Fatua"]						= {X =  843, A = 1194, H = 1194},
-	["Valle di Torvaluna"]				= {X =  864, A = 1195, H = 1195},
-	["Foresta di Terokk"]				= {X =  867, A = 1191, H = 1272},
-	["Paludi di Zangar"]				= {X =  863, A = 1190, H = 1190},
-	-- Northrend
-	["Tundra Boreale"]					= {X = 1264, A =   33, H = 1358},
-	["Foresta di Cristallo"]			= {X = 1457, A =    0, H =    0},
-	["Dracombra"]						= {X = 1265, A =   35, H = 1356},
-	["Colli Bradi"]						= {X = 1266, A =   37, H = 1357},
-	["Fiordo Echeggiante"]				= {X = 1263, A =   34, H = 1356},
-	["Corona di Ghiaccio"]				= {X = 1270, A =   40, H =   40},
-	["Bacino di Sholazar"]				= {X = 1268, A =   39, H =   39},
-	["Cime Tempestose"]					= {X = 1269, A =   38, H =   38},
-	["Zul'Drak"]						= {X = 1267, A =   36, H =   36},
-	-- Cataclysm
-	["Rocciafonda"]						= {X = 4864, A = 4871, H = 4871},
-	["Monte Hyjal"]						= {X = 4863, A = 4870, H = 4870},
-	["Alture del Crepuscolo"]			= {X = 4866, A = 4873, H = 5501},
-	["Uldum"]							= {X = 4865, A = 4872, H = 4872},
-	["Vashj'ir"]						= {X = 4825, A = 4869, H = 4982},
-	["Tol Barad"]						= {X =    0, A = 4874, H = 4874},
-	["Penisola di Tol Barad"]			= {X =    0, A = 4874, H = 4874},
-	-- Pandaria
-	["Foresta di Giada"]				= {X = 6351, A = 6300, H = 6534},
-	["Valle dei Quattro Venti"]			= {X = 6969, A = 6301, H = 6301},
-	["Massiccio del Kun-Lai"]			= {X = 6976, A = 6537, H = 6538},
-	["Steppe di Tong Long"]				= {X = 6977, A = 6539, H = 6539},
-	["Distese del Terrore"]				= {X = 6978, A = 6540, H = 6540},
-	["Vallata dell'Eterna Primavera"]	= {X = 6979, A =    0, H =    0},
-	-- Boolean Explores
-	["Isola di Quel'Danas"]				= {X =  868, A =    0, H =    0},
-	["Ahn'Qiraj: il Regno Perduto"]		= {X =    0, A =    0, H =    0},
-	["Lungoinverno"]					= {X =    0, A =    0, H =    0},
-}
+-- Compatibility
+L_COMPATIBILITY_CURRENCY = "Valuta"
+L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL = "o"
+L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL = "a"
+L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL = "r"
+
+L_COMPATIBILITY_APPLY = "Applica"
+L_COMPATIBILITY_BAG_FILTER_CLEANUP = "Riordinamento"
+L_COMPATIBILITY_BUFFOPTIONS_LABEL = "Benefici e penalità"
+L_COMPATIBILITY_CALENDAR_COPY_EVENT = "Copia"
+L_COMPATIBILITY_CALENDAR_PASTE_EVENT = "Incolla"
+L_COMPATIBILITY_CONVERT_TO_RAID = "Passa a incursione"
+L_COMPATIBILITY_DAMAGER = "Assaltatore"
+L_COMPATIBILITY_DURABILITY = "Integrità"
+L_COMPATIBILITY_FEATURE_BECOMES_AVAILABLE_AT_LEVEL = "Questa caratteristica è disponibile dal livello %d."
+L_COMPATIBILITY_FRIENDS_LIST_REALM = "Reame: "
+L_COMPATIBILITY_GENERAL_LABEL = "Generale"
+L_COMPATIBILITY_HEALER = "Guaritore"
+L_COMPATIBILITY_RAID_FRAMES_LABEL = "Riquadri di incursione"
+L_COMPATIBILITY_SELL_PRICE = "Prezzo di vendita"
+L_COMPATIBILITY_STAT_AVERAGE_ITEM_LEVEL = "Livello oggetti"
+L_COMPATIBILITY_UNITFRAME_LABEL = "Riquadri delle unità"
+L_COMPATIBILITY_UNIT_NAMEPLATES = "Barre delle unità"

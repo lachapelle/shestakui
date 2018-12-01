@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.chars_currency ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -185,11 +185,11 @@ frame:SetScript("OnEvent", function(self, event, addon)
 			if data.lastSeen and data.lastSeen < cutoff then
 				realmDB[name] = nil
 			elseif name ~= T.name then
-				tinsert(playerList, name)
+				table.insert(playerList, name)
 			end
 		end
 		sort(playerList)
-		tinsert(playerList, 1, T.name)
+		table.insert(playerList, 1, T.name)
 
 		self:UnregisterEvent("ADDON_LOADED")
 

@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.skins.blizzard_frames ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -6,12 +6,13 @@ if C.skins.blizzard_frames ~= true then return end
 ----------------------------------------------------------------------------------------
 local function LoadSkin()
 	ItemTextFrame:StripTextures(true)
-	ItemTextFrameInset:StripTextures()
+	-- ItemTextFrameInset:StripTextures()
 	ItemTextScrollFrame:StripTextures()
 	ItemTextFrame:CreateBackdrop("Transparent")
 	ItemTextFrame.backdrop:SetPoint("TOPLEFT", 0, 0)
 	ItemTextFrame.backdrop:SetPoint("BOTTOMRIGHT", 0, 0)
-	T.SkinCloseButton(ItemTextFrameCloseButton, ItemTextFrame.backdrop)
+	-- T.SkinCloseButton(ItemTextFrameCloseButton, ItemTextFrame.backdrop)
+	T.SkinCloseButton(ItemTextCloseButton, ItemTextFrame.backdrop)
 	T.SkinNextPrevButton(ItemTextPrevPageButton)
 	T.SkinNextPrevButton(ItemTextNextPageButton)
 	T.SkinScrollBar(ItemTextScrollFrameScrollBar)
@@ -19,4 +20,4 @@ local function LoadSkin()
 	ItemTextPageText.SetTextColor = T.dummy
 end
 
-tinsert(T.SkinFuncs["ShestakUI"], LoadSkin)
+table.insert(T.SkinFuncs["ShestakUI"], LoadSkin)

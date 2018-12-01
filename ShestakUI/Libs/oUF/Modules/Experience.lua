@@ -1,24 +1,24 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_experience_bar ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_Experience(by p3lim)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 for tag, func in next, {
 	['experience:cur'] = function(unit)
-		return (IsWatchingHonorAsXP() and UnitHonor or UnitXP) ('player')
+		return UnitXP('player')
 	end,
 	['experience:max'] = function(unit)
-		return (IsWatchingHonorAsXP() and UnitHonorMax or UnitXPMax) ('player')
+		return UnitXPMax('player')
 	end,
 	['experience:per'] = function(unit)
 		return math.floor(_TAGS['experience:cur'](unit) / _TAGS['experience:max'](unit) * 100 + 0.5)
 	end,
 	['experience:currested'] = function()
-		return (IsWatchingHonorAsXP() and GetHonorExhaustion or GetXPExhaustion) ()
+		return GetXPExhaustion()
 	end,
 	['experience:perrested'] = function(unit)
 		local rested = _TAGS['experience:currested']()
@@ -28,18 +28,17 @@ for tag, func in next, {
 	end,
 } do
 	oUF.Tags.Methods[tag] = func
-	oUF.Tags.Events[tag] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UPDATE_EXHAUSTION HONOR_XP_UPDATE HONOR_LEVEL_UPDATE HONOR_PRESTIGE_UPDATE'
+	oUF.Tags.Events[tag] = 'PLAYER_XP_UPDATE PLAYER_LEVEL_UP UPDATE_EXHAUSTION'
 end
 
 oUF.Tags.SharedEvents.PLAYER_LEVEL_UP = true
 
 local function UpdateTooltip(element)
-	local isHonor = IsWatchingHonorAsXP()
-	local cur = (isHonor and UnitHonor or UnitXP)('player')
-	local max = (isHonor and UnitHonorMax or UnitXPMax)('player')
+	local cur = UnitXP('player')
+	local max = UnitXPMax('player')
 	local per = math.floor(cur / max * 100 + 0.5)
-	local bar = isHonor and 5 or 20
-	local rested = (isHonor and GetHonorExhaustion or GetXPExhaustion)() or 0
+	local bar = 20
+	local rested = GetXPExhaustion() or 0
 
 	GameTooltip:SetOwner(element, "ANCHOR_BOTTOM", 0, -5)
 	GameTooltip:AddLine(COMBAT_XP_GAIN.." "..format(LEVEL_GAINED, T.level))
@@ -62,23 +61,13 @@ local function OnLeave(element)
 	element:SetAlpha(element.outAlpha)
 end
 
-local function UpdateColor(element, showHonor)
-	if showHonor then
-		element:SetStatusBarColor(1, 0.25, 0)
-		if element.SetAnimatedTextureColors then
-			element:SetAnimatedTextureColors(1, 0.25, 0)
-		end
-		if element.Rested then
-			element.Rested:SetStatusBarColor(1, 0.75, 0, 0.5)
-		end
-	else
-		element:SetStatusBarColor(T.color.r, T.color.g, T.color.b)
-		if element.SetAnimatedTextureColors then
-			element:SetAnimatedTextureColors(T.color.r, T.color.g, T.color.b)
-		end
-		if element.Rested then
-			element.Rested:SetStatusBarColor(0, 0.5, 1, 0.5)
-		end
+local function UpdateColor(element)
+	element:SetStatusBarColor(T.color.r, T.color.g, T.color.b)
+	if element.SetAnimatedTextureColors then
+		element:SetAnimatedTextureColors(T.color.r, T.color.g, T.color.b)
+	end
+	if element.Rested then
+		element.Rested:SetStatusBarColor(0, 0.5, 1, 0.5)
 	end
 end
 
@@ -88,14 +77,9 @@ local function Update(self, event, unit)
 	local element = self.Experience
 	if(element.PreUpdate) then element:PreUpdate(unit) end
 
-	local showHonor = IsWatchingHonorAsXP()
-	local level = (showHonor and UnitHonorLevel or UnitLevel)(unit)
-	local cur = (showHonor and UnitHonor or UnitXP)(unit)
-	local max = (showHonor and UnitHonorMax or UnitXPMax)(unit)
-
-	if(showHonor and level == GetMaxPlayerHonorLevel()) then
-		cur, max = 1, 1
-	end
+	local level = UnitLevel(unit)
+	local cur = UnitXP(unit)
+	local max = UnitXPMax(unit)
 
 	if(element.SetAnimatedValues) then
 		element:SetAnimatedValues(cur, 0, max, level)
@@ -106,16 +90,16 @@ local function Update(self, event, unit)
 
 	local exhaustion
 	if(element.Rested) then
-		exhaustion = (showHonor and GetHonorExhaustion or GetXPExhaustion)() or 0
+		exhaustion = GetXPExhaustion() or 0
 
 		element.Rested:SetMinMaxValues(0, max)
 		element.Rested:SetValue(math.min(cur + exhaustion, max))
 	end
 
-	(element.OverrideUpdateColor or UpdateColor)(element, showHonor)
+	(element.OverrideUpdateColor or UpdateColor)(element)
 
 	if(element.PostUpdate) then
-		return element:PostUpdate(unit, cur, max, exhaustion, level, showHonor)
+		return element:PostUpdate(unit, cur, max, exhaustion, level)
 	end
 end
 
@@ -126,8 +110,6 @@ end
 local function ElementEnable(self)
 	local element = self.Experience
 	self:RegisterEvent('PLAYER_XP_UPDATE', Path)
-	self:RegisterEvent('HONOR_LEVEL_UPDATE', Path)
-	self:RegisterEvent('HONOR_PRESTIGE_UPDATE', Path)
 
 	if(element.Rested) then
 		self:RegisterEvent('UPDATE_EXHAUSTION', Path)
@@ -141,8 +123,6 @@ end
 
 local function ElementDisable(self)
 	self:UnregisterEvent('PLAYER_XP_UPDATE', Path)
-	self:UnregisterEvent('HONOR_LEVEL_UPDATE', Path)
-	self:UnregisterEvent('HONOR_PRESTIGE_UPDATE', Path)
 
 	if(self.Experience.Rested) then
 		self:UnregisterEvent('UPDATE_EXHAUSTION', Path)
@@ -157,12 +137,8 @@ local function Visibility(self, event, unit)
 	local element = self.Experience
 	local shouldEnable
 
-	if(not UnitHasVehicleUI('player') and not IsXPUserDisabled()) then
-		if(UnitLevel('player') ~= element.__accountMaxLevel) then
-			shouldEnable = true
-		elseif(IsWatchingHonorAsXP() and element.__accountMaxLevel == MAX_PLAYER_LEVEL) then
-			shouldEnable = true
-		end
+	if(UnitLevel('player') ~= element.__accountMaxLevel) then
+		shouldEnable = true
 	end
 
 	if(shouldEnable) then
@@ -185,25 +161,12 @@ local function Enable(self, unit)
 	if(element and unit == 'player') then
 		element.__owner = self
 
-		local levelRestriction = GetRestrictedAccountData()
-		if(levelRestriction > 0) then
-			element.__accountMaxLevel = levelRestriction
-		else
-			element.__accountMaxLevel = MAX_PLAYER_LEVEL
-		end
+		local levelRestriction = GetAccountExpansionLevel()
+		element.__accountMaxLevel = MAX_PLAYER_LEVEL_TABLE[levelRestriction]
 
 		element.ForceUpdate = ForceUpdate
 
 		self:RegisterEvent('PLAYER_LEVEL_UP', VisibilityPath, true)
-		self:RegisterEvent('HONOR_LEVEL_UPDATE', VisibilityPath)
-		self:RegisterEvent('DISABLE_XP_GAIN', VisibilityPath, true)
-		self:RegisterEvent('ENABLE_XP_GAIN', VisibilityPath, true)
-
-		hooksecurefunc('SetWatchingHonorAsXP', function()
-			if(self:IsElementEnabled('Experience')) then
-				VisibilityPath(self, 'SetWatchingHonorAsXP', 'player')
-			end
-		end)
 
 		local child = element.Rested
 		if(child) then
@@ -241,9 +204,6 @@ local function Disable(self)
 	local element = self.Experience
 	if(element) then
 		self:UnregisterEvent('PLAYER_LEVEL_UP', VisibilityPath)
-		self:UnregisterEvent('HONOR_LEVEL_UPDATE', VisibilityPath)
-		self:UnregisterEvent('DISABLE_XP_GAIN', VisibilityPath)
-		self:UnregisterEvent('ENABLE_XP_GAIN', VisibilityPath)
 
 		ElementDisable(self)
 	end

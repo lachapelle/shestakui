@@ -1,28 +1,25 @@
-local T, C, L = unpack(select(2, ...))
+local T, C, L = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true or C.unitframe.plugins_gcd ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Based on oUF_GCD(by ALZA)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 local starttime, duration, usingspell, spellid
 local GetTime = GetTime
 
 local spells = {
-	["DEATHKNIGHT"] = 50977,
-	["DEMONHUNTER"] = 204157,
 	["DRUID"] = 8921,
 	["HUNTER"] = 982,
 	["MAGE"] = 118,
-	["MONK"] = 100780,
-	["PALADIN"] = 35395,
+	["PALADIN"] = 19750,
 	["PRIEST"] = 585,
 	["ROGUE"] = 1752,
 	["SHAMAN"] = 403,
 	["WARLOCK"] = 686,
-	["WARRIOR"] = 57755,
+	["WARRIOR"] = 6673,
 }
 
 local Enable = function(self)

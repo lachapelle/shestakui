@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Fix blank tooltip
@@ -24,34 +24,20 @@ FixTooltipBags:SetScript("OnEvent", function()
 end)
 
 GameTooltip:HookScript("OnTooltipCleared", function(self)
-	if self:IsForbidden() then return end
 	if bug and self:NumLines() == 0 then
 		self:Hide()
 		bug = false
 	end
 end)
 
-----------------------------------------------------------------------------------------
---	Fix RemoveTalent() taint
-----------------------------------------------------------------------------------------
-FCF_StartAlertFlash = T.dummy
-
+--[[
 ----------------------------------------------------------------------------------------
 --	Fix DeclensionFrame strata
 ----------------------------------------------------------------------------------------
 if T.client == "ruRU" then
 	_G["DeclensionFrame"]:SetFrameStrata("HIGH")
 end
-
-----------------------------------------------------------------------------------------
---	Fix SearchLFGLeave() taint
-----------------------------------------------------------------------------------------
-local TaintFix = CreateFrame("Frame")
-TaintFix:SetScript("OnUpdate", function(self, elapsed)
-	if LFRBrowseFrame.timeToClear then
-		LFRBrowseFrame.timeToClear = nil
-	end
-end)
+--]]
 
 ----------------------------------------------------------------------------------------
 --	Collect garbage

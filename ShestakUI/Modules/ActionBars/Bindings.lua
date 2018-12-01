@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if IsAddOnLoaded("ncHoverBind") then return end
 
 ----------------------------------------------------------------------------------------
@@ -9,7 +9,6 @@ local bind, oneBind, localmacros = CreateFrame("Frame", "HoverBind", UIParent), 
 SlashCmdList.MOUSEOVERBIND = function()
 	if InCombatLockdown() then print("|cffffff00"..ERR_NOT_IN_COMBAT.."|r") return end
 	if not bind.loaded then
-		local find = string.find
 
 		bind:SetFrameStrata("DIALOG")
 		bind:EnableMouse(true)
@@ -18,7 +17,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		bind.texture = bind:CreateTexture()
 		bind.texture:SetPoint("TOPLEFT", bind, 2, -2)
 		bind.texture:SetPoint("BOTTOMRIGHT", bind, -2, 2)
-		bind.texture:SetColorTexture(1, 1, 1, 0.3)
+		bind.texture:SetTexture(1, 1, 1, 0.3)
 		bind:Hide()
 
 		local elapsed = 0
@@ -29,9 +28,8 @@ SlashCmdList.MOUSEOVERBIND = function()
 				GameTooltip_ShowCompareItem(self)
 				self.comparing = true
 			elseif self.comparing and not IsModifiedClick("COMPAREITEMS") then
-				for _, frame in pairs(self.shoppingTooltips) do
-					frame:Hide()
-				end
+				ShoppingTooltip1:Hide()
+				ShoppingTooltip2:Hide()
 				self.comparing = false
 			end
 			self:SetBackdropColor(unpack(C.media.overlay_color))
@@ -40,7 +38,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		GameTooltip:SetBackdropColor(unpack(C.media.overlay_color))
 		GameTooltip:SetBackdropBorderColor(unpack(C.media.border_color))
 
-		hooksecurefunc(GameTooltip, "Hide", function(self) for _, tt in pairs(self.shoppingTooltips) do tt:Hide() end end)
+		hooksecurefunc(GameTooltip, "Hide", function(self) ShoppingTooltip1:Hide() ShoppingTooltip2:Hide() end)
 
 		bind:SetScript("OnEvent", function(self) self:Deactivate(false) end)
 		bind:SetScript("OnLeave", function(self) self:HideFrame() end)
@@ -101,16 +99,16 @@ SlashCmdList.MOUSEOVERBIND = function()
 						end
 					end
 				GameTooltip:Show()
-			elseif spellmacro == "STANCE" or spellmacro == "PET" then
+			elseif spellmacro == "SHAPESHIFT" or spellmacro == "PET" then
 				self.button.id = tonumber(b:GetID())
 				self.button.name = b:GetName()
 
 				if not self.button.name then return end
 
-				if not self.button.id or self.button.id < 1 or self.button.id > (spellmacro == "STANCE" and 10 or 12) then
+				if not self.button.id or self.button.id < 1 or self.button.id > (spellmacro == "SHAPESHIFT" and 10 or 12) then
 					self.button.bindstring = "CLICK "..self.button.name..":LeftButton"
 				else
-					self.button.bindstring = (spellmacro == "STANCE" and "STANCEBUTTON" or "BONUSACTIONBUTTON")..self.button.id
+					self.button.bindstring = (spellmacro == "SHAPESHIFT" and "SHAPESHIFTBUTTON" or "BONUSACTIONBUTTON")..self.button.id
 				end
 
 				GameTooltip:Show()
@@ -210,7 +208,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 			local ctrl = IsControlKeyDown() and "CTRL-" or ""
 			local shift = IsShiftKeyDown() and "SHIFT-" or ""
 
-			if not self.spellmacro or self.spellmacro == "PET" or self.spellmacro == "STANCE" then
+			if not self.spellmacro or self.spellmacro == "PET" or self.spellmacro == "SHAPESHIFT" then
 				SetBinding(alt..ctrl..shift..key, self.button.bindstring)
 			else
 				SetBinding(alt..ctrl..shift..key, self.spellmacro.." "..self.button.name)
@@ -238,9 +236,6 @@ SlashCmdList.MOUSEOVERBIND = function()
 			if C.actionbar.petbar_mouseover == true and C.actionbar.petbar_horizontal == true then
 				PetBarMouseOver(1)
 			end
-			if C.extra_bar and C.extra_bar.enable == true and C.extra_bar.mouseover == true then
-				ExtraBarMouseOver(1)
-			end
 		end
 
 		function bind:Deactivate(save)
@@ -265,14 +260,11 @@ SlashCmdList.MOUSEOVERBIND = function()
 			if C.actionbar.petbar_mouseover == true and C.actionbar.petbar_horizontal == true then
 				PetBarMouseOver(0)
 			end
-			if C.extra_bar and C.extra_bar.enable == true and C.extra_bar.mouseover == true then
-				ExtraBarMouseOver(0)
-			end
 		end
 
 		StaticPopupDialogs.KEYBIND_MODE = {
 			text = L_BIND_INSTRUCT,
-			button1 = APPLY,
+			button1 = L_COMPATIBILITY_APPLY,
 			button2 = CANCEL,
 			OnAccept = function() bind:Deactivate(true) ReloadUI() end,
 			OnCancel = function() bind:Deactivate(false) end,
@@ -283,7 +275,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 		}
 
 		-- Registering
-		local stance = StanceButton1:GetScript("OnClick")
+		local stance = ShapeshiftButton1:GetScript("OnClick")
 		local pet = PetActionButton1:GetScript("OnClick")
 		local button = ActionButton1:GetScript("OnClick")
 
@@ -293,7 +285,7 @@ SlashCmdList.MOUSEOVERBIND = function()
 				if script == button then
 					val:HookScript("OnEnter", function(self) bind:Update(self) end)
 				elseif script == stance then
-					val:HookScript("OnEnter", function(self) bind:Update(self, "STANCE") end)
+					val:HookScript("OnEnter", function(self) bind:Update(self, "SHAPESHIFT") end)
 				elseif script == pet then
 					val:HookScript("OnEnter", function(self) bind:Update(self, "PET") end)
 				end

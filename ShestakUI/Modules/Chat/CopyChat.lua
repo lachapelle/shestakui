@@ -1,9 +1,10 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Copy Chat
 ----------------------------------------------------------------------------------------
+local lines = {}
 local frame = nil
 local editBox = nil
 local font = nil
@@ -16,7 +17,7 @@ local sizes = {
 	":14"
 }
 
-local function CreatCopyFrame()
+local function CreateCopyFrame()
 	frame = CreateFrame("Frame", "CopyFrame", UIParent)
 	frame:SetTemplate("Transparent")
 	frame:SetWidth(540)
@@ -40,8 +41,8 @@ local function CreatCopyFrame()
 		local text = self:GetText()
 
 		for _, size in pairs(sizes) do
-			if string.find(text, size) and not string.find(text, size.."]") then
-				self:SetText(string.gsub(text, size, ":12:12"))
+			if strfind(text, size) and not strfind(text, size.."]") then
+				self:SetText(gsub(text, size, ":12:12"))
 			end
 		end
 	end)
@@ -65,22 +66,34 @@ local scrollDown = function()
 	CopyScroll:SetVerticalScroll((CopyScroll:GetVerticalScrollRange()) or 0)
 end
 
-local function Copy(cf)
-	if not isf then CreatCopyFrame() end
-	local text = ""
-	for i = 1, cf:GetNumMessages() do
-		local line = cf:GetMessageInfo(i)
-		font:SetFormattedText("%s\n", line)
-		local cleanLine = font:GetText() or ""
-		text = text..cleanLine
+local function GetLines(...)
+	-- Grab all those 
+	local ct = 1
+	for i = select("#", ...), 1, -1 do
+		local region = select(i, ...)
+		if region:GetObjectType() == "FontString" then
+			lines[ct] = tostring(region:GetText())
+			ct = ct + 1
+		end
 	end
+	return ct - 1
+end
+
+local function Copy(cf)
+	local _, fontSize = cf:GetFont()
+	
+	if not isf then CreateCopyFrame() end
+	local text = ""
+	cf:SetFont(C.font.chat_font, 0.01, C.font.chat_font_style)
+	local lineCt = GetLines(cf:GetRegions())
+	local text = table.concat(lines, "\n", 1, lineCt)
+	cf:SetFont(C.font.chat_font, fontSize, C.font.chat_font_style)
 	text = text:gsub("|T[^\\]+\\[^\\]+\\[Uu][Ii]%-[Rr][Aa][Ii][Dd][Tt][Aa][Rr][Gg][Ee][Tt][Ii][Nn][Gg][Ii][Cc][Oo][Nn]_(%d)[^|]+|t", "{rt%1}")
 	text = text:gsub("|T13700([1-8])[^|]+|t", "{rt%1}")
 	text = text:gsub("|T[^|]+|t", "")
 	if frame:IsShown() then frame:Hide() return end
 	frame:Show()
 	editBox:SetText(text)
-	C_Timer.After(0.25, scrollDown)
 end
 
 for i = 1, NUM_CHAT_WINDOWS do

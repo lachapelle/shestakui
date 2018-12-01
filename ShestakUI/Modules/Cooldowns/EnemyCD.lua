@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.enemycooldown.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Enemy cooldowns(alEnemyCD by Allez)
+--	Enemy cooldowns (alEnemyCD by Allez)
 ----------------------------------------------------------------------------------------
 local show = {
 	none = C.enemycooldown.show_always,
@@ -77,7 +77,7 @@ end
 local StopTimer = function(icon)
 	icon:SetScript("OnUpdate", nil)
 	icon:Hide()
-	tremove(icons, icon.id)
+	table.remove(icons, icon.id)
 	UpdatePositions()
 end
 
@@ -91,7 +91,7 @@ local CreateIcon = function()
 	local icon = CreateFrame("Frame", nil, UIParent)
 	icon:SetSize(C.enemycooldown.size, C.enemycooldown.size)
 	icon:SetTemplate("Default")
-	icon.Cooldown = CreateFrame("Cooldown", nil, icon, "CooldownFrameTemplate")
+	icon.Cooldown = CreateFrame("Cooldown", nil, icon, "oUF_CooldownFrameTemplate")
 	icon.Cooldown:SetPoint("TOPLEFT", 2, -2)
 	icon.Cooldown:SetPoint("BOTTOMRIGHT", -2, 2)
 	icon.Cooldown:SetReverse(true)
@@ -117,8 +117,8 @@ local StartTimer = function(name, sID)
 	icon:SetScript("OnUpdate", IconUpdate)
 	icon:SetScript("OnEnter", OnEnter)
 	icon:SetScript("OnLeave", GameTooltip_Hide)
-	CooldownFrame_Set(icon.Cooldown, GetTime(), T.enemy_spells[sID], 1)
-	tinsert(icons, icon)
+	CooldownFrame_SetTimer(icon.Cooldown, GetTime(), T.enemy_spells[sID], 1)
+	table.insert(icons, icon)
 	table.sort(icons, sortByExpiration)
 	UpdatePositions()
 end
@@ -154,10 +154,10 @@ addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 addon:RegisterEvent("ZONE_CHANGED_NEW_AREA")
 
 SlashCmdList.EnemyCD = function()
-	StartTimer(T.name, 47528)
-	StartTimer(T.name, 19647)
-	StartTimer(T.name, 47476)
-	StartTimer(T.name, 51514)
+	StartTimer(T.name, 2139)
+	StartTimer(T.name, 19244)
+	StartTimer(T.name, 15487)
+	StartTimer(T.name, 2094)
 end
 SLASH_EnemyCD1 = "/enemycd"
 SLASH_EnemyCD2 = "/утуьнсв"

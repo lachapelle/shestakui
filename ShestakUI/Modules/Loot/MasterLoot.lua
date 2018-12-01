@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.loot.lootframe ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -6,14 +6,14 @@ if C.loot.lootframe ~= true then return end
 ----------------------------------------------------------------------------------------
 local hexColors = {}
 for k, v in pairs(RAID_CLASS_COLORS) do
-	hexColors[k] = "|c"..v.colorStr
+	hexColors[k] = string.format("|cff%02x%02x%02x", v.r * 255, v.g * 255, v.b * 255)
 end
 hexColors["UNKNOWN"] = string.format("|cff%02x%02x%02x", 0.6 * 255, 0.6 * 255, 0.6 * 255)
 
 if CUSTOM_CLASS_COLORS then
 	local function update()
 		for k, v in pairs(CUSTOM_CLASS_COLORS) do
-			hexColors[k] = "|c"..v.colorStr
+			hexColors[k] = string.format("|cff%02x%02x%02x", v.r * 255, v.g * 255, v.b * 255)
 		end
 	end
 	CUSTOM_CLASS_COLORS:RegisterCallback(update)
@@ -82,7 +82,7 @@ local function init()
 	info.notClickable = nil
 	UIDropDownMenu_AddButton(info)
 
-	if IsInRaid() then
+	if GetNumRaidMembers() > 0 then
 		-- In a raid
 		wipe(classesInRaid)
 		for i = 1, MAX_RAID_MEMBERS do

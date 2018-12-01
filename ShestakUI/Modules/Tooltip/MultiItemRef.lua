@@ -1,11 +1,11 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.tooltip.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	Multi ItemRefTooltip
 ----------------------------------------------------------------------------------------
 local tips = {[1] = _G["ItemRefTooltip"]}
-local types = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, achievement = true, glyph = true, instancelock = true, currency = true}
+local types = {item = true, enchant = true, spell = true, quest = true, unit = true, talent = true, currency = true}
 
 local CreateTip = function(link)
 	for k, v in ipairs(tips) do

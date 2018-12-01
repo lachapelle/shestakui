@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.click_cast ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Simple click2cast spell binder(sBinder by Fernir)
+--	Simple click2cast spell binder (sBinder by Fernir)
 ----------------------------------------------------------------------------------------
 local SpellBinder = CreateFrame("Frame", "SpellBinder", SpellBookFrame, "ButtonFrameTemplate")
 SpellBinder:SetPoint("TOPLEFT", SpellBookFrame, "TOPRIGHT", 100, 0)
@@ -42,8 +42,22 @@ for i, v in pairs({
 	if _G[v] then ClickCastFrames[_G[v]] = true end
 end
 
-hooksecurefunc("CreateFrame", function(ftype, name, parent, template) if template and template:find("SecureUnitButtonTemplate") then ClickCastFrames[_G[name]] = true end end)
-hooksecurefunc("CompactUnitFrame_SetUpFrame", function(frame, ...) ClickCastFrames[frame] = true end)
+-- hooksecurefunc("CreateFrame", function(ftype, name, parent, template) if template and template:find("SecureUnitButtonTemplate") then ClickCastFrames[_G[name]] = true end end)
+-- hooksecurefunc("CompactUnitFrame_SetUpFrame", function(frame, ...) ClickCastFrames[frame] = true end)
+hooksecurefunc("CreateFrame", function(ftype, name, parent, template)
+	if template and template:find("SecureUnitButtonTemplate") then
+		ClickCastFrames[_G[name]] = true
+	end
+end)
+hooksecurefunc("CompactUnitFrame_SetUpFrame", function(frame, ...)
+	if frame.IsForbidden and frame:IsForbidden() then
+		return
+	end
+	if frame and frame.GetName and frame:GetName():match("^NamePlate") then
+		return
+	end
+	ClickCastFrames[frame] = true
+end)
 
 local ScrollSpells = CreateFrame("ScrollFrame", "SpellBinderScrollFrameSpellList", _G["SpellBinderInset"], "UIPanelScrollFrameTemplate")
 ScrollSpells.child = CreateFrame("Frame", "SpellBinderScrollFrameSpellListChild", ScrollSpells)
@@ -245,7 +259,7 @@ SpellBinder.DeleteSpell = function()
 					end
 				end
 			end
-			tremove(DB.spells, i)
+			table.remove(DB.spells, i)
 		end
 	end
 	SpellBinder:makeSpellsList(ScrollSpells.child, true)
@@ -274,7 +288,7 @@ local addSpell = function(self, button)
 
 			for i, v in pairs(DB.spells) do if v.spell == spellname then return end end
 
-			tinsert(DB.spells, {["id"] = slot, ["modifier"] = modifier, ["button"] = button, ["spell"] = spellname, ["rank"] = rank, ["texture"] = texture, ["origbutton"] = originalbutton,})
+			table.insert(DB.spells, {["id"] = slot, ["modifier"] = modifier, ["button"] = button, ["spell"] = spellname, ["rank"] = rank, ["texture"] = texture, ["origbutton"] = originalbutton,})
 			SpellBinder:makeSpellsList(ScrollSpells.child, false)
 		end
 	end
@@ -304,7 +318,9 @@ SpellBinder.SheduleUpdate = function()
 	end
 end
 
-SpellBinder:RegisterEvent("GROUP_ROSTER_UPDATE")
+-- SpellBinder:RegisterEvent("GROUP_ROSTER_UPDATE")
+SpellBinder:RegisterEvent("PARTY_MEMBERS_CHANGED")
+SpellBinder:RegisterEvent("RAID_ROSTER_UPDATE")
 SpellBinder:RegisterEvent("PLAYER_ENTERING_WORLD")
 SpellBinder:RegisterEvent("PLAYER_LOGIN")
 SpellBinder:RegisterEvent("ZONE_CHANGED_NEW_AREA")
@@ -335,7 +351,7 @@ SpellBinder:SetScript("OnEvent", function(self, event, ...)
 		end
 
 		self:UnregisterEvent("PLAYER_LOGIN")
-	elseif event == "PLAYER_ENTERING_WORLD" or event == "GROUP_ROSTER_UPDATE" or event == "ZONE_CHANGED" or event == "ZONE_CHANGED_NEW_AREA" then
+	elseif event == "PLAYER_ENTERING_WORLD" or event == "PARTY_MEMBERS_CHANGED" or event == "RAID_ROSTER_UPDATE" or event == "ZONE_CHANGED" or event == "ZONE_CHANGED_NEW_AREA" then
 		SpellBinder.UpdateAll()
 	end
 end)
@@ -350,7 +366,7 @@ if IsAddOnLoaded("Aurora") then
 	SpellBinder.OpenButton:GetNormalTexture():SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
 	SpellBinder.OpenButton:SetCheckedTexture(C.media.checked)
-	SpellBinder.OpenButton:GetHighlightTexture():SetColorTexture(1, 1, 1, 0.3)
+	SpellBinder.OpenButton:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
 	SpellBinder.OpenButton:GetHighlightTexture():SetAllPoints(SpellBinder.OpenButton:GetNormalTexture())
 
 	F.CreateBG(SpellBinder.OpenButton)

@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.chat.enable ~= true or C.chat.damage_meter_spam ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ local firstLines = {
 	"^Skada: (.*) per (.*):$",								-- Skada itIT
 	"^(.*) 의 Skada 보고 (.*):$",							-- Skada koKR
 	"^Skada报告(.*)的(.*):$",								-- Skada zhCN
-	"^Skada:(.*)來自(.*):$",								-- Skada zhTW
+	"^Skada:(.*)來自(.*):$",									-- Skada zhTW
 	"^(.*) Done for (.*)$",									-- TinyDPS enUS
 	"^(.*) für (.*)$",										-- TinyDPS deDE
 	"데미지량 -(.*)$",										-- TinyDPS koKR
@@ -40,11 +40,8 @@ local events = {
 	"CHAT_MSG_GUILD",
 	"CHAT_MSG_OFFICER",
 	"CHAT_MSG_PARTY",
-	"CHAT_MSG_PARTY_LEADER",
 	"CHAT_MSG_RAID",
 	"CHAT_MSG_RAID_LEADER",
-	"CHAT_MSG_INSTANCE_CHAT",
-	"CHAT_MSG_INSTANCE_CHAT_LEADER",
 	"CHAT_MSG_SAY",
 	"CHAT_MSG_WHISPER",
 	"CHAT_MSG_WHISPER_INFORM",

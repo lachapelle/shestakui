@@ -1,10 +1,10 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.unitframe.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	UnitFrames based on oUF_Caellian(by Caellian)
+--	UnitFrames based on oUF_Caellian (by Caellian)
 ----------------------------------------------------------------------------------------
-local _, ns = ...
+local ns = oUF
 local oUF = ns.oUF
 
 -- Frame size
@@ -24,6 +24,23 @@ local function Shared(self, unit)
 	self:RegisterForClicks("AnyUp")
 	self:SetScript("OnEnter", UnitFrame_OnEnter)
 	self:SetScript("OnLeave", UnitFrame_OnLeave)
+
+	-- Hack Fix
+	local header = self:GetParent()
+	local height = header:GetAttribute("initial-height")
+	local width = header:GetAttribute("initial-width")
+
+	if height then
+		if self:GetAttribute("unitsuffix") == "pet" or self:GetAttribute("unitsuffix") == "target" then
+			self:SetAttribute("initial-height", height / 2)
+		else
+			self:SetAttribute("initial-height", height)
+		end
+	end
+
+	if width then
+		self:SetAttribute("initial-width", width)
+	end
 
 	-- Backdrop for every units
 	self:CreateBackdrop("Default")
@@ -78,7 +95,7 @@ local function Shared(self, unit)
 	if (self:GetAttribute("unitsuffix") == "pet" or self:GetAttribute("unitsuffix") == "target") and unit ~= "tank" then
 		self.Info:SetPoint("CENTER", self.Health, "CENTER", 0, 0)
 	else
-		self.Info:SetPoint("TOP", self.Health, "TOP", 0, -4)
+		self.Info:SetPoint("TOP", self.Health, "TOP", 1, -4)
 	end
 	self:Tag(self.Info, "[GetNameColor][NameShort]")
 
@@ -122,55 +139,60 @@ local function Shared(self, unit)
 	if C.raidframe.aggro_border == true then
 		table.insert(self.__elements, T.UpdateThreat)
 		self:RegisterEvent("PLAYER_TARGET_CHANGED", T.UpdateThreat)
-		self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", T.UpdateThreat)
-		self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", T.UpdateThreat)
+		self:RegisterEvent("PLAYER_REGEN_ENABLED", T.UpdateThreat)
+		self:RegisterEvent("PLAYER_REGEN_DISABLED", T.UpdateThreat)
+		-- self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", T.UpdateThreat)
+		-- self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", T.UpdateThreat)
+		-- self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", T.UpdateThreat)
 	end
 
 	-- Raid marks
 	if C.raidframe.icons_raid_mark == true then
-		self.RaidIcon = self.Health:CreateTexture(nil, "OVERLAY")
-		self.RaidIcon:SetSize(12, 12)
-		self.RaidIcon:SetPoint("BOTTOMLEFT", self.Health, -2, -5)
+		self.RaidTargetIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.RaidTargetIndicator:SetSize(12, 12)
+		self.RaidTargetIndicator:SetPoint("BOTTOMLEFT", self.Health, -2, -5)
 	end
 
-	-- LFD role icons
+	-- Raid role icons
 	if C.raidframe.icons_role == true and not (self:GetAttribute("unitsuffix") == "target") then
-		self.LFDRole = self.Health:CreateTexture(nil, "OVERLAY")
-		self.LFDRole:SetSize(12, 12)
-		self.LFDRole:SetPoint("TOP", self.Health, 0, 8)
+		self.RaidRoleIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.RaidRoleIndicator:SetSize(12, 12)
+		self.RaidRoleIndicator:SetPoint("TOP", self.Health, 0, 8)
 	end
 
 	-- Ready check icons
 	if C.raidframe.icons_ready_check == true and not (self:GetAttribute("unitsuffix") == "target" or self:GetAttribute("unitsuffix") == "targettarget") then
-		self.ReadyCheck = self.Health:CreateTexture(nil, "OVERLAY")
-		self.ReadyCheck:SetSize(12, 12)
-		self.ReadyCheck:SetPoint("BOTTOMRIGHT", self.Health, 2, 1)
+		self.ReadyCheckIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.ReadyCheckIndicator:SetSize(12, 12)
+		self.ReadyCheckIndicator:SetPoint("BOTTOMRIGHT", self.Health, 2, 1)
 	end
 
 	-- Leader/Assistant/ML icons
 	if C.raidframe.icons_leader == true and not (self:GetAttribute("unitsuffix") == "target" or self:GetAttribute("unitsuffix") == "targettarget") then
 		-- Leader icon
-		self.Leader = self.Health:CreateTexture(nil, "OVERLAY")
-		self.Leader:SetSize(12, 12)
-		self.Leader:SetPoint("TOPLEFT", self.Health, -3, 8)
+		self.LeaderIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.LeaderIndicator:SetSize(12, 12)
+		self.LeaderIndicator:SetPoint("TOPLEFT", self.Health, -3, 8)
 
 		-- Assistant icon
-		self.Assistant = self.Health:CreateTexture(nil, "OVERLAY")
-		self.Assistant:SetSize(12, 12)
-		self.Assistant:SetPoint("TOPLEFT", self.Health, -3, 8)
+		self.AssistantIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.AssistantIndicator:SetSize(12, 12)
+		self.AssistantIndicator:SetPoint("TOPLEFT", self.Health, -3, 8)
 
 		-- Master looter icon
-		self.MasterLooter = self.Health:CreateTexture(nil, "OVERLAY")
-		self.MasterLooter:SetSize(12, 12)
-		self.MasterLooter:SetPoint("TOPRIGHT", self.Health, 3, 8)
+		self.MasterLooterIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+		self.MasterLooterIndicator:SetSize(12, 12)
+		self.MasterLooterIndicator:SetPoint("TOPRIGHT", self.Health, 3, 8)
 	end
 
+	--[[
 	-- Resurrect icon
-	self.ResurrectIcon = self.Health:CreateTexture(nil, "OVERLAY")
-	--self.ResurrectIcon:SetTexture("Interface\\Icons\\Spell_Holy_Resurrection")
-	--self.ResurrectIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	self.ResurrectIcon:SetSize(13, 13)
-	self.ResurrectIcon:SetPoint("BOTTOMRIGHT", self.Health, 2, -7)
+	self.ResurrectIndicator = self.Health:CreateTexture(nil, "OVERLAY")
+	--self.ResurrectIndicator:SetTexture("Interface\\Icons\\Spell_Holy_Resurrection")
+	--self.ResurrectIndicator:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+	self.ResurrectIndicator:SetSize(13, 13)
+	self.ResurrectIndicator:SetPoint("BOTTOMRIGHT", self.Health, 2, -7)
+	--]]
 
 	-- Debuff highlight
 	if not (self:GetAttribute("unitsuffix") == "target" or self:GetAttribute("unitsuffix") == "targettarget") then
@@ -183,6 +205,7 @@ local function Shared(self, unit)
 		self.DebuffHighlightFilter = true
 	end
 
+	--[[
 	-- Incoming heal text/bar
 	if C.raidframe.plugins_healcomm == true then
 		local mhpb = self.Health:CreateTexture(nil, "ARTWORK")
@@ -209,6 +232,7 @@ local function Shared(self, unit)
 		--self.IncHeal:SetPoint("CENTER", self.Health, "TOP", 0, 0)
 		--self:Tag(self.IncHeal, "[IncHeal]")
 	end
+	--]]
 
 	-- Range alpha
 	if C.raidframe.show_range == true and not (self:GetAttribute("unitsuffix") == "target" or self:GetAttribute("unitsuffix") == "targettarget") then
@@ -252,7 +276,7 @@ local function Shared(self, unit)
 		self.RaidDebuffs.count:SetTextColor(1, 1, 1)
 
 		if C.aura.show_spiral == true then
-			self.RaidDebuffs.cd = CreateFrame("Cooldown", nil, self.RaidDebuffs, "CooldownFrameTemplate")
+			self.RaidDebuffs.cd = CreateFrame("Cooldown", nil, self.RaidDebuffs, "oUF_CooldownFrameTemplate")
 			self.RaidDebuffs.cd:SetPoint("TOPLEFT", 2, -2)
 			self.RaidDebuffs.cd:SetPoint("BOTTOMRIGHT", -2, 2)
 			self.RaidDebuffs.cd:SetReverse(true)
@@ -272,6 +296,14 @@ local function Shared(self, unit)
 		self.RaidDebuffs.Debuffs = T.RaidDebuffs
 	end
 
+	self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED", function(self, event, _, eventType, _, _, _, destGUID, destName, ...)
+		if eventType == "SPELL_AURA_APPLIED" or eventType == "SPELL_PERIODIC_AURA_APPLIED" or eventType == "SPELL_AURA_REFRESH" or eventType == "SPELL_PERIODIC_AURA_REFRESH" or eventType == "SPELL_AURA_APPLIED_DOSE" or eventType == "SPELL_PERIODIC_AURA_APPLIED_DOSE" or eventType == "SPELL_AURA_REMOVED_DOSE" or eventType == "SPELL_PERIODIC_AURA_REMOVED_DOSE" or eventType == "SPELL_CAST_SUCCESS" then
+			if destName == UnitName(self.unit) or destGUID == UnitGUID(self.unit) then
+				T.UpdateAuras(self)
+			end
+		end
+	end)
+
 	return self
 end
 
@@ -285,12 +317,7 @@ oUF:Factory(function(self)
 	oUF:SetActiveStyle("ShestakHeal")
 	if C.raidframe.show_party == true then
 		-- Party
-		local party = self:SpawnHeader("oUF_Party", nil, "custom [@raid6,exists] hide;show",
-			"oUF-initialConfigFunction", [[
-				local header = self:GetParent()
-				self:SetWidth(header:GetAttribute("initial-width"))
-				self:SetHeight(header:GetAttribute("initial-height"))
-			]],
+		local party = self:SpawnHeader("oUF_Party", nil, "custom [target=raid6,exists] hide;show",
 			"initial-width", unit_width,
 			"initial-height", T.Scale(unit_height),
 			"showSolo", C.raidframe.solo_mode,
@@ -301,59 +328,14 @@ oUF:Factory(function(self)
 			"showParty", true,
 			"showRaid", true,
 			"xOffset", T.Scale(7),
-			"point", "LEFT"
+			"point", "LEFT",
+			"template", "oUF_ShestakHeal" -- Handle Party Targets + Party Pets (Modules\UnitFrames\Template.xml)
 		)
 		if C.raidframe.player_in_party == true then
 			party:SetPoint(unpack(C.position.unitframes.party_heal))
 		else
 			party:SetPoint(C.position.unitframes.party_heal[1], C.position.unitframes.party_heal[2], C.position.unitframes.party_heal[3], C.position.unitframes.party_heal[4] + 32, C.position.unitframes.party_heal[5])
 		end
-
-		-- Party targets
-		local partytarget = self:SpawnHeader("oUF_PartyTarget", nil, "custom [@raid6,exists] hide;show",
-			"oUF-initialConfigFunction", [[
-				local header = self:GetParent()
-				self:SetWidth(header:GetAttribute("initial-width"))
-				self:SetHeight(header:GetAttribute("initial-height"))
-				self:SetAttribute("unitsuffix", "target")
-			]],
-			"initial-width", unit_width,
-			"initial-height", T.Scale(unit_height / 2),
-			"showSolo", C.raidframe.solo_mode,
-			"showPlayer", C.raidframe.player_in_party,
-			"groupBy", C.raidframe.by_role and "ASSIGNEDROLE",
-			"groupingOrder", C.raidframe.by_role and "TANK,HEALER,DAMAGER,NONE",
-			"sortMethod", C.raidframe.by_role and "NAME",
-			"showParty", true,
-			"showRaid", true,
-			"xOffset", T.Scale(7),
-			"point", "LEFT"
-		)
-		partytarget:SetPoint("TOPLEFT", party, "BOTTOMLEFT", 0, -7)
-
-		-- Party pets
-		local partypet = self:SpawnHeader("oUF_PartyPet", nil, "custom [@raid6,exists] hide;show",
-			"oUF-initialConfigFunction", [[
-				local header = self:GetParent()
-				self:SetWidth(header:GetAttribute("initial-width"))
-				self:SetHeight(header:GetAttribute("initial-height"))
-				self:SetAttribute("useOwnerUnit", "true")
-				self:SetAttribute("unitsuffix", "pet")
-			]],
-			"initial-width", unit_width,
-			"initial-height", T.Scale(unit_height / 2),
-			"showSolo", C.raidframe.solo_mode,
-			"showPlayer", C.raidframe.player_in_party,
-			"groupBy", C.raidframe.by_role and "ASSIGNEDROLE",
-			"groupingOrder", C.raidframe.by_role and "TANK,HEALER,DAMAGER,NONE",
-			"sortMethod", C.raidframe.by_role and "NAME",
-			"showParty", true,
-			"showRaid", true,
-			"xOffset", T.Scale(7),
-			"point", "LEFT"
-		)
-
-		partypet:SetPoint("TOPLEFT", party, "BOTTOMLEFT", 0, -((unit_height / 2) + 14.5))
 	end
 
 	if C.raidframe.show_raid == true then
@@ -361,12 +343,7 @@ oUF:Factory(function(self)
 			-- Raid vertical
 			local raid = {}
 			for i = 1, C.raidframe.raid_groups do
-				local raidgroup = self:SpawnHeader("oUF_RaidHeal"..i, nil, "custom [@raid6,exists] show;hide",
-					"oUF-initialConfigFunction", [[
-						local header = self:GetParent()
-						self:SetWidth(header:GetAttribute("initial-width"))
-						self:SetHeight(header:GetAttribute("initial-height"))
-					]],
+				local raidgroup = self:SpawnHeader("oUF_RaidHeal"..i, nil, "custom [target=raid6,exists] show;hide",
 					"initial-width", unit_width,
 					"initial-height", T.Scale(unit_height),
 					"showRaid", true,
@@ -392,12 +369,7 @@ oUF:Factory(function(self)
 			-- Raid horizontal
 			local raid = {}
 			for i = 1, C.raidframe.raid_groups do
-				local raidgroup = self:SpawnHeader("oUF_RaidHeal"..i, nil, "custom [@raid6,exists] show;hide",
-					"oUF-initialConfigFunction", [[
-						local header = self:GetParent()
-						self:SetWidth(header:GetAttribute("initial-width"))
-						self:SetHeight(header:GetAttribute("initial-height"))
-					]],
+				local raidgroup = self:SpawnHeader("oUF_RaidHeal"..i, nil, "custom [target=raid6,exists] show;hide",
 					"initial-width", unit_width,
 					"initial-height", T.Scale(unit_height),
 					"showRaid", true,
@@ -437,7 +409,11 @@ oUF:Factory(function(self)
 				"groupFilter", "MAINTANK",
 				"template", mt_template
 			)
-			raidtank:SetPoint(unpack(C.position.unitframes.tank))
+			if C.actionbar.split_bars then
+				raidtank:SetPoint(C.position.unitframes.tank[1], SplitBarRight, C.position.unitframes.tank[3], C.position.unitframes.tank[4], C.position.unitframes.tank[5])
+			else
+				raidtank:SetPoint(unpack(C.position.unitframes.tank))
+			end
 		end
 	end
 end)

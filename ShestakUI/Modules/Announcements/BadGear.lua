@@ -1,4 +1,4 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.announcements.bad_gear ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -14,7 +14,7 @@ frame:SetScript("OnEvent", function(self, event)
 			item[i] = GetInventoryItemID("player", i) or 0
 			for j, baditem in pairs(T.AnnounceBadGear[i]) do
 				if item[i] == baditem then
-					PlaySound(SOUNDKIT.RAID_WARNING, "Master")
+					PlaySound("RaidWarning")
 					RaidNotice_AddMessage(RaidWarningFrame, format("%s %s", CURRENTLY_EQUIPPED, select(2, GetItemInfo(item[i])).."!!!"), ChatTypeInfo["RAID_WARNING"])
 					print(format("|cffff3300%s %s", CURRENTLY_EQUIPPED, select(2, GetItemInfo(item[i])).."|cffff3300!!!|r"))
 				end

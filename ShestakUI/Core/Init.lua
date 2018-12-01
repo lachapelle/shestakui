@@ -2,7 +2,8 @@
 --	Initiation of ShestakUI
 ----------------------------------------------------------------------------------------
 -- Including system
-local addon, engine = ...
+local addon, engine = "ShestakUI", {}
+ShestakAddonInfo = function() return addon, engine end
 engine[1] = {}	-- T, Functions
 engine[2] = {}	-- C, Config
 engine[3] = {}	-- L, Localization
@@ -11,7 +12,7 @@ ShestakUI = engine	-- Allow other addons to use Engine
 
 --[[
 	This should be at the top of every file inside of the ShestakUI AddOn:
-	local T, C, L, _ = unpack(select(2, ...))
+	local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 	This is how another addon imports the ShestakUI engine:
 	local T, C, L, _ = unpack(ShestakUI)

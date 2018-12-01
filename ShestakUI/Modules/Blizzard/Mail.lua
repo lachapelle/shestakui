@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if IsAddOnLoaded("OpenAll") or IsAddOnLoaded("Postal") or IsAddOnLoaded("TradeSkillMaster_Mailing") then return end
 
 ----------------------------------------------------------------------------------------
@@ -86,11 +86,11 @@ end
 
 function copper_to_pretty_money(c)
 	if c > 10000 then
-		return ("%d|cffffd700"..GOLD_AMOUNT_SYMBOL.."|r %d|cffc7c7cf"..SILVER_AMOUNT_SYMBOL.."|r %d|cffeda55f"..COPPER_AMOUNT_SYMBOL.."|r"):format(c / 10000, (c / 100) % 100, c % 100)
+		return ("%d|cffffd700"..L_COMPATIBILITY_GOLD_AMOUNT_SYMBOL.."|r %d|cffc7c7cf"..L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL.."|r %d|cffeda55f"..L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL.."|r"):format(c / 10000, (c / 100) % 100, c % 100)
 	elseif c > 100 then
-		return ("%d|cffc7c7cf"..SILVER_AMOUNT_SYMBOL.."|r %d|cffeda55f"..COPPER_AMOUNT_SYMBOL.."|r"):format((c / 100) % 100, c % 100)
+		return ("%d|cffc7c7cf"..L_COMPATIBILITY_SILVER_AMOUNT_SYMBOL.."|r %d|cffeda55f"..L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL.."|r"):format((c / 100) % 100, c % 100)
 	else
-		return ("%d|cffeda55f"..COPPER_AMOUNT_SYMBOL.."|r"):format(c % 100)
+		return ("%d|cffeda55f"..L_COMPATIBILITY_COPPER_AMOUNT_SYMBOL.."|r"):format(c % 100)
 	end
 end
 
@@ -103,17 +103,17 @@ local function makeButton(id, text, w, h, x, y)
 	return button
 end
 
-button = makeButton("OpenAllButton", ALL, 70, 25, -65, -398)
+button = makeButton("OpenAllButton", ALL, 70, 25, -50, -410)
 button:SetScript("OnClick", openAll)
 button:SetScript("OnEvent", onEvent)
 button:SetScript("OnEnter", function()
 	GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
-	GameTooltip:AddLine(string.format("%d "..L_MAIL_MESSAGES, GetInboxNumItems()), 1, 1, 1)
+	GameTooltip:AddLine(format("%d "..L_MAIL_MESSAGES, GetInboxNumItems()), 1, 1, 1)
 	GameTooltip:Show()
 end)
 button:SetScript("OnLeave", function() GameTooltip:Hide() end)
 
-button2 = makeButton("OpenAllButton2", MONEY, 70, 25, 18, -398)
+button2 = makeButton("OpenAllButton2", MONEY, 70, 25, 30, -410)
 button2:SetScript("OnClick", openAllCash)
 button2:SetScript("OnEnter", function()
 	if not total_cash then
@@ -133,5 +133,3 @@ if C.skins.blizzard_frames == true then
 	OpenAllButton:SkinButton()
 	OpenAllButton2:SkinButton()
 end
-
-OpenAllMail:Hide() -- 7.2 new button

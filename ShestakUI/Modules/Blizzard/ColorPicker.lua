@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.misc.color_picker ~= true then return end
 
 ----------------------------------------------------------------------------------------
@@ -11,15 +11,15 @@ local editingText
 local function UpdateAlphaText()
 	local a = OpacitySliderFrame:GetValue()
 	a = (1 - a) * 100
-	a = math.floor(a + 0.05)
-	ColorPPBoxA:SetText(string.format("%d", a))
+	a = floor(a + 0.05)
+	ColorPPBoxA:SetText(format("%d", a))
 end
 
 local function UpdateAlpha(tbox)
 	local a = tbox:GetNumber()
 	if a > 100 then
 		a = 100
-		ColorPPBoxA:SetText(string.format("%d", a))
+		ColorPPBoxA:SetText(format("%d", a))
 	end
 	a = 1 - (a / 100)
 	editingText = true
@@ -29,13 +29,13 @@ end
 
 local function UpdateColorTexts(r, g, b)
 	if not r then r, g, b = ColorPickerFrame:GetColorRGB() end
-	r = math.floor (r * 255 + 0.5)
-	g = math.floor (g * 255 + 0.5)
-	b = math.floor (b * 255 + 0.5)
-	ColorPPBoxR:SetText(string.format("%d", r))
-	ColorPPBoxG:SetText(string.format("%d", g))
-	ColorPPBoxB:SetText(string.format("%d", b))
-	ColorPPBoxH:SetText(string.format("%.2x", r)..string.format("%.2x", g)..string.format("%.2x", b))
+	r = floor (r * 255 + 0.5)
+	g = floor (g * 255 + 0.5)
+	b = floor (b * 255 + 0.5)
+	ColorPPBoxR:SetText(format("%d", r))
+	ColorPPBoxG:SetText(format("%d", g))
+	ColorPPBoxB:SetText(format("%d", b))
+	ColorPPBoxH:SetText(format("%.2x", r)..format("%.2x", g)..format("%.2x", b))
 end
 
 local function UpdateColor(tbox)
@@ -43,15 +43,15 @@ local function UpdateColor(tbox)
 	local id = tbox:GetID()
 
 	if id == 1 then
-		r = string.format("%d", tbox:GetNumber())
+		r = format("%d", tbox:GetNumber())
 		if not r then r = 0 end
 		r = r / 255
 	elseif id == 2 then
-		g = string.format("%d", tbox:GetNumber())
+		g = format("%d", tbox:GetNumber())
 		if not g then g = 0 end
 		g = g / 255
 	elseif id == 3 then
-		b = string.format("%d", tbox:GetNumber())
+		b = format("%d", tbox:GetNumber())
 		if not b then b = 0 end
 		b = b / 255
 	elseif id == 4 then
@@ -72,7 +72,7 @@ local function UpdateColor(tbox)
 
 	editingText = true
 	ColorPickerFrame:SetColorRGB(r, g, b)
-	ColorSwatch:SetColorTexture(r, g, b)
+	ColorSwatch:SetTexture(r, g, b)
 	editingText = nil
 end
 
@@ -86,7 +86,7 @@ load:SetScript("OnEvent", function(self, event)
 	ColorPickerFrame:HookScript("OnShow", function(self)
 		-- Get color that will be replaced
 		local r, g, b = ColorPickerFrame:GetColorRGB()
-		ColorPPOldColorSwatch:SetColorTexture(r, g, b)
+		ColorPPOldColorSwatch:SetTexture(r, g, b)
 
 		-- Show/hide the alpha box
 		if ColorPickerFrame.hasOpacity then
@@ -102,7 +102,7 @@ load:SetScript("OnEvent", function(self, event)
 	end)
 
 	ColorPickerFrame:HookScript("OnColorSelect", function(self, r, g, b)
-		ColorSwatch:SetColorTexture(r, g, b)
+		ColorSwatch:SetTexture(r, g, b)
 		if not editingText then
 			UpdateColorTexts(r, g, b)
 		end
@@ -129,7 +129,7 @@ load:SetScript("OnEvent", function(self, event)
 	local t = ColorPickerFrame:CreateTexture("ColorPPOldColorSwatch")
 	local w, h = ColorSwatch:GetSize()
 	t:SetSize(w * 0.75, h * 0.75)
-	t:SetColorTexture(0, 0, 0)
+	t:SetTexture(0, 0, 0)
 
 	-- OldColorSwatch to appear beneath ColorSwatch
 	t:SetDrawLayer("BORDER")
@@ -138,13 +138,13 @@ load:SetScript("OnEvent", function(self, event)
 	-- Add Color Swatch for the copied color
 	t = ColorPickerFrame:CreateTexture("ColorPPCopyColorSwatch")
 	t:SetSize(w, h)
-	t:SetColorTexture(0, 0, 0)
+	t:SetTexture(0, 0, 0)
 	t:Hide()
 
 	-- Add copy button to the ColorPickerFrame
 	local b = CreateFrame("Button", "ColorPPCopy", ColorPickerFrame, "UIPanelButtonTemplate")
 	b:SkinButton()
-	b:SetText(CALENDAR_COPY_EVENT)
+	b:SetText(L_COMPATIBILITY_CALENDAR_COPY_EVENT)
 	b:SetWidth(85)
 	b:SetHeight(22)
 	b:SetPoint("TOPLEFT", "ColorSwatch", "BOTTOMLEFT", -15, -5)
@@ -156,7 +156,7 @@ load:SetScript("OnEvent", function(self, event)
 
 		-- Enable Paste button and display copied color into swatch
 		ColorPPPaste:Enable()
-		ColorPPCopyColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
+		ColorPPCopyColorSwatch:SetTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 		ColorPPCopyColorSwatch:Show()
 
 		if ColorPickerFrame.hasOpacity then
@@ -168,7 +168,7 @@ load:SetScript("OnEvent", function(self, event)
 
 	-- Paste button
 	b = CreateFrame("Button", "ColorPPPaste", ColorPickerFrame, "UIPanelButtonTemplate")
-	b:SetText(CALENDAR_PASTE_EVENT)
+	b:SetText(L_COMPATIBILITY_CALENDAR_PASTE_EVENT)
 	b:SkinButton()
 	b:SetWidth(85)
 	b:SetHeight(22)
@@ -178,7 +178,7 @@ load:SetScript("OnEvent", function(self, event)
 	-- Paste color on button click, updating frame components
 	b:SetScript("OnClick", function(self)
 		ColorPickerFrame:SetColorRGB(colorBuffer.r, colorBuffer.g, colorBuffer.b)
-		ColorSwatch:SetColorTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
+		ColorSwatch:SetTexture(colorBuffer.r, colorBuffer.g, colorBuffer.b)
 		if ColorPickerFrame.hasOpacity then
 			if colorBuffer.a then -- Color copied had an alpha value
 				OpacitySliderFrame:SetValue(colorBuffer.a)
@@ -196,7 +196,7 @@ load:SetScript("OnEvent", function(self, event)
 
 	b:SetScript("OnClick", function()
 		ColorPickerFrame:SetColorRGB(T.color.r, T.color.g, T.color.b)
-		ColorSwatch:SetColorTexture(T.color.r, T.color.g, T.color.b)
+		ColorSwatch:SetTexture(T.color.r, T.color.g, T.color.b)
 		if ColorPickerFrame.hasOpacity then
 			OpacitySliderFrame:SetValue(0)
 		end
@@ -213,7 +213,7 @@ load:SetScript("OnEvent", function(self, event)
 
 	-- Set up edit box frames and interior label and text areas
 	local boxes = {"R", "G", "B", "H", "A"}
-	for i = 1, table.getn(boxes) do
+	for i = 1, getn(boxes) do
 		local rgb = boxes[i]
 		local box = CreateFrame("EditBox", "ColorPPBox"..rgb, ColorPickerFrame, "InputBoxTemplate")
 		T.SkinEditBox(box)

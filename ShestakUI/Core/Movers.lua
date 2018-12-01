@@ -1,18 +1,15 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Movement function(by Allez)
 ----------------------------------------------------------------------------------------
 T.MoverFrames = {
-	VehicleButtonAnchor,
 	ExtraButtonAnchor,
 	ActionBarAnchor,
 	RightActionBarAnchor,
 	PetActionBarAnchor,
 	ShiftHolder,
 	MicroAnchor,
-	VehicleAnchor,
-	AchievementAnchor,
 	MinimapAnchor,
 	TopPanelAnchor,
 	BuffsAnchor,
@@ -26,8 +23,8 @@ T.MoverFrames = {
 	AutoButtonAnchor,
 	TooltipAnchor,
 	ChatBar,
-	oUF_Player_Castbar,
-	oUF_Target_Castbar,
+	oUF_Player_CastBar,
+	oUF_Target_CastBar,
 	oUF_Player_Portrait,
 	oUF_Target_Portrait,
 	P_BUFF_ICON_Anchor,
@@ -45,9 +42,7 @@ local moving = false
 local movers = {}
 local placed = {
 	"Butsu",
-	"UIAltPowerBar",
 	"LootHistoryFrame",
-	"stArchaeologyFrame",
 	"StuffingFrameBags",
 	"StuffingFrameBank",
 	"alDamageMeterFrame"

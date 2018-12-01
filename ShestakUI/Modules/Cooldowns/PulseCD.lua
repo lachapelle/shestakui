@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.pulsecooldown.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Based on Doom Cooldown Pulse(by Woffle of Dark Iron, editor Affli)
+--	Based on Doom Cooldown Pulse (by Woffle of Dark Iron, editor Affli)
 ----------------------------------------------------------------------------------------
 local GetTime = GetTime
 local fadeInTime, fadeOutTime, maxAlpha, elapsed, runtimer = 0.5, 0.7, 1, 0, 0
@@ -83,7 +83,7 @@ local function OnUpdate(_, update)
 		for i, v in pairs(cooldowns) do
 			local remaining = v[2] - (GetTime() - v[1])
 			if remaining <= 0 then
-				tinsert(animating, {v[3], v[4]})
+				table.insert(animating, {v[3], v[4]})
 				cooldowns[i] = nil
 			end
 		end
@@ -98,7 +98,7 @@ local function OnUpdate(_, update)
 	if #animating > 0 then
 		runtimer = runtimer + update
 		if runtimer > (fadeInTime + holdTime + fadeOutTime) then
-			tremove(animating, 1)
+			table.remove(animating, 1)
 			runtimer = 0
 			icon:SetTexture(nil)
 			frame:SetBackdropBorderColor(0, 0, 0, 0)
@@ -107,7 +107,7 @@ local function OnUpdate(_, update)
 			if not icon:GetTexture() then
 				icon:SetTexture(animating[1][1])
 				if C.pulsecooldown.sound == true then
-					PlaySoundFile(C.media.proc_sound, "Master")
+					PlaySoundFile(C.media.proc_sound)
 				end
 			end
 			local alpha = maxAlpha
@@ -135,24 +135,24 @@ function frame:ADDON_LOADED(addon)
 end
 frame:RegisterEvent("ADDON_LOADED")
 
-function frame:UNIT_SPELLCAST_SUCCEEDED(unit, spell, _, _, spellID)
+function frame:UNIT_SPELLCAST_SUCCEEDED(unit, spell, rank)
 	if unit == "player" then
-		watching[spellID] = {GetTime(), "spell", spellID}
+		watching[spell] = {GetTime(), "spell", spell.."("..rank..")"}
 		self:SetScript("OnUpdate", OnUpdate)
 	end
 end
 frame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 
 function frame:COMBAT_LOG_EVENT_UNFILTERED(...)
-	local _, eventType, _, _, _, sourceFlags, _, _, _, _, _, spellID = ...
+	local _, eventType, _, _, sourceFlags, _, _, _, spellID = ...
 	if eventType == "SPELL_CAST_SUCCESS" then
 		if (bit.band(sourceFlags, COMBATLOG_OBJECT_TYPE_PET) == COMBATLOG_OBJECT_TYPE_PET and bit.band(sourceFlags, COMBATLOG_OBJECT_AFFILIATION_MINE) == COMBATLOG_OBJECT_AFFILIATION_MINE) then
 			local name = GetSpellInfo(spellID)
 			local index = GetPetActionIndexByName(name)
 			if index and not select(7, GetPetActionInfo(index)) then
 				watching[spellID] = {GetTime(), "pet", index}
-			elseif not index and spellID then
-				watching[spellID] = {GetTime(), "spell", spellID}
+			elseif not index and name then
+				watching[name] = {GetTime(), "spell", name}
 			else
 				return
 			end
@@ -181,7 +181,8 @@ hooksecurefunc("UseAction", function(slot)
 end)
 
 hooksecurefunc("UseInventoryItem", function(slot)
-	local itemID = GetInventoryItemID("player", slot)
+	local link = GetInventoryItemLink("player", slot)
+	local itemID = link:match("item:(%d+):")
 	if itemID then
 		local texture = GetInventoryItemTexture("player", slot)
 		watching[itemID] = {GetTime(), "item", texture}
@@ -189,7 +190,8 @@ hooksecurefunc("UseInventoryItem", function(slot)
 end)
 
 hooksecurefunc("UseContainerItem", function(bag, slot)
-	local itemID = GetContainerItemID(bag, slot)
+	local link = GetContainerItemLink(bag, slot)
+	local itemID = link:match("item:(%d+):")
 	if itemID then
 		local texture = select(10, GetItemInfo(itemID))
 		watching[itemID] = {GetTime(), "item", texture}
@@ -197,9 +199,9 @@ hooksecurefunc("UseContainerItem", function(bag, slot)
 end)
 
 SlashCmdList.PulseCD = function()
-	tinsert(animating, {GetSpellTexture(87214)})
+	table.insert(animating,{"Interface\\Icons\\Spell_Nature_Earthbind"}) 
 	if C.pulsecooldown.sound == true then
-		PlaySoundFile(C.media.proc_sound, "Master")
+		PlaySoundFile(C.media.proc_sound)
 	end
 	frame:SetScript("OnUpdate", OnUpdate)
 end

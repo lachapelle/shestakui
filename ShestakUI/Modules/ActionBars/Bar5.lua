@@ -1,10 +1,10 @@
-local T, C, L, _ = unpack(select(2, ...))
+local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.actionbar.enable ~= true then return end
 
 ----------------------------------------------------------------------------------------
 --	MultiBarBottomRight(by Tukz)
 ----------------------------------------------------------------------------------------
-local bar = CreateFrame("Frame", "Bar5Holder", oUF_PetBattleFrameHider)
+local bar = CreateFrame("Frame", "Bar5Holder", UIParent, "SecureStateHeaderTemplate")
 if C.actionbar.rightbars < 3 then
 	if C.actionbar.split_bars == true then
 		bar:SetAllPoints(SplitBarLeft)

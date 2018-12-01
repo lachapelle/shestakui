@@ -1,8 +1,8 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 if C.minimap.enable ~= true or C.minimap.toggle_menu ~= true then return end
 
 ----------------------------------------------------------------------------------------
---	Toggle menu(by Hydra, Foof, Gorlasch and HyPeRnIcS)
+--	Toggle menu (by Hydra, Foof, Gorlasch and HyPeRnIcS)
 ----------------------------------------------------------------------------------------
 -- Override prefix method to collapse addons
 C["toggleprefix"] = {
@@ -75,9 +75,7 @@ C["togglemainmenu"] = {
 				SlashCmdList.alThreat()
 			end
 			SlashCmdList.DBMTEST()
-			SlashCmdList.TEST_EXTRABUTTON()
-			SlashCmdList.TEST_ACHIEVEMENT()
-			--SlashCmdList.GRIDONSCREEN()
+			-- SlashCmdList.GRIDONSCREEN()
 		end
 	},
 }
@@ -116,10 +114,6 @@ C["toggleaddons"] = {
 		RA_MinimapButton:Click()
 	end,
 	-- Other Addons
-	["Archy"] = function()
-		ToggleFrame(ArchyDigSiteFrame)
-		ToggleFrame(ArchyArtifactFrame)
-	end,
 	["AtlasLoot"] = function()
 		ToggleFrame(AtlasLootDefaultFrame)
 	end,
@@ -166,13 +160,13 @@ local defaultframelevel = 0
 local function updateTextures(button, checkable)
 	if checkable then
 		local texture = button:CreateTexture(nil, nil, self)
-		texture:SetColorTexture(1, 1, 1, 0.3)
+		texture:SetTexture(1, 1, 1, 0.3)
 		texture:SetPoint("TOPLEFT", button, 2, -2)
 		texture:SetPoint("BOTTOMRIGHT", button, -2, 2)
 		button:SetCheckedTexture(texture)
 	end
-	button:HookScript("OnEnter", T.SetModifiedBackdrop)
-	button:HookScript("OnLeave", T.SetOriginalBackdrop)
+	button:SetScript("OnEnter", T.SetModifiedBackdrop)
+	button:SetScript("OnLeave", T.SetOriginalBackdrop)
 end
 
 local MenuBG = CreateFrame("Frame", "TTMenuBackground", UIParent)
@@ -189,8 +183,8 @@ AddonBG:SetFrameStrata("HIGH")
 AddonBG:EnableMouse(true)
 AddonBG:Hide()
 
-tinsert(UISpecialFrames, "TTMenuBackground")
-tinsert(UISpecialFrames, "TTMenuAddOnBackground")
+table.insert(UISpecialFrames, "TTMenuBackground")
+table.insert(UISpecialFrames, "TTMenuAddOnBackground")
 
 function ToggleMenu_Toggle()
 	if TTMenuAddOnBackground:IsShown() or TTMenuBackground:IsShown() then
@@ -267,17 +261,17 @@ OpenMenuBG:SetFrameLevel(defaultframelevel)
 OpenMenuBG:SetFrameStrata("HIGH")
 OpenMenuBG:SetScript("OnMouseUp", function()
 	ToggleMenu_Toggle()
-	if (T.class == "MAGE" and T.level >= 17) and _G["TeleportMenu"]:IsShown() then
+	if (T.class == "MAGE" and T.level >= 20) and _G["TeleportMenu"]:IsShown() then
 		_G["TeleportMenu"]:Hide()
 	end
 end)
-OpenMenuBG:HookScript("OnEnter", function(self)
-	if (T.class == "MAGE" and T.level >= 17) and _G["TeleportMenu"]:IsShown() then
+OpenMenuBG:SetScript("OnEnter", function(self)
+	if (T.class == "MAGE" and T.level >= 20) and _G["TeleportMenu"]:IsShown() then
 	else
 		self:FadeIn()
 	end
 end)
-OpenMenuBG:HookScript("OnLeave", function(self) self:FadeOut() end)
+OpenMenuBG:SetScript("OnLeave", function(self) self:FadeOut() end)
 
 Text = OpenMenuBG:CreateFontString(nil, "OVERLAY")
 Text:SetFont(C.media.pixel_font, C.media.pixel_font_size, C.media.pixel_font_style)
@@ -449,7 +443,7 @@ for i = 1, GetNumAddOns() do
 			self:SetChecked(not self:GetChecked())
 		end
 	end)
-	addonmenuitems[j]:HookScript("OnEnter", function(self)
+	addonmenuitems[j]:SetScript("OnEnter", function(self)
 		GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 		GameTooltip:AddLine(L_TOGGLE_ADDON..name)
 		GameTooltip:AddLine("|cffffffff"..L_TOGGLE_RCLICK..name.."\n"..L_TOGGLE_RELOAD)
@@ -460,7 +454,7 @@ for i = 1, GetNumAddOns() do
 		end
 		GameTooltip:Show()
 	end)
-	addonmenuitems[j]:HookScript("OnLeave", function()
+	addonmenuitems[j]:SetScript("OnLeave", function()
 		GameTooltip:Hide()
 	end)
 	Text = addonmenuitems[j]:CreateFontString(nil, "OVERLAY")
@@ -478,7 +472,7 @@ for i = 1, GetNumAddOns() do
 		expandAddonButton:RegisterForClicks("AnyUp")
 		updateTextures(expandAddonButton)
 
-		expandAddonButton:HookScript("OnEnter", function(self)
+		expandAddonButton:SetScript("OnEnter", function(self)
 			GameTooltip:SetOwner(self, "ANCHOR_LEFT")
 			if addonInfo[i].collapsed then
 				GameTooltip:AddLine(L_TOGGLE_EXPAND..name..L_TOGGLE_ADDONS)
@@ -487,22 +481,24 @@ for i = 1, GetNumAddOns() do
 			end
 			GameTooltip:Show()
 		end)
-		expandAddonButton:HookScript("OnLeave", function(self)
+		expandAddonButton:SetScript("OnLeave", function(self)
 			GameTooltip:Hide()
 		end)
 
 		Text = expandAddonButton:CreateFontString(nil, "OVERLAY")
 		Text:SetFont(C.media.pixel_font, C.media.pixel_font_size, C.media.pixel_font_style)
-		Text:SetPoint("CENTER", expandAddonButton, 2, 0)
+		Text:SetPoint("CENTER", expandAddonButton, 1, 1)
 		Text:SetText("+")
 		Text:SetTextColor(0.3, 0.3, 0.9)
 		expandAddonButton.txt = Text
 		expandAddonButton:SetScript("OnMouseUp", function(self)
 			addonInfo[i].collapsed = not addonInfo[i].collapsed
 			if addonInfo[i].collapsed then
+				self.txt:SetPoint("CENTER", expandAddonButton, 1, 1)
 				self.txt:SetText("+")
 				self.txt:SetTextColor(0.3, 0.3, 0.9)
 			else
+				self.txt:SetPoint("CENTER", expandAddonButton, 2, 1)
 				self.txt:SetText("-")
 				self.txt:SetTextColor(0.9, 0.3, 0.3)
 			end

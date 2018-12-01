@@ -1,4 +1,4 @@
-﻿local T, C, L, _ = unpack(select(2, ...))
+﻿local T, C, L, _ = unpack(select(2, ShestakAddonInfo()))
 
 ----------------------------------------------------------------------------------------
 --	Slash commands
@@ -6,6 +6,7 @@
 SlashCmdList.RELOADUI = function() ReloadUI() end
 SLASH_RELOADUI1 = "/rl"
 SLASH_RELOADUI2 = "/кд"
+SLASH_RELOADUI3 = "//"
 
 SlashCmdList.RCSLASH = function() DoReadyCheck() end
 SLASH_RCSLASH1 = "/rc"
@@ -15,14 +16,6 @@ SlashCmdList.TICKET = function() ToggleHelpFrame() end
 SLASH_TICKET1 = "/gm"
 SLASH_TICKET2 = "/гм"
 SLASH_TICKET3 = "/пь"
-
-SlashCmdList.JOURNAL = function() ToggleEncounterJournal() end
-SLASH_JOURNAL1 = "/ej"
-SLASH_JOURNAL2 = "/уо"
-
-SlashCmdList.ROLECHECK = function() InitiateRolePoll() end
-SLASH_ROLECHECK1 = "/role"
-SLASH_ROLECHECK2 = "/кщду"
 
 SlashCmdList.CLEARCOMBAT = function() CombatLogClearEntries() end
 SLASH_CLEARCOMBAT1 = "/clc"
@@ -67,13 +60,13 @@ SLASH_ENABLE_ADDON1 = "/en"
 SLASH_ENABLE_ADDON2 = "/enable"
 
 ----------------------------------------------------------------------------------------
---	Disband party or raid(by Monolit)
+--	Disband party or raid (by Monolit)
 ----------------------------------------------------------------------------------------
 function DisbandRaidGroup()
 	if InCombatLockdown() then return end
 	if UnitInRaid("player") then
 		SendChatMessage(L_INFO_DISBAND, "RAID")
-		for i = 1, GetNumGroupMembers() do
+		for i = 1, GetNumRaidMembers() do
 			local name, _, _, _, _, _, _, online = GetRaidRosterInfo(i)
 			if online and name ~= T.name then
 				UninviteUnit(name)
@@ -82,7 +75,7 @@ function DisbandRaidGroup()
 	else
 		SendChatMessage(L_INFO_DISBAND, "PARTY")
 		for i = MAX_PARTY_MEMBERS, 1, -1 do
-			if GetNumGroupMembers(i) then
+			if GetPartyMember(i) then
 				UninviteUnit(UnitName("party"..i))
 			end
 		end
@@ -111,10 +104,10 @@ SLASH_GROUPDISBAND2 = "/кв"
 --	Convert party to raid
 ----------------------------------------------------------------------------------------
 SlashCmdList.PARTYTORAID = function()
-	if GetNumGroupMembers() > 0 then
-		if UnitInRaid("player") and (UnitIsGroupLeader("player")) then
+	if GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0 then
+		if UnitInRaid("player") and IsRaidLeader() then
 			ConvertToParty()
-		elseif UnitInParty("player") and (UnitIsGroupLeader("player")) then
+		elseif UnitInParty("player") and IsPartyLeader() then
 			ConvertToRaid()
 		end
 	else
@@ -125,36 +118,6 @@ SLASH_PARTYTORAID1 = "/toraid"
 SLASH_PARTYTORAID2 = "/toparty"
 SLASH_PARTYTORAID3 = "/convert"
 SLASH_PARTYTORAID4 = "/сщтмуке"
-
-----------------------------------------------------------------------------------------
---	Instance teleport
-----------------------------------------------------------------------------------------
-SlashCmdList.INSTTELEPORT = function()
-	local inInstance = IsInInstance()
-	if inInstance then
-		LFGTeleport(true)
-	else
-		LFGTeleport()
-	end
-end
-SLASH_INSTTELEPORT1 = "/teleport"
-SLASH_INSTTELEPORT2 = "/еудузщке"
-
-----------------------------------------------------------------------------------------
---	Spec switching(by Monolit)
-----------------------------------------------------------------------------------------
-SlashCmdList.SPEC = function(spec)
-	if T.level >= SHOW_TALENT_LEVEL then
-		if GetSpecialization() ~= tonumber(spec) then
-			SetSpecialization(spec)
-		end
-	else
-		print("|cffffff00"..format(FEATURE_BECOMES_AVAILABLE_AT_LEVEL, SHOW_TALENT_LEVEL).."|r")
-	end
-end
-SLASH_SPEC1 = "/ss"
-SLASH_SPEC2 = "/spec"
-SLASH_SPEC3 = "/ыы"
 
 ----------------------------------------------------------------------------------------
 --	Demo mode for DBM
@@ -182,6 +145,27 @@ SlashCmdList.DPS = function()
 end
 SLASH_DPS1 = "/dps"
 SLASH_DPS2 = "/взы"
+
+----------------------------------------------------------------------------------------
+--	Load Debug Tools
+----------------------------------------------------------------------------------------
+local checked
+local function LoadDebugTools()
+	if checked then return end
+
+	local _, _, _, loadable, _, reason = GetAddOnInfo("ShestakUI_DebugTools")
+	checked = true
+
+	if reason == "MISSING" then return end
+
+	if loadable then
+		LoadAddOn("ShestakUI_DebugTools")
+	else
+		EnableAddOn("ShestakUI_DebugTools")
+		LoadAddOn("ShestakUI_DebugTools")
+		DisableAddOn("ShestakUI_DebugTools")
+	end
+end
 
 ----------------------------------------------------------------------------------------
 --	Command to show frame you currently have mouseovered
@@ -224,6 +208,27 @@ SlashCmdList.FRAME = function(arg)
 end
 SLASH_FRAME1 = "/frame"
 SLASH_FRAME2 = "/акфьу"
+
+----------------------------------------------------------------------------------------
+--	Frame Stack
+----------------------------------------------------------------------------------------
+SlashCmdList.FRAMESTACK = function(msg)
+	LoadDebugTools()
+
+	if IsAddOnLoaded("ShestakUI_DebugTools") then
+		local showHiddenArg, showRegionsArg = strmatch(msg, "^%s*(%S+)%s+(%S+)%s*$")
+		if (not showHiddenArg or not showRegionsArg) then
+			showHiddenArg = strmatch(msg, "^%s*(%S+)%s*$")
+			showRegionsArg = "1"
+		end
+		local showHidden = showHiddenArg == "true" or showHiddenArg == "1"
+		local showRegions = showRegions == "true" or showRegionsArg == "1"
+
+		FrameStackTooltip_Toggle(showHidden, showRegions)
+	end
+end
+SLASH_FRAMESTACK1 = "/framestack"
+SLASH_FRAMESTACK2 = "/fstack"
 
 ----------------------------------------------------------------------------------------
 --	Print /framestack info in chat
@@ -270,6 +275,71 @@ SLASH_FSTACK2 = "/fs"
 SLASH_FSTACK3 = "/аы"
 
 ----------------------------------------------------------------------------------------
+--	Event Trace
+----------------------------------------------------------------------------------------
+SlashCmdList.EVENTTRACE = function(msg)
+	LoadDebugTools()
+
+	if IsAddOnLoaded("ShestakUI_DebugTools") then
+		EventTraceFrame_HandleSlashCmd(msg)
+	end
+end
+SLASH_EVENTTRACE1 = "/eventtrace"
+SLASH_EVENTTRACE2 = "/etrace"
+
+----------------------------------------------------------------------------------------
+--	Frame Analysis
+----------------------------------------------------------------------------------------
+SlashCmdList.ANALYZE = function(msg)
+	if msg ~= "" then
+		msg = _G[msg]
+	else
+		msg = GetMouseFocus()
+	end
+	if msg ~= nil then FRAME = msg end --Set the global variable FRAME to = whatever we are mousing over to simplify messing with frames that have no name.
+	if msg ~= nil and msg:GetName() ~= nil then
+		local name = msg:GetName()
+
+		local childFrames = { msg:GetChildren() }
+		ChatFrame1:AddMessage("|cffCC0000----------------------------")
+		ChatFrame1:AddMessage(name)
+		for _, child in ipairs(childFrames) do
+			if child:GetName() then
+				ChatFrame1:AddMessage("+="..child:GetName())
+			end
+		end
+		ChatFrame1:AddMessage("|cffCC0000----------------------------")
+	end
+end
+SLASH_ANALYZE1 = "/analyze"
+
+----------------------------------------------------------------------------------------
+--	Toggle Profiling
+----------------------------------------------------------------------------------------
+SlashCmdList.PROFILE = function()
+	local cpuProfiling = GetCVar("scriptProfile") == "1"
+	if cpuProfiling then
+		SetCVar("scriptProfile", "0")
+	else
+		SetCVar("scriptProfile", "1")
+	end
+	ReloadUI()
+end
+SLASH_PROFILE1 = "/profile"
+
+----------------------------------------------------------------------------------------
+--	Dump
+----------------------------------------------------------------------------------------
+SlashCmdList.DUMP = function(msg)
+	LoadDebugTools()
+
+	if IsAddOnLoaded("ShestakUI_DebugTools") then
+		DevTools_DumpCommand(msg)
+	end
+end
+SLASH_DUMP1 = "/dump"
+
+----------------------------------------------------------------------------------------
 --	Clear chat
 ----------------------------------------------------------------------------------------
 SlashCmdList.CLEAR_CHAT = function()
@@ -279,54 +349,6 @@ SlashCmdList.CLEAR_CHAT = function()
 end
 SLASH_CLEAR_CHAT1 = "/clear"
 SLASH_CLEAR_CHAT2 = "/сдуфк"
-
-----------------------------------------------------------------------------------------
---	Test Blizzard Alerts
-----------------------------------------------------------------------------------------
-SlashCmdList.TEST_ACHIEVEMENT = function()
-	PlaySound(SOUNDKIT.LFG_REWARDS)
-	if not AchievementFrame then
-		AchievementFrame_LoadUI()
-	end
-	AchievementAlertSystem:AddAlert(112)
-	CriteriaAlertSystem:AddAlert(9023, "Doing great!")
-	GuildChallengeAlertSystem:AddAlert(3, 2, 5)
-	InvasionAlertSystem:AddAlert(678, "Legion", true, 1, 1)
-	-- WorldQuestCompleteAlertSystem:AddAlert(42114)
-	local follower = _G.C_Garrison.GetFollowers(LE_FOLLOWER_TYPE_GARRISON_7_0)[1]
-	GarrisonFollowerAlertSystem:AddAlert(follower.followerID, follower.name, follower.level, follower.quality, isUpgraded, follower)
-	GarrisonShipFollowerAlertSystem:AddAlert(592, "Ship", "Transport", "GarrBuilding_Barracks_1_H", 3, 2, 1)
-	GarrisonBuildingAlertSystem:AddAlert("Barracks")
-	GarrisonTalentAlertSystem:AddAlert(3, _G.C_Garrison.GetTalent(370))
-	LegendaryItemAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832:0:0:0:0:0:0:0:0:0:0\124h[Brutality Blade]\124h\124r")
-	LootAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 100, 2, false, false, 0, false, false)
-	LootUpgradeAlertSystem:AddAlert("\124cffa335ee\124Hitem:18832::::::::::\124h[Brutality Blade]\124h\124r", 1, 1, 1, nil, nil, false)
-	MoneyWonAlertSystem:AddAlert(815)
-	StorePurchaseAlertSystem:AddAlert("\124cffa335ee\124Hitem:180545::::::::::\124h[Mystic Runesaber]\124h\124r", "", "", 214)
-	DigsiteCompleteAlertSystem:AddAlert(1)
-	NewRecipeLearnedAlertSystem:AddAlert(204)
-end
-SLASH_TEST_ACHIEVEMENT1 = "/tach"
-SLASH_TEST_ACHIEVEMENT2 = "/ефср"
-
-----------------------------------------------------------------------------------------
---	Test Blizzard Extra Action Button
-----------------------------------------------------------------------------------------
-SlashCmdList.TEST_EXTRABUTTON = function()
-	if ExtraActionBarFrame:IsShown() then
-		ExtraActionBarFrame:Hide()
-	else
-		ExtraActionBarFrame:Show()
-		ExtraActionBarFrame:SetAlpha(1)
-		ExtraActionButton1:Show()
-		ExtraActionButton1:SetAlpha(1)
-		ExtraActionButton1.icon:SetTexture("Interface\\Icons\\spell_deathknight_breathofsindragosa")
-		ExtraActionButton1.icon:Show()
-		ExtraActionButton1.icon:SetAlpha(1)
-	end
-end
-SLASH_TEST_EXTRABUTTON1 = "/teb"
-SLASH_TEST_EXTRABUTTON2 = "/еуи"
 
 ----------------------------------------------------------------------------------------
 --	Grid on screen
@@ -344,9 +366,9 @@ SlashCmdList.GRIDONSCREEN = function()
 		for i = 0, 128 do
 			local texture = grid:CreateTexture(nil, "BACKGROUND")
 			if i == 64 then
-				texture:SetColorTexture(1, 0, 0, 0.8)
+				texture:SetTexture(1, 0, 0, 0.8)
 			else
-				texture:SetColorTexture(0, 0, 0, 0.8)
+				texture:SetTexture(0, 0, 0, 0.8)
 			end
 			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", i * width - 1, 0)
 			texture:SetPoint("BOTTOMRIGHT", grid, "BOTTOMLEFT", i * width, 0)
@@ -354,9 +376,9 @@ SlashCmdList.GRIDONSCREEN = function()
 		for i = 0, 72 do
 			local texture = grid:CreateTexture(nil, "BACKGROUND")
 			if i == 36 then
-				texture:SetColorTexture(1, 0, 0, 0.8)
+				texture:SetTexture(1, 0, 0, 0.8)
 			else
-				texture:SetColorTexture(0, 0, 0, 0.8)
+				texture:SetTexture(0, 0, 0, 0.8)
 			end
 			texture:SetPoint("TOPLEFT", grid, "TOPLEFT", 0, -i * height)
 			texture:SetPoint("BOTTOMRIGHT", grid, "TOPRIGHT", 0, -i * height - 1)
